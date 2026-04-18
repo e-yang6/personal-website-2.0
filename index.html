@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan Yang</title>
+  <link rel="icon" type="image/png" href="assets/favicon.png?v=2">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Splash screen -->
+  <div id="splash-screen">
+    <img id="splash-logo" src="assets/logo.png" alt="Logo">
+  </div>
+
+  <!-- Three.js panorama canvas inserted here by panorama.js -->
+  <div id="panorama-container"></div>
+
+  <!-- Vignette overlay -->
+  <div id="vignette"></div>
+
+  <!-- Music Player Widget -->
+  <div id="music-player">
+    <div id="player-top">
+      <div id="player-info">
+        <div id="player-track">Mice on Venus</div>
+        <div id="player-artist">C418</div>
+      </div>
+      <div id="player-controls">
+        <button id="btn-prev" class="player-btn" title="Previous">&#9664;&#9664;</button>
+        <button id="btn-play-small" class="player-btn" title="Play/Pause">&#9654;</button>
+        <button id="btn-next" class="player-btn" title="Next">&#9654;&#9654;</button>
+      </div>
+      <input type="range" id="volume-slider" min="0" max="100" value="35" title="Volume">
+    </div>
+    <div id="player-bottom">
+      <span id="player-current">0:00</span>
+      <div id="player-progress">
+        <div id="player-progress-bar"></div>
+      </div>
+      <span id="player-duration">0:00</span>
+    </div>
+  </div>
+
+  <!-- Main Menu -->
+  <div id="main-menu">
+    <!-- Title -->
+    <div id="title-container">
+      <img id="title-img" src="assets/title.png" alt="Title">
+      <div id="splash-text"></div>
+    </div>
+
+    <!-- Buttons -->
+    <div id="menu-buttons" class="mc-menu">
+      <button class="mc-button full" data-page="about"><span class="title">About Me</span></button>
+      <button class="mc-button full" data-page="projects"><span class="title">Projects</span></button>
+      <button class="mc-button full" data-page="contact"><span class="title">Work Experience</span></button>
+      <div class="double">
+        <button class="mc-button full" id="btn-resume" data-page="education"><span class="title">Education</span></button>
+        <button class="mc-button full" id="btn-github" data-page="contactme"><span class="title">Contact Me</span></button>
+      </div>
+      <button class="mc-button full lang" id="btn-linkedin" data-link="#">
+        <span class="title"><img src="https://i.ibb.co/99187Lk/lang.png" alt="Link"></span>
+      </button>
+    </div>
+
+    <!-- Bottom bar -->
+    <div id="bottom-bar">
+      <span id="version-text">Portfolio v1.0</span>
+      <span id="copyright-text">Made with &lt;3 using HTML, CSS, and Three.js. Not affiliated with Mojang.</span>
+    </div>
+  </div>
+
+  <!-- Sub-page overlay -->
+  <div id="sub-page-overlay" class="hidden">
+    <div id="sub-page-bg"></div>
+    <div id="sub-page-content">
+      <button class="mc-button back-button" id="btn-back"><span class="title">← Back</span></button>
+      <div id="sub-page-inner"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/panorama.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
