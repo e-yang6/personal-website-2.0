@@ -10,43 +10,34 @@ const UI = (function () {
     about: function () {
       return (
         '<div class="mp-page">' +
-          '<div class="mp-title">About Me</div>' +
-          '<div class="mp-list">' +
+          '<div class="about-columns">' +
 
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">Who I Am</div>' +
-                '<div class="mp-motd">Hi! I\'m a passionate developer who loves building things for the web.</div>' +
+            '<div class="poem-left">' +
+              '<div class="poem-row left">' +
+                '<div class="poem-text cyan">Hi. I\'m a developer who loves building things for the web. I care about clean code, thoughtful design, and making things that feel good to use.</div>' +
+                '<div class="poem-img"></div>' +
               '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
+              '<div class="poem-row right">' +
+                '<div class="poem-img"></div>' +
+                '<div class="poem-text green">I work with JavaScript, TypeScript, React, Node.js, Python, Three.js, SQL, and Docker. I\'m always learning something new.</div>' +
+              '</div>' +
+              '<div class="poem-row left">' +
+                '<div class="poem-text cyan">When I\'m not coding, you can find me playing Minecraft, contributing to open-source, or experimenting with new frameworks.</div>' +
+                '<div class="poem-img"></div>' +
+              '</div>' +
             '</div>' +
 
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">What I Do</div>' +
-                '<div class="mp-motd">I craft clean, performant applications and explore new technologies.</div>' +
+            '<div class="skin-right">' +
+              '<div id="skin-viewer"></div>' +
+              '<div class="chat-box">' +
+                '<div class="chat-messages" id="chat-messages">' +
+                  '<div class="chat-msg bot">Hey! Ask me anything about myself.</div>' +
+                '</div>' +
+                '<div class="chat-input-row">' +
+                  '<input type="text" class="chat-input" id="chat-input" placeholder="Type a message..." autocomplete="off">' +
+                  '<button class="chat-send" id="chat-send"><span class="title">Send</span></button>' +
+                '</div>' +
               '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
-            '</div>' +
-
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">Skills</div>' +
-                '<div class="mp-motd">JavaScript, TypeScript, React, Node.js, Python, Three.js, SQL, Docker</div>' +
-              '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
-            '</div>' +
-
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">Interests</div>' +
-                '<div class="mp-motd">Gaming, open-source, creative coding, and pixel art</div>' +
-              '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
             '</div>' +
 
           '</div>' +
@@ -243,6 +234,9 @@ const UI = (function () {
         if (pages[page]) {
           inner.innerHTML = pages[page]();
           overlay.classList.add('visible');
+          if (page === 'about' && typeof Chatbot !== 'undefined') {
+            Chatbot.init();
+          }
         }
       });
     });
@@ -260,6 +254,7 @@ const UI = (function () {
     document.getElementById('btn-back').addEventListener('click', function () {
       AudioManager.playClick();
       overlay.classList.remove('visible');
+      if (typeof Chatbot !== 'undefined') Chatbot.destroy();
     });
 
     // Project view buttons inside sub-pages also play click
@@ -271,6 +266,7 @@ const UI = (function () {
       if (e.target.closest('.mp-cancel')) {
         AudioManager.playClick();
         overlay.classList.remove('visible');
+        if (typeof Chatbot !== 'undefined') Chatbot.destroy();
       }
       // Server entry selection
       var entry = e.target.closest('.mp-entry');
