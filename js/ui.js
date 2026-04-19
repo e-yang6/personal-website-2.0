@@ -27,7 +27,7 @@ const UI = (function () {
               '</div>' +
               '<div class="poem-row right">' +
                 '<div class="poem-img"></div>' +
-                '<div class="poem-text green">Thanks for stopping by my world. If you want to know more, feel free to ask me on the right!</div>' +
+                '<div class="poem-text green">Thanks for stopping by my world. If you want to know more, feel free to explore or ask me on the right!</div>' +
               '</div>' +
             '</div>' +
 
