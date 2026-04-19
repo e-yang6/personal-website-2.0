@@ -34,7 +34,7 @@ const UI = (function () {
                   '<div class="chat-msg bot">Hey! Ask me anything about myself.</div>' +
                 '</div>' +
                 '<div class="chat-input-row">' +
-                  '<input type="text" class="chat-input" id="chat-input" placeholder="Type a message..." autocomplete="off">' +
+                  '<input type="text" class="chat-input" id="chat-input" placeholder="Ask about Ethan..." autocomplete="off">' +
                   '<button class="chat-send" id="chat-send"><span class="title">Send</span></button>' +
                 '</div>' +
               '</div>' +
