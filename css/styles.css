@@ -652,17 +652,23 @@ html, body {
 }
 
 .chat-msg.user {
-  color: #55ffff;
-  background: none;
-  border: none;
-  align-self: flex-end;
-}
-
-.chat-msg.bot {
   color: #00aa00;
   background: none;
   border: none;
+  align-self: flex-end;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
+}
+
+.chat-msg.bot {
+  color: #55ffff;
+  background: none;
+  border: none;
   align-self: flex-start;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
 }
 
 .chat-input-row {

@@ -169,7 +169,8 @@ var Chatbot = (function () {
 
     container.appendChild(skinViewer.canvas);
 
-    var bodyTargetY = 0;
+    var targetX = 0;
+    var targetY = 0;
     var bodyCurrent = 0;
 
     document.addEventListener('mousemove', function (e) {
@@ -177,20 +178,20 @@ var Chatbot = (function () {
       var rect = container.getBoundingClientRect();
       var cx = rect.left + rect.width / 2;
       var cy = rect.top + rect.height / 2;
-      var x = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth / 2)));
-      var y = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight / 2)));
-      skinViewer.playerObject.skin.head.rotation.y = x * 0.8;
-      skinViewer.playerObject.skin.head.rotation.x = y * 0.5;
-      bodyTargetY = x * 0.2;
+      targetX = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth / 2)));
+      targetY = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight / 2)));
     });
 
-    function updateBody() {
+    function updateLook() {
       if (!skinViewer) return;
+      var bodyTargetY = targetX * 0.2;
       bodyCurrent += (bodyTargetY - bodyCurrent) * 0.06;
       skinViewer.playerObject.rotation.y = bodyCurrent;
-      requestAnimationFrame(updateBody);
+      skinViewer.playerObject.skin.head.rotation.y = targetX * 0.8 - bodyCurrent;
+      skinViewer.playerObject.skin.head.rotation.x = targetY * 0.5;
+      requestAnimationFrame(updateLook);
     }
-    requestAnimationFrame(updateBody);
+    requestAnimationFrame(updateLook);
   }
 
   function init() {
