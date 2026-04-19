@@ -169,10 +169,14 @@ var Chatbot = (function () {
 
     container.appendChild(skinViewer.canvas);
 
-    var control = skinview3d.createOrbitControls(skinViewer);
-    control.enableRotate = true;
-    control.enableZoom = false;
-    control.enablePan = false;
+    container.addEventListener('mousemove', function (e) {
+      if (!skinViewer) return;
+      var rect = container.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+      var y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      skinViewer.playerObject.skin.head.rotation.y = x * 0.8;
+      skinViewer.playerObject.skin.head.rotation.x = y * 0.5;
+    });
   }
 
   function init() {
