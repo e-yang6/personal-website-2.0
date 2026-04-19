@@ -13,6 +13,7 @@
     'undefined is not a function!',
     'sudo make me a sandwich!',
     'Have you tried turning it off and on again?',
+    'Segfault (core dumped)!',
   ];
 
   // Set random splash
