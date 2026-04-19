@@ -169,14 +169,28 @@ var Chatbot = (function () {
 
     container.appendChild(skinViewer.canvas);
 
-    container.addEventListener('mousemove', function (e) {
+    var bodyTargetY = 0;
+    var bodyCurrent = 0;
+
+    document.addEventListener('mousemove', function (e) {
       if (!skinViewer) return;
       var rect = container.getBoundingClientRect();
-      var x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
-      var y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+      var cx = rect.left + rect.width / 2;
+      var cy = rect.top + rect.height / 2;
+      var x = Math.max(-1, Math.min(1, (e.clientX - cx) / (window.innerWidth / 2)));
+      var y = Math.max(-1, Math.min(1, (e.clientY - cy) / (window.innerHeight / 2)));
       skinViewer.playerObject.skin.head.rotation.y = x * 0.8;
       skinViewer.playerObject.skin.head.rotation.x = y * 0.5;
+      bodyTargetY = x * 0.2;
     });
+
+    function updateBody() {
+      if (!skinViewer) return;
+      bodyCurrent += (bodyTargetY - bodyCurrent) * 0.06;
+      skinViewer.playerObject.rotation.y = bodyCurrent;
+      requestAnimationFrame(updateBody);
+    }
+    requestAnimationFrame(updateBody);
   }
 
   function init() {
