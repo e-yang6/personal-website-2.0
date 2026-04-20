@@ -14,15 +14,15 @@ const UI = (function () {
 
             '<div class="poem-left">' +
               '<div class="poem-row left">' +
-                '<div class="poem-text cyan">Hi! I\'m Ethan, and I\'m a first year computer engineering student at the University of Toronto. I\'ll be joining Sun Life this summer as an API Development Intern.</div>' +
+                '<div class="poem-text cyan">Hi! I\'m Ethan, and I\'m a first year computer engineering student at the University of Toronto, and an incoming API Development Intern at Sun Life.</div>' +
                 '<div class="poem-img"></div>' +
               '</div>' +
               '<div class="poem-row right">' +
                 '<div class="poem-img"></div>' +
-                '<div class="poem-text green">I find systems, AI/ML, and backend really interesting, and I like building things with whatever I can get my hands on.</div>' +
+                '<div class="poem-text green">I find systems, AI/ML, and backend really interesting, and I enjoy building whatever catches my curiosity.</div>' +
               '</div>' +
               '<div class="poem-row left">' +
-                '<div class="poem-text cyan">Outside of school and coding, I play volleyball and a bit of saxophone and guitar. I\'m also a big cat person.</div>' +
+                '<div class="poem-text cyan">Outside of school and coding, you\'ll find me playing volleyball or making music. I also love cats <3</div>' +
                 '<div class="poem-img"></div>' +
               '</div>' +
               '<div class="poem-row right">' +
