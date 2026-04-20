@@ -33,6 +33,10 @@ const AudioManager = (function () {
   clickSound.preload = 'auto';
   clickSound.volume = 0.15;
 
+  var textSound = new Audio('assets/text.mp3');
+  textSound.preload = 'auto';
+  var textVolume = 0.06;
+
   var trackEl = document.getElementById('player-track');
   var artistEl = document.getElementById('player-artist');
   var playBtn = document.getElementById('btn-play-small');
@@ -150,6 +154,7 @@ const AudioManager = (function () {
       targetVolume = volumeSlider.value / 100;
       bgMusic.volume = targetVolume;
       clickSound.volume = targetVolume;
+      textVolume = targetVolume * 0.4;
     });
   }
 
@@ -167,6 +172,12 @@ const AudioManager = (function () {
   function playClick() {
     clickSound.currentTime = 0;
     clickSound.play().catch(function () {});
+  }
+
+  function playText() {
+    var clone = textSound.cloneNode();
+    clone.volume = textVolume;
+    clone.play().catch(function () {});
   }
 
   function startMusic(onSuccess) {
@@ -195,6 +206,7 @@ const AudioManager = (function () {
 
   return {
     playClick: playClick,
+    playText: playText,
     startMusic: startMusic,
     togglePlay: togglePlay,
     nextTrack: nextTrack,

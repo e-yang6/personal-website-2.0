@@ -97,46 +97,53 @@ const UI = (function () {
           '</div>' +
 
           '<div class="mp-btn-row">' +
-            '<button class="mc-button mp-btn" onclick="window.open(\'#\',\'_blank\')"><span class="title">View Project</span></button>' +
-            '<button class="mc-button mp-btn" onclick="window.open(\'#\',\'_blank\')"><span class="title">Source Code</span></button>' +
             '<button class="mc-button mp-btn mp-cancel"><span class="title">Cancel</span></button>' +
           '</div>' +
         '</div>'
       );
     },
     contact: function () {
+      var recipe = [
+        null,                                               // 0: empty
+        { name: 'Curiosity', icon: '339' },                 // 1
+        null,                                               // 2: empty
+        { name: 'Adaptability', icon: '339' },              // 3
+        { name: 'Passion', icon: '264' },                   // 4: center
+        { name: 'Persistence', icon: '339' },               // 5
+        null,                                               // 6: empty
+        { name: 'Teamwork', icon: '339' },                  // 7
+        null                                                // 8: empty
+      ];
+      var grid = '';
+      for (var i = 0; i < 9; i++) {
+        if (recipe[i]) {
+          grid +=
+            '<div class="ct-grid-slot filled" data-slot="' + i + '" data-name="' + recipe[i].name + '">' +
+              '<img class="ct-ingredient" src="assets/icons/' + recipe[i].icon + '.png">' +
+            '</div>';
+        } else {
+          grid += '<div class="ct-grid-slot" data-slot="' + i + '"></div>';
+        }
+      }
       return (
-        '<div class="mp-page">' +
-          '<div class="mp-title">Work Experience</div>' +
-          '<div class="mp-list">' +
-
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">Software Engineer Intern</div>' +
-                '<div class="mp-motd">Company Name &middot; Summer 2025</div>' +
+        '<div class="mp-page crafting-page">' +
+          '<div class="crafting-wrapper">' +
+            '<div class="ct-holder">' +
+              '<div class="ct-crafting clearfix">' +
+                '<div class="ct-recipe">' +
+                  '<h6 class="ct-title">Crafting</h6>' +
+                  '<div class="ct-table" id="ct-grid">' + grid + '</div>' +
+                '</div>' +
+                '<div class="ct-arrow"></div>' +
+                '<div class="ct-output" id="ct-output">' +
+                  '<div class="ct-nametag" id="ct-nametag">Ethan\'s Resume</div>' +
+                  '<div class="ct-grid-slot ct-grid-slot-lg filled">' +
+                    '<img class="ct-ingredient" id="ct-resume" src="assets/icons/386.png">' +
+                  '</div>' +
+                  '<div class="ct-hint" id="ct-hint">Click to view!</div>' +
+                '</div>' +
               '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
             '</div>' +
-
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">Web Developer</div>' +
-                '<div class="mp-motd">Freelance &middot; 2024 - Present</div>' +
-              '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
-            '</div>' +
-
-            '<div class="mp-entry">' +
-              '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
-              '<div class="mp-info">' +
-                '<div class="mp-name">Teaching Assistant</div>' +
-                '<div class="mp-motd">University CS Department &middot; Fall 2024</div>' +
-              '</div>' +
-              '<div class="mp-right">' + signalBars + '</div>' +
-            '</div>' +
-
           '</div>' +
           '<div class="mp-btn-row">' +
             '<button class="mc-button mp-btn mp-cancel"><span class="title">Cancel</span></button>' +
@@ -226,6 +233,132 @@ const UI = (function () {
     },
   };
 
+  function initCraftingTable() {
+    var page = document.querySelector('.crafting-page');
+    var grid = document.getElementById('ct-grid');
+    var outputWrap = document.getElementById('ct-output');
+    var hint = document.getElementById('ct-hint');
+    var resume = document.getElementById('ct-resume');
+    var nametag = document.getElementById('ct-nametag');
+    if (!grid || !page) return;
+
+    var held = null;
+
+    var floater = document.createElement('div');
+    floater.className = 'ct-floater';
+    page.appendChild(floater);
+
+    function checkRecipe() {
+      var slots = grid.querySelectorAll('.ct-grid-slot');
+      var grid9 = [];
+      slots.forEach(function (s) {
+        var img = s.querySelector('.ct-ingredient');
+        if (s.classList.contains('filled') && img) {
+          grid9.push(img.src.indexOf('264') !== -1 ? 'diamond' : 'paper');
+        } else {
+          grid9.push(null);
+        }
+      });
+      var valid =
+        grid9[0] === null && grid9[1] === 'paper' && grid9[2] === null &&
+        grid9[3] === 'paper' && grid9[4] === 'diamond' && grid9[5] === 'paper' &&
+        grid9[6] === null && grid9[7] === 'paper' && grid9[8] === null;
+      resume.style.visibility = valid ? 'visible' : 'hidden';
+      hint.style.visibility = valid ? 'visible' : 'hidden';
+      nametag.style.visibility = valid ? 'visible' : 'hidden';
+    }
+
+    function pickUp(slot, e) {
+      var img = slot.querySelector('.ct-ingredient');
+      if (!img) return;
+      held = { img: img, slot: slot, name: slot.getAttribute('data-name') };
+      slot.classList.remove('filled');
+      slot.removeAttribute('data-name');
+      img.style.display = 'none';
+      var clone = document.createElement('img');
+      clone.className = 'ct-ingredient';
+      clone.src = img.src;
+      floater.innerHTML = '';
+      floater.appendChild(clone);
+      floater.style.display = 'block';
+      floater.style.left = e.clientX + 'px';
+      floater.style.top = e.clientY + 'px';
+      checkRecipe();
+    }
+
+    function putDown(targetSlot) {
+      if (!held) return;
+      if (targetSlot && targetSlot !== held.slot && !targetSlot.classList.contains('filled')) {
+        targetSlot.appendChild(held.img);
+        targetSlot.classList.add('filled');
+        targetSlot.setAttribute('data-name', held.name);
+      } else {
+        held.slot.classList.add('filled');
+        held.slot.setAttribute('data-name', held.name);
+      }
+      held.img.style.display = '';
+      held = null;
+      floater.style.display = 'none';
+      floater.innerHTML = '';
+      checkRecipe();
+    }
+
+    window.addEventListener('mousemove', function (e) {
+      if (held && floater.parentNode) {
+        floater.style.left = e.clientX + 'px';
+        floater.style.top = e.clientY + 'px';
+      }
+    });
+
+    grid.addEventListener('mousedown', function (e) {
+      var slot = e.target.closest('.ct-grid-slot');
+      if (!slot) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (held) {
+        if (!slot.classList.contains('filled')) {
+          putDown(slot);
+        } else if (slot === held.slot) {
+          putDown(null);
+        }
+      } else if (slot.classList.contains('filled')) {
+        pickUp(slot, e);
+      }
+    });
+
+    page.addEventListener('mousedown', function (e) {
+      if (held && !e.target.closest('#ct-grid')) {
+        e.preventDefault();
+        putDown(null);
+      }
+    });
+
+    outputWrap.addEventListener('click', function () {
+      if (resume.style.visibility !== 'hidden') {
+        AudioManager.playClick();
+        window.open('#', '_blank');
+      }
+    });
+  }
+
+  var splashes = [
+    'Ports forwarded!',
+    'Now with 100% more CSS!',
+    'Git push --force!',
+    '100% bug-free*',
+    'npm install worked first try!',
+    'It works on my machine!',
+    'undefined is not a function!',
+    'sudo make me a sandwich!',
+    'Have you tried turning it off and on again?',
+    'Segfault (core dumped)!',
+  ];
+
+  function randomizeSplash() {
+    var el = document.getElementById('splash-text');
+    if (el) el.textContent = splashes[Math.floor(Math.random() * splashes.length)];
+  }
+
   function init() {
     var overlay = document.getElementById('sub-page-overlay');
     var inner = document.getElementById('sub-page-inner');
@@ -240,6 +373,9 @@ const UI = (function () {
           overlay.classList.add('visible');
           if (page === 'about' && typeof Chatbot !== 'undefined') {
             Chatbot.init();
+          }
+          if (page === 'contact') {
+            initCraftingTable();
           }
         }
       });
@@ -259,6 +395,7 @@ const UI = (function () {
       AudioManager.playClick();
       overlay.classList.remove('visible');
       if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+      randomizeSplash();
     });
 
     // Project view buttons inside sub-pages also play click
@@ -271,6 +408,7 @@ const UI = (function () {
         AudioManager.playClick();
         overlay.classList.remove('visible');
         if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+        randomizeSplash();
       }
       // Server entry selection
       var entry = e.target.closest('.mp-entry');

@@ -78,10 +78,14 @@ var Chatbot = (function () {
 
     function tick() {
       if (idx < text.length) {
-        typed += text.charAt(idx);
+        var ch = text.charAt(idx);
+        typed += ch;
         idx++;
         msg.textContent = typed + '_';
         showCursor = true;
+        if (ch !== ' ' && typeof AudioManager !== 'undefined') {
+          AudioManager.playText();
+        }
         messagesEl.scrollTop = messagesEl.scrollHeight;
         typingTimer = setTimeout(tick, speed);
       } else {
