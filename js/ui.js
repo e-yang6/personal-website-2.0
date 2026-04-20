@@ -416,7 +416,7 @@ const UI = (function () {
     outputWrap.addEventListener('click', function () {
       if (resume.style.visibility !== 'hidden') {
         var bookSound = new Audio('assets/book.mp3');
-        bookSound.volume = 0.5;
+        bookSound.volume = 1;
         bookSound.play();
         var existing = document.getElementById('resume-overlay');
         if (existing) return;
@@ -441,7 +441,7 @@ const UI = (function () {
         ov.addEventListener('click', function (ev) {
           if (ev.target === ov) {
             var closeSound = new Audio('assets/bookclose.mp3');
-            closeSound.volume = 0.5;
+            closeSound.volume = 1;
             closeSound.play();
             ov.classList.remove('visible');
             setTimeout(function () { ov.remove(); }, 500);
