@@ -48,11 +48,24 @@ html, body {
   pointer-events: none;
 }
 
+#splash-screen {
+  flex-direction: column;
+  gap: 0;
+}
+
 #splash-logo {
   width: 340px;
   height: auto;
   opacity: 0.3;
   filter: grayscale(100%) brightness(0.6);
+}
+
+#splash-hint {
+  font-family: 'Minecraftia', monospace;
+  font-size: 10px;
+  color: #333;
+  letter-spacing: 1px;
+  margin-top: -30px;
 }
 
 #panorama-container,
@@ -116,6 +129,46 @@ html, body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+/* ═══════════════════════════════════════
+   CONTACT BAR (top-right icons)
+   ═══════════════════════════════════════ */
+#contact-bar {
+  position: fixed;
+  top: 10px;
+  right: 14px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.contact-bar-label {
+  font-family: 'Minecraftia', monospace;
+  font-size: 10px;
+  color: #aaa;
+  text-shadow: 1px 1px 0px #000;
+  margin-right: 2px;
+}
+
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: #aaa;
+  transition: color 0.15s;
+}
+
+.contact-icon:hover {
+  color: #fff;
+}
+
+.contact-icon svg {
+  width: 100%;
+  height: 100%;
 }
 
 /* ═══════════════════════════════════════
@@ -406,6 +459,138 @@ html, body {
   line-height: 1;
 }
 
+#font-toggle {
+  position: fixed;
+  bottom: 3vh;
+  right: 14px;
+  z-index: 5;
+  height: 36px;
+  width: auto;
+  font-size: 10pt;
+}
+
+#font-toggle .title {
+  padding: 0 14px;
+  padding-top: 0.3em;
+}
+
+html:has(body.readable-font) {
+  font-size: 18px;
+}
+
+body.readable-font *:not(#title-img):not(.ct-ingredient):not(.player-btn):not(svg):not(path) {
+  font-family: 'Segoe UI', Verdana, sans-serif !important;
+}
+
+body.readable-font .mc-button .title,
+body.readable-font .chat-send .title,
+body.readable-font .back-button .title,
+body.readable-font .mp-btn .title {
+  padding-top: 0 !important;
+}
+
+body.readable-font .mc-button {
+  font-size: 22px !important;
+}
+
+body.readable-font #font-toggle {
+  font-size: 13pt !important;
+}
+
+body.readable-font .poem-text {
+  font-size: clamp(17px, 2vw, 24px) !important;
+}
+
+body.readable-font .mp-title {
+  font-size: 26px !important;
+}
+
+body.readable-font .mp-name {
+  font-size: 26px !important;
+}
+
+body.readable-font .mp-motd {
+  font-size: 20px !important;
+}
+
+body.readable-font .mp-players {
+  font-size: 18px !important;
+}
+
+body.readable-font .chat-msg {
+  font-size: 18px !important;
+}
+
+body.readable-font .chat-input {
+  font-size: 16px !important;
+}
+
+body.readable-font .pd-title {
+  font-size: 30px !important;
+}
+
+body.readable-font .pd-desc {
+  font-size: 20px !important;
+}
+
+body.readable-font .pd-skill {
+  font-size: 17px !important;
+}
+
+body.readable-font .pd-date {
+  font-size: 18px !important;
+}
+
+body.readable-font .pd-award {
+  font-size: 15px !important;
+}
+
+body.readable-font .pd-contact-label {
+  font-size: 18px !important;
+}
+
+body.readable-font .pd-contact-value {
+  font-size: 16px !important;
+}
+
+body.readable-font .ct-title {
+  font-size: 20px !important;
+}
+
+body.readable-font .ct-nametag,
+body.readable-font .ct-hint {
+  font-size: 13px !important;
+}
+
+body.readable-font .contact-bar-label {
+  font-size: 13px !important;
+}
+
+body.readable-font #version-text,
+body.readable-font #copyright-text {
+  font-size: clamp(11px, 1.2vw, 16px) !important;
+}
+
+body.readable-font #player-track {
+  font-size: 13px !important;
+}
+
+body.readable-font #player-artist {
+  font-size: 11px !important;
+}
+
+body.readable-font #splash-hint {
+  font-size: 13px !important;
+}
+
+body.readable-font #splash-text {
+  font-size: clamp(14px, 2.2vw, 28px) !important;
+}
+
+body.readable-font .pd-panel * {
+  font-family: 'Segoe UI', Verdana, sans-serif !important;
+}
+
 /* ═══════════════════════════════════════
    SUB-PAGE OVERLAY
    ═══════════════════════════════════════ */
@@ -577,6 +762,19 @@ html, body {
 .poem-text.cyan {
   color: #55ffff;
   text-align: left;
+}
+
+.inline-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: -2px;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+.inline-link:hover {
+  color: #ffff55;
 }
 
 .poem-text.green {
@@ -765,14 +963,104 @@ html, body {
   background: rgba(0, 0, 0, 0.6);
   border-top: none;
   border-bottom: none;
-  padding: 4px 12vw;
+  padding: 4px 8vw;
+  padding-right: calc(8vw + 28px);
+}
+
+.mp-list {
+  scrollbar-width: none;
+}
+
+.mp-list::-webkit-scrollbar {
+  display: none;
+}
+
+.mc-sb-wrapper {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.mc-sb-wrapper .mp-list {
+  flex: 1;
+}
+
+.mc-scrollbar-track {
+  width: 24px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  background: #000;
+}
+
+.mc-sb-btn {
+  width: 24px;
+  height: 24px;
+  background: #C6C6C6;
+  border: 3px solid #555;
+  border-top-color: #FFF;
+  border-left-color: #FFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.mc-sb-btn span {
+  font-size: 8px;
+  color: #3F3F3F;
+  line-height: 1;
+  margin-top: -2px;
+}
+
+.mc-sb-btn:hover {
+  background: #D8D8D8;
+}
+
+.mc-sb-btn:active {
+  background: #AAAAAA;
+  border-color: #FFF;
+  border-top-color: #555;
+  border-left-color: #555;
+}
+
+.mc-sb-rail {
+  flex: 1;
+  background: #1A1A1A;
+  position: relative;
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
+}
+
+.mc-sb-thumb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #C6C6C6;
+  border: 3px solid #555;
+  border-top-color: #FFF;
+  border-left-color: #FFF;
+  cursor: pointer;
+  min-height: 30px;
+}
+
+.mc-sb-thumb:hover {
+  background: #D8D8D8;
+}
+
+.mc-sb-thumb:active {
+  background: #AAAAAA;
 }
 
 .mp-entry {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 14px;
+  gap: 18px;
+  padding: 14px 18px;
   cursor: pointer;
   border: 1px solid transparent;
 }
@@ -784,8 +1072,8 @@ html, body {
 }
 
 .mp-icon {
-  width: 80px;
-  height: 80px;
+  width: 130px;
+  height: 130px;
   flex-shrink: 0;
 }
 
@@ -1073,6 +1361,240 @@ html, body {
   text-align: center;
   margin-top: 6px;
   visibility: visible;
+}
+
+/* ═══════════════════════════════════════
+   PROJECT DETAIL POPUP
+   Minecraft inventory-panel style
+   ═══════════════════════════════════════ */
+.pd-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.pd-overlay.visible {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.pd-panel {
+  background: #C6C6C6;
+  border: 4px solid #555;
+  border-top-color: #FFF;
+  border-left-color: #FFF;
+  width: 660px;
+  max-width: 92vw;
+  min-height: 380px;
+  max-height: 82vh;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.pd-overlay.visible .pd-panel {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.pd-inner {
+  padding: 20px 24px;
+  overflow-y: auto;
+  max-height: 78vh;
+}
+
+.pd-inner::-webkit-scrollbar {
+  width: 8px;
+}
+
+.pd-inner::-webkit-scrollbar-track {
+  background: #8B8B8B;
+}
+
+.pd-inner::-webkit-scrollbar-thumb {
+  background: #555;
+  border: 1px solid #333;
+}
+
+.pd-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.pd-title {
+  font-family: 'Minecraftia', monospace;
+  font-size: 18px;
+  color: #3F3F3F;
+  line-height: 1.4;
+}
+
+.pd-award {
+  font-family: 'Minecraftia', monospace;
+  font-size: 11px;
+  color: #FFAA00;
+  text-shadow: 1px 1px 0px #553300;
+  margin-bottom: 6px;
+}
+
+.pd-close {
+  background: none;
+  border: none;
+  font-family: 'Minecraftia', monospace;
+  font-size: 22px;
+  color: #555;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.pd-close:hover {
+  color: #c00;
+}
+
+.pd-date {
+  font-family: 'Minecraftia', monospace;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 12px;
+}
+
+.pd-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.pd-skill {
+  font-family: 'Minecraftia', monospace;
+  font-size: 12px;
+  color: #FFF;
+  background: #8B8B8B;
+  border: 2px solid #555;
+  border-top-color: #AAA;
+  border-left-color: #AAA;
+  padding: 4px 8px 2px;
+  text-shadow: 1px 1px 0px #000;
+  image-rendering: pixelated;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pd-desc {
+  font-family: 'Minecraftia', monospace;
+  font-size: 14px;
+  color: #3F3F3F;
+  line-height: 2;
+  margin-bottom: 20px;
+}
+
+.pd-view-row {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pd-view-btn {
+  height: 36px !important;
+  width: auto !important;
+  font-size: 10pt !important;
+}
+
+.pd-view-btn .title {
+  padding: 0 20px !important;
+  padding-top: 0.3em !important;
+}
+
+.pd-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.pd-contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: #8B8B8B;
+  border: 2px solid #555;
+  border-top-color: #AAA;
+  border-left-color: #AAA;
+  cursor: pointer;
+}
+
+.pd-contact-item:hover {
+  background: #9A9A9A;
+}
+
+.pd-contact-label {
+  font-family: 'Minecraftia', monospace;
+  font-size: 12px;
+  color: #FFF;
+  text-shadow: 1px 1px 0px #000;
+}
+
+.pd-contact-value {
+  font-family: 'Minecraftia', monospace;
+  font-size: 10px;
+  color: #3F3F3F;
+}
+
+.pd-construction {
+  text-align: center;
+  color: #666;
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+/* ═══════════════════════════════════════
+   RESUME BOOK SLIDE-IN
+   ═══════════════════════════════════════ */
+#resume-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 200;
+  background: rgba(0, 0, 0, 0);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.5s ease;
+}
+
+#resume-overlay.visible {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.resume-book {
+  transform: translateY(110%);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#resume-overlay.visible .resume-book {
+  transform: translateY(0);
+}
+
+.resume-book img {
+  width: 70vw;
+  max-width: 900px;
+  display: block;
+  image-rendering: auto;
+  filter: drop-shadow(0 -4px 30px rgba(0, 0, 0, 0.6));
 }
 
 /* Floating item that follows cursor */
