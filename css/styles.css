@@ -590,9 +590,11 @@ html[data-scene='end'] #panorama-container canvas {
   bottom: auto;
   z-index: 1;
   display: flex;
-  flex-direction: column;
+  /* Bell sits on the visual bottom so the slot anchor stays under the button; caption grows upward */
+  flex-direction: column-reverse;
   align-items: center;
   gap: 8px;
+  min-width: 220px;
   pointer-events: auto;
 }
 
@@ -661,8 +663,12 @@ html[data-scene='end'] #panorama-container canvas {
   color: #ccc;
   text-shadow: 1px 1px 0 #000;
   text-align: center;
+  width: 100%;
   max-width: 220px;
   line-height: 1.35;
+  /* Keeps the bell from nudging when copy wraps to a different number of lines */
+  min-height: calc(1.35em * 2);
+  box-sizing: border-box;
 }
 
 html:has(body.readable-font) {
