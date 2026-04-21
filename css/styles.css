@@ -613,19 +613,37 @@ html[data-scene='end'] #panorama-container canvas {
 /* ═══════════════════════════════════════
    SITE BELL (gif: static first frame, click to play)
    ═══════════════════════════════════════ */
+/*
+ * Caption text must not reflow the bell: shrink-to-fit slot width + flex column used to
+ * move the graphic when copy changed (e.g. rate limit). Button is pinned; caption sits above.
+ */
 .bell-widget {
   position: relative;
-  left: auto;
-  bottom: auto;
   z-index: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  width: 220px;
+  min-height: 104px;
+  box-sizing: border-box;
   pointer-events: auto;
 }
 
+.bell-caption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 104px;
+  text-align: center;
+  font-family: 'Minecraftia', monospace;
+  font-size: clamp(10px, 1.15vw, 13px);
+  color: #ccc;
+  text-shadow: 1px 1px 0 #000;
+  line-height: 1.35;
+}
+
 .bell-button {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
   display: block;
   padding: 0;
   margin: 0;
@@ -682,16 +700,6 @@ html[data-scene='end'] #panorama-container canvas {
 
 .bell-gif[hidden] {
   display: none !important;
-}
-
-.bell-caption {
-  font-family: 'Minecraftia', monospace;
-  font-size: clamp(10px, 1.15vw, 13px);
-  color: #ccc;
-  text-shadow: 1px 1px 0 #000;
-  text-align: center;
-  max-width: 220px;
-  line-height: 1.35;
 }
 
 html:has(body.readable-font) {
