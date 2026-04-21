@@ -13,7 +13,7 @@ const AudioManager = (function () {
 
     if (scene === 'nether') {
       return [
-        { title: 'Pigstep', artist: 'Lena Raine', src: b + '/pigstep.mp3' },
+        { title: 'Pigstep', artist: 'Lena Raine', src: b + '/pigstep.mp3', gain: 0.18 },
         { title: 'Concrete Halls', artist: 'C418', src: b + '/concretehalls.mp3' },
         { title: 'Dead Voxel', artist: 'C418', src: b + '/deadvoxel.mp3' },
         { title: 'Ballad of the Cats', artist: 'C418', src: b + '/balladofthecats.mp3' },
@@ -100,6 +100,15 @@ const AudioManager = (function () {
     }
   }
 
+  function trackGain() {
+    var g = playlist[currentIndex].gain;
+    return typeof g === 'number' ? g : 1;
+  }
+
+  function effectiveMusicVolume() {
+    return targetVolume * trackGain();
+  }
+
   function loadTrack(index) {
     currentIndex = index;
     if (currentIndex < 0) currentIndex = playlist.length - 1;
@@ -114,10 +123,14 @@ const AudioManager = (function () {
       isPlaying = true;
       musicStarted = true;
       updatePlayButton();
-      if (bgMusic.volume < targetVolume) {
+      var cap = effectiveMusicVolume();
+      if (bgMusic.volume > cap) {
+        bgMusic.volume = cap;
+      } else if (bgMusic.volume < cap) {
         var fadeIn = setInterval(function () {
-          if (bgMusic.volume < targetVolume) {
-            bgMusic.volume = Math.min(bgMusic.volume + 0.01, targetVolume);
+          cap = effectiveMusicVolume();
+          if (bgMusic.volume < cap) {
+            bgMusic.volume = Math.min(bgMusic.volume + 0.01, cap);
           } else {
             clearInterval(fadeIn);
           }
@@ -187,7 +200,7 @@ const AudioManager = (function () {
   if (volumeSlider) {
     volumeSlider.addEventListener('input', function () {
       targetVolume = volumeSlider.value / 100;
-      bgMusic.volume = targetVolume;
+      bgMusic.volume = effectiveMusicVolume();
       clickSound.volume = targetVolume;
       bellSound.volume = Math.min(1, targetVolume * 1.1);
       textVolume = targetVolume * 0.4;
