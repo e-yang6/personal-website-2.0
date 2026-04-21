@@ -297,6 +297,21 @@ const UI = (function () {
     }
   };
 
+  function syncMusicPlayerForSurface() {
+    var mp = document.getElementById('music-player');
+    if (!mp) return;
+    var sub = document.getElementById('sub-page-overlay');
+    var subOpen = sub && sub.classList.contains('visible');
+    var pd = document.getElementById('pd-overlay');
+    var popupUp = !!(pd && pd.parentNode);
+    var mainMenuOnly = !subOpen && !popupUp;
+    if (mainMenuOnly) {
+      mp.classList.add('visible');
+    } else {
+      mp.classList.remove('visible');
+    }
+  }
+
   function showPopup(html) {
     var existing = document.getElementById('pd-overlay');
     if (existing) existing.remove();
@@ -304,16 +319,23 @@ const UI = (function () {
     wrapper.innerHTML = html;
     document.body.appendChild(wrapper.firstChild);
     var pdOverlay = document.getElementById('pd-overlay');
+    syncMusicPlayerForSurface();
     requestAnimationFrame(function () { pdOverlay.classList.add('visible'); });
     document.getElementById('pd-close').addEventListener('click', function (ev) {
       ev.stopPropagation();
       pdOverlay.classList.remove('visible');
-      setTimeout(function () { pdOverlay.remove(); }, 200);
+      setTimeout(function () {
+        pdOverlay.remove();
+        syncMusicPlayerForSurface();
+      }, 200);
     });
     pdOverlay.addEventListener('click', function (ev) {
       if (ev.target === pdOverlay) {
         pdOverlay.classList.remove('visible');
-        setTimeout(function () { pdOverlay.remove(); }, 200);
+        setTimeout(function () {
+          pdOverlay.remove();
+          syncMusicPlayerForSurface();
+        }, 200);
       }
     });
   }
@@ -356,7 +378,7 @@ const UI = (function () {
     function pickUp(slot, e) {
       var img = slot.querySelector('.ct-ingredient');
       if (!img) return;
-      held = { img: img, slot: slot, name: slot.getAttribute('data-name') };
+      held = { img: img, slot: slot, name: slot.getAttribute('data-name') || '' };
       slot.classList.remove('filled');
       slot.removeAttribute('data-name');
       img.style.display = 'none';
@@ -374,6 +396,8 @@ const UI = (function () {
     function putDown(targetSlot) {
       if (!held) return;
       if (targetSlot && targetSlot !== held.slot && !targetSlot.classList.contains('filled')) {
+        held.slot.classList.remove('filled');
+        held.slot.removeAttribute('data-name');
         targetSlot.appendChild(held.img);
         targetSlot.classList.add('filled');
         targetSlot.setAttribute('data-name', held.name);
@@ -385,6 +409,49 @@ const UI = (function () {
       held = null;
       floater.style.display = 'none';
       floater.innerHTML = '';
+      checkRecipe();
+    }
+
+    /** Place held stack in slot; item that was there is now on the cursor (Minecraft style). */
+    function exchangeWithHeld(targetSlot, e) {
+      if (!held || targetSlot === held.slot) return;
+      var targetImg = targetSlot.querySelector('.ct-ingredient');
+      if (!targetImg) return;
+
+      var sourceSlot = held.slot;
+      var heldImg = held.img;
+      var heldName = held.name;
+      var targetName = targetSlot.getAttribute('data-name') || '';
+
+      floater.innerHTML = '';
+      floater.style.display = 'block';
+
+      heldImg.style.display = '';
+
+      targetSlot.classList.remove('filled');
+      targetSlot.removeAttribute('data-name');
+      targetImg.remove();
+
+      targetSlot.appendChild(heldImg);
+      targetSlot.classList.add('filled');
+      targetSlot.setAttribute('data-name', heldName);
+
+      sourceSlot.appendChild(targetImg);
+      targetImg.style.display = 'none';
+      if (targetName) {
+        sourceSlot.setAttribute('data-name', targetName);
+      } else {
+        sourceSlot.removeAttribute('data-name');
+      }
+
+      var clone = document.createElement('img');
+      clone.className = 'ct-ingredient';
+      clone.src = targetImg.src;
+      floater.appendChild(clone);
+      floater.style.left = e.clientX + 'px';
+      floater.style.top = e.clientY + 'px';
+
+      held = { img: targetImg, slot: sourceSlot, name: targetName };
       checkRecipe();
     }
 
@@ -401,12 +468,14 @@ const UI = (function () {
       e.preventDefault();
       e.stopPropagation();
       if (held) {
-        if (!slot.classList.contains('filled')) {
-          putDown(slot);
-        } else if (slot === held.slot) {
+        if (slot === held.slot) {
           putDown(null);
+        } else if (!slot.classList.contains('filled')) {
+          putDown(slot);
+        } else {
+          exchangeWithHeld(slot, e);
         }
-      } else if (slot.classList.contains('filled')) {
+      } else if (slot.classList.contains('filled') || slot.querySelector('.ct-ingredient')) {
         pickUp(slot, e);
       }
     });
@@ -472,6 +541,43 @@ const UI = (function () {
     });
   }
 
+  function clearResumeBellSlot() {
+    if (typeof Bell !== 'undefined' && Bell.destroy) Bell.destroy();
+    var slot = document.getElementById('sub-page-bell-slot');
+    if (slot) {
+      slot.innerHTML = '';
+      slot.classList.remove('sub-page-bell-slot--visible');
+      slot.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function resumeBellMarkup() {
+    return (
+      '<div id="bell-widget" class="bell-widget" aria-live="polite">' +
+        '<button type="button" id="bell-button" class="bell-button" aria-label="Ring the bell" title="Ring the bell">' +
+          '<span class="bell-surface">' +
+            '<canvas id="bell-canvas" width="96" height="96"></canvas>' +
+            '<img id="bell-gif" class="bell-gif" src="" alt="" decoding="async" hidden />' +
+          '</span>' +
+        '</button>' +
+        '<div class="bell-caption">This bell has been rung <span id="bell-count">—</span> times</div>' +
+      '</div>'
+    );
+  }
+
+  function mountResumeBell() {
+    var slot = document.getElementById('sub-page-bell-slot');
+    if (!slot) return;
+    slot.innerHTML = resumeBellMarkup();
+    slot.classList.add('sub-page-bell-slot--visible');
+    slot.setAttribute('aria-hidden', 'false');
+    try {
+      if (typeof Bell !== 'undefined') Bell.init();
+    } catch (err) {
+      console.warn('Bell widget failed:', err);
+    }
+  }
+
   var splashes = [
     'Ports forwarded!',
     'Now with 100% more CSS!',
@@ -499,7 +605,7 @@ const UI = (function () {
       AudioManager.playClick();
       document.body.classList.toggle('readable-font');
       var isOn = document.body.classList.contains('readable-font');
-      fontToggle.querySelector('.title').textContent = 'Readable Font: ' + (isOn ? 'On' : 'Off');
+      fontToggle.querySelector('.title').textContent = 'Friendly Font: ' + (isOn ? 'On' : 'Off');
     });
 
     // Sub-page buttons
@@ -508,6 +614,8 @@ const UI = (function () {
         AudioManager.playClick();
         var page = btn.getAttribute('data-page');
         if (pages[page]) {
+          if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+          clearResumeBellSlot();
           inner.innerHTML = pages[page]();
           overlay.classList.add('visible');
           if (page === 'about' && typeof Chatbot !== 'undefined') {
@@ -515,10 +623,12 @@ const UI = (function () {
           }
           if (page === 'contact') {
             initCraftingTable();
+            mountResumeBell();
           }
           if (page === 'projects') {
             initMcScrollbar(inner.querySelector('.mp-list'));
           }
+          syncMusicPlayerForSurface();
         }
       });
     });
@@ -546,7 +656,9 @@ const UI = (function () {
       AudioManager.playClick();
       overlay.classList.remove('visible');
       if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+      clearResumeBellSlot();
       randomizeSplash();
+      syncMusicPlayerForSurface();
     });
 
     // Project view buttons inside sub-pages also play click
@@ -559,7 +671,9 @@ const UI = (function () {
         AudioManager.playClick();
         overlay.classList.remove('visible');
         if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+        clearResumeBellSlot();
         randomizeSplash();
+        syncMusicPlayerForSurface();
       }
       var entry = e.target.closest('.mp-entry');
       if (entry) {
@@ -651,5 +765,5 @@ const UI = (function () {
     });
   }
 
-  return { init: init, initMcScrollbar: initMcScrollbar };
+  return { init: init, initMcScrollbar: initMcScrollbar, syncMusicPlayerForSurface: syncMusicPlayerForSurface };
 })();

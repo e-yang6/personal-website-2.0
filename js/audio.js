@@ -33,6 +33,10 @@ const AudioManager = (function () {
   clickSound.preload = 'auto';
   clickSound.volume = 0.15;
 
+  var bellSound = new Audio('assets/bell.mp3');
+  bellSound.preload = 'auto';
+  bellSound.volume = 0.22;
+
   var textSound = new Audio('assets/text.mp3');
   textSound.preload = 'auto';
   var textVolume = 0.06;
@@ -154,6 +158,7 @@ const AudioManager = (function () {
       targetVolume = volumeSlider.value / 100;
       bgMusic.volume = targetVolume;
       clickSound.volume = targetVolume;
+      bellSound.volume = Math.min(1, targetVolume * 1.1);
       textVolume = targetVolume * 0.4;
     });
   }
@@ -172,6 +177,14 @@ const AudioManager = (function () {
   function playClick() {
     clickSound.currentTime = 0;
     clickSound.play().catch(function () {});
+  }
+
+  function playBell() {
+    var clone = bellSound.cloneNode();
+    clone.volume = bellSound.volume;
+    /** Slight pitch wobble (also changes speed a hair, same as a tape varispeed). */
+    clone.playbackRate = 0.94 + Math.random() * 0.12;
+    clone.play().catch(function () {});
   }
 
   function playText() {
@@ -206,6 +219,7 @@ const AudioManager = (function () {
 
   return {
     playClick: playClick,
+    playBell: playBell,
     playText: playText,
     startMusic: startMusic,
     togglePlay: togglePlay,

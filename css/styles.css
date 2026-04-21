@@ -70,17 +70,19 @@ html, body {
 
 #panorama-container,
 #vignette,
-#main-menu,
-#music-player {
+#main-menu {
   opacity: 0;
   transition: opacity 1.2s ease;
 }
 
 #panorama-container.visible,
 #vignette.visible,
-#main-menu.visible,
-#music-player.visible {
+#main-menu.visible {
   opacity: 1;
+}
+
+#music-player:not(.visible) {
+  pointer-events: none;
 }
 
 /* ═══════════════════════════════════════
@@ -320,6 +322,12 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  opacity: 0;
+  transition: none;
+}
+
+#music-player.visible {
+  opacity: 1;
 }
 
 #player-top {
@@ -466,12 +474,102 @@ html, body {
   z-index: 5;
   height: 36px;
   width: auto;
-  font-size: 10pt;
+  font-size: 13pt;
+  font-family: 'Segoe UI', Verdana, sans-serif;
 }
 
 #font-toggle .title {
   padding: 0 14px;
-  padding-top: 0.3em;
+  padding-top: 0;
+  font-family: 'Segoe UI', Verdana, sans-serif;
+}
+
+/* ═══════════════════════════════════════
+   SITE BELL (gif: static first frame, click to play)
+   ═══════════════════════════════════════ */
+.bell-widget {
+  position: relative;
+  left: auto;
+  bottom: auto;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.bell-button {
+  display: block;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  line-height: 0;
+  box-shadow: none;
+}
+
+.bell-surface {
+  position: relative;
+  display: block;
+  width: 96px;
+  height: 96px;
+}
+
+.bell-surface #bell-canvas,
+.bell-surface .bell-gif {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.bell-button:hover {
+  background: transparent;
+  filter: brightness(1.08);
+}
+
+.bell-button:active {
+  transform: translateY(1px);
+}
+
+.bell-button--playing {
+  opacity: 0.95;
+}
+
+#bell-canvas {
+  display: block;
+  max-width: 96px;
+  max-height: 96px;
+  width: auto;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.bell-gif {
+  display: block;
+  max-width: 96px;
+  max-height: 96px;
+  width: auto;
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+.bell-gif[hidden] {
+  display: none !important;
+}
+
+.bell-caption {
+  font-family: 'Minecraftia', monospace;
+  font-size: clamp(10px, 1.15vw, 13px);
+  color: #ccc;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+  max-width: 220px;
+  line-height: 1.35;
 }
 
 html:has(body.readable-font) {
@@ -664,6 +762,25 @@ body.readable-font .pd-panel * {
   text-shadow: 1px 1px 0px #000;
   line-height: 1.6;
   margin-top: 1vh;
+}
+
+/* Bell on dirt background (Resume overlay only when visible) */
+.sub-page-bell-slot {
+  display: none;
+  position: fixed;
+  z-index: 11;
+  right: max(2vw, 14px);
+  bottom: max(3vh, 20px);
+  pointer-events: none;
+}
+
+.sub-page-bell-slot--visible {
+  display: block;
+  pointer-events: auto;
+}
+
+.sub-page-bell-slot .bell-widget {
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.55));
 }
 
 #sub-page-inner:has(.mp-page) {
@@ -1301,6 +1418,11 @@ body.readable-font .pd-panel * {
   border-bottom-color: #FFF;
   cursor: pointer;
   position: relative;
+  transition: background-color 0.07s ease;
+}
+
+.ct-grid-slot:hover {
+  background-color: #6e6e6e;
 }
 
 .ct-grid-slot-lg {

@@ -31,7 +31,7 @@
     document.getElementById('panorama-container').classList.add('visible');
     document.getElementById('vignette').classList.add('visible');
     document.getElementById('main-menu').classList.add('visible');
-    document.getElementById('music-player').classList.add('visible');
+    UI.syncMusicPlayerForSurface();
   }, 1000);
 
   // Keep trying to start music on every interaction until it works

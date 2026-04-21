@@ -208,7 +208,7 @@ var Chatbot = (function () {
       width: container.clientWidth,
       height: container.clientHeight,
       skin: 'assets/skin.png',
-      model: 'slim',
+      model: 'default',
     });
 
     skinViewer.loadCape('assets/cape.png');
