@@ -7,19 +7,13 @@ var Chatbot = (function () {
   var cursorInterval = null;
   var skinAnimRandomTimer = null;
   var chatHistory = [];
+  /** When true (crouch/hit “responding”), head/body blend toward facing straight forward. */
+  var skinResponding = false;
+  /** 1 = full cursor look, 0 = forward; lerped for smooth transitions. */
+  var skinLookInfluence = 1;
 
-  var fallbackResponses = [
-    'I love working with JavaScript and Three.js the most!',
-    'My favorite project so far is this Minecraft portfolio.',
-    'I started coding when I was in high school.',
-    'I\'m currently studying Computer Science at university.',
-    'I built this whole site from scratch with HTML, CSS, and JavaScript.',
-    'Feel free to check out my projects page for more of my work!',
-  ];
-
-  function getFallback() {
-    return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
-  }
+  var chatApiErrorMessage =
+    'Sorry, chat isn\'t working right now. Use the preset questions to learn more!';
 
   async function getGeminiResponse(userMessage) {
     chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
@@ -41,7 +35,7 @@ var Chatbot = (function () {
     } catch (err) {
       console.warn('Chat API error:', err);
       chatHistory.pop();
-      return getFallback();
+      return chatApiErrorMessage;
     }
   }
 
@@ -136,6 +130,7 @@ var Chatbot = (function () {
   }
 
   function setSkinIdleAnimation() {
+    skinResponding = false;
     clearSkinAnimRandomizer();
     if (!skinViewer || typeof skinview3d === 'undefined') return;
     skinViewer.animation = new skinview3d.IdleAnimation();
@@ -145,6 +140,7 @@ var Chatbot = (function () {
 
   function setSkinChatRespondAnimation() {
     if (!skinViewer || typeof skinview3d === 'undefined' || !skinview3d.CrouchAnimation) return;
+    skinResponding = true;
     var anim = new skinview3d.CrouchAnimation();
     anim.speed = 0.75 + Math.random() * 1.15;
     anim.addHitAnimation(0.65 + Math.random() * 1.5);
@@ -243,11 +239,14 @@ var Chatbot = (function () {
 
     function updateLook() {
       if (!skinViewer) return;
-      var bodyTargetY = targetX * 0.2;
+      var influenceTarget = skinResponding ? 0 : 1;
+      skinLookInfluence += (influenceTarget - skinLookInfluence) * 0.14;
+      var bodyTargetY = skinLookInfluence * (targetX * 0.2);
       bodyCurrent += (bodyTargetY - bodyCurrent) * 0.06;
       skinViewer.playerObject.rotation.y = bodyCurrent;
-      skinViewer.playerObject.skin.head.rotation.y = targetX * 0.8 - bodyCurrent;
-      skinViewer.playerObject.skin.head.rotation.x = targetY * 0.5;
+      skinViewer.playerObject.skin.head.rotation.y =
+        skinLookInfluence * (targetX * 0.8 - bodyCurrent);
+      skinViewer.playerObject.skin.head.rotation.x = skinLookInfluence * (targetY * 0.5);
       requestAnimationFrame(updateLook);
     }
     requestAnimationFrame(updateLook);
@@ -274,6 +273,8 @@ var Chatbot = (function () {
     }
     chatHistory = [];
     isSending = false;
+    skinResponding = false;
+    skinLookInfluence = 1;
   }
 
   return {
