@@ -1,6 +1,23 @@
+var checkRedisRateLimit = require('../lib/redisRateLimit').checkRedisRateLimit;
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  try {
+    var rl = await checkRedisRateLimit({
+      req: req,
+      prefix: 'chat',
+      windowSec: 60,
+      max: 12,
+    });
+    if (!rl.allowed) {
+      res.setHeader('Retry-After', '60');
+      return res.status(429).json({ error: 'rate_limited', retryAfterSec: 60 });
+    }
+  } catch (e) {
+    console.warn('Chat rate limit check failed:', e.message);
   }
 
   var apiKey = process.env.GEMINI_API_KEY;

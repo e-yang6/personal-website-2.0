@@ -8,6 +8,7 @@
  */
 var fs = require('fs');
 var path = require('path');
+var checkRedisRateLimit = require('../lib/redisRateLimit').checkRedisRateLimit;
 
 var KEY = 'portfolio-bell-total';
 var DATA_FILE = path.join(__dirname, '..', 'data', 'bell-count.json');
@@ -95,6 +96,24 @@ module.exports = async function handler(req, res) {
       return res.status(200).json({ count: count });
     }
     if (req.method === 'POST') {
+      try {
+        var rl = await checkRedisRateLimit({
+          req: req,
+          prefix: 'bell',
+          windowSec: 60,
+          max: 20,
+        });
+        if (!rl.allowed) {
+          res.setHeader('Retry-After', '60');
+          return res.status(429).json({
+            count: null,
+            error: 'rate_limited',
+            retryAfterSec: 60,
+          });
+        }
+      } catch (e) {
+        console.warn('Bell rate limit check failed:', e.message);
+      }
       var next = await incrCount();
       if (next === null) {
         return res.status(503).json({ count: null, error: 'counter_unavailable' });

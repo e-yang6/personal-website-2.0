@@ -2,10 +2,26 @@
  * ui.js — Button interactions, sub-page transitions, content
  */
 const UI = (function () {
-  var resumePdfUrl =
-    'https://raw.githubusercontent.com/e-yang6/personal-resume/main/Ethan_Yang_Resume.pdf';
+  /**
+   * Same PDF as raw GitHub, but served from /api/resume with Content-Disposition: inline
+   * so a new tab opens the built-in PDF viewer instead of downloading (Vercel or Node with /api).
+   */
+  var resumeOpenPath = '/api/resume';
   var resumePreviewImgUrl =
     'https://raw.githubusercontent.com/e-yang6/personal-resume/main/Ethan_Yang_Resume_Preview.jpg';
+
+  function openResumeInNewTab() {
+    var a = document.createElement('a');
+    a.href =
+      typeof window !== 'undefined' && window.location && window.location.origin
+        ? new URL(resumeOpenPath, window.location.origin).href
+        : resumeOpenPath;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 
   var signalBars =
     '<div class="mp-signal"><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div></div>';
@@ -512,18 +528,18 @@ const UI = (function () {
           requestAnimationFrame(function () { ov.classList.add('visible'); });
         });
         setTimeout(function () {
-          window.open(resumePdfUrl, '_blank');
+          openResumeInNewTab();
         }, 1500);
         var bookEl = ov.querySelector('.resume-book');
         bookEl.addEventListener('click', function (ev) {
           ev.stopPropagation();
-          window.open(resumePdfUrl, '_blank');
+          openResumeInNewTab();
         });
         bookEl.addEventListener('keydown', function (ev) {
           if (ev.key !== 'Enter' && ev.key !== ' ') return;
           ev.preventDefault();
           ev.stopPropagation();
-          window.open(resumePdfUrl, '_blank');
+          openResumeInNewTab();
         });
         bookEl.setAttribute('role', 'button');
         bookEl.setAttribute('tabindex', '0');

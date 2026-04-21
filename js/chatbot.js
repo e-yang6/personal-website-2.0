@@ -3,6 +3,7 @@
  */
 var Chatbot = (function () {
   var skinViewer = null;
+  var skinResizeObserver = null;
   var typingTimer = null;
   var cursorInterval = null;
   var skinAnimRandomTimer = null;
@@ -141,6 +142,19 @@ var Chatbot = (function () {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ messages: chatHistory }),
       });
+
+      if (res.status === 429) {
+        chatHistory.pop();
+        var lim = await res.json().catch(function () {
+          return {};
+        });
+        var sec = typeof lim.retryAfterSec === 'number' ? lim.retryAfterSec : 60;
+        return (
+          'You are sending messages a bit fast. Give it about ' +
+          String(sec) +
+          ' seconds, then try again.'
+        );
+      }
 
       if (!res.ok) throw new Error('API returned ' + res.status);
 
@@ -344,6 +358,18 @@ var Chatbot = (function () {
 
     container.appendChild(skinViewer.canvas);
 
+    if (typeof ResizeObserver !== 'undefined') {
+      skinResizeObserver = new ResizeObserver(function () {
+        if (!skinViewer) return;
+        var w = container.clientWidth;
+        var h = container.clientHeight;
+        if (w < 1 || h < 1) return;
+        skinViewer.width = w;
+        skinViewer.height = h;
+      });
+      skinResizeObserver.observe(container);
+    }
+
     var targetX = 0;
     var targetY = 0;
     var bodyCurrent = 0;
@@ -386,6 +412,12 @@ var Chatbot = (function () {
     if (cursorInterval) {
       clearInterval(cursorInterval);
       cursorInterval = null;
+    }
+    if (skinResizeObserver) {
+      try {
+        skinResizeObserver.disconnect();
+      } catch (e) {}
+      skinResizeObserver = null;
     }
     if (skinViewer) {
       try { skinViewer.dispose(); } catch (e) {}
