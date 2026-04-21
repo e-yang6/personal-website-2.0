@@ -570,17 +570,17 @@ const UI = (function () {
   function resumeBellMarkup() {
     return (
       '<div id="bell-widget" class="bell-widget" aria-live="polite">' +
+        '<div class="bell-caption">' +
+          '<span id="bell-caption-lead">This bell has been rung </span>' +
+          '<span id="bell-count">—</span>' +
+          '<span id="bell-caption-tail"> times</span>' +
+        '</div>' +
         '<button type="button" id="bell-button" class="bell-button" aria-label="Ring the bell" title="Ring the bell">' +
           '<span class="bell-surface">' +
             '<canvas id="bell-canvas" width="96" height="96"></canvas>' +
             '<img id="bell-gif" class="bell-gif" src="" alt="" decoding="async" hidden />' +
           '</span>' +
         '</button>' +
-        '<div class="bell-caption">' +
-          '<span id="bell-caption-lead">This bell has been rung </span>' +
-          '<span id="bell-count">—</span>' +
-          '<span id="bell-caption-tail"> times</span>' +
-        '</div>' +
       '</div>'
     );
   }

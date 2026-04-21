@@ -81,7 +81,10 @@
         <span class="title"><img src="https://i.ibb.co/99187Lk/lang.png" alt="Link"></span>
       </button>
     </div>
+  </div>
 
+  <!-- Outside #main-menu so fixed positioning uses the viewport (opacity on main-menu breaks fixed children). -->
+  <div id="menu-dock" class="menu-dock">
     <div id="menu-footer" class="menu-footer">
       <div id="scene-switch" class="scene-switch scene-switch--menu" role="group" aria-label="World scene">
         <div class="scene-switch-title">World</div>
@@ -96,8 +99,7 @@
         <span id="copyright-text">Made with &lt;3 using HTML, CSS, and Three.js. Not affiliated with Mojang.</span>
       </div>
     </div>
-
-    <button class="mc-button" id="font-toggle"><span class="title">Friendly Font: Off</span></button>
+    <button class="mc-button" id="font-toggle" type="button"><span class="title">Friendly Font: Off</span></button>
   </div>
 
   <!-- Sub-page overlay -->

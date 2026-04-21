@@ -31,6 +31,8 @@
     document.getElementById('panorama-container').classList.add('visible');
     document.getElementById('vignette').classList.add('visible');
     document.getElementById('main-menu').classList.add('visible');
+    var dock = document.getElementById('menu-dock');
+    if (dock) dock.classList.add('visible');
     UI.syncMusicPlayerForSurface();
     var mp = document.getElementById('music-player');
     if (mp && mp.classList.contains('visible')) {

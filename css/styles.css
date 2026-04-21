@@ -477,19 +477,35 @@ html[data-scene='end'] #panorama-container canvas {
 }
 
 /* ═══════════════════════════════════════
-   MENU FOOTER (world scene + version strip, flush bottom)
+   MENU DOCK (footer strip + friendly font, pinned to viewport bottom)
    ═══════════════════════════════════════ */
-#menu-footer {
+.menu-dock {
   position: fixed;
   left: 0;
+  right: 0;
   bottom: 0;
-  width: 100%;
   z-index: 5;
+  display: block;
+  padding: 0 0 max(0.5vh, env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.menu-dock.visible {
+  opacity: 1;
+}
+
+/* ═══════════════════════════════════════
+   MENU FOOTER (world scene + version strip)
+   ═══════════════════════════════════════ */
+#menu-footer {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  padding: 6px 0.8vw max(0.5vh, env(safe-area-inset-bottom, 0px));
+  padding: 6px 0.8vw 0;
   pointer-events: none;
 }
 
@@ -506,7 +522,8 @@ html[data-scene='end'] #panorama-container canvas {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0;
+  padding: 0 0.8vw;
+  box-sizing: border-box;
 }
 
 .scene-switch.scene-switch--menu {
@@ -563,16 +580,23 @@ html[data-scene='end'] #panorama-container canvas {
   line-height: 1;
 }
 
+/*
+ * Fixed to the viewport (not flex-placed): when #font-toggle stayed a flex item in
+ * .menu-dock, it could end up separated from the footer with a huge empty gap.
+ * bottom: distance from viewport bottom to the button's bottom edge — keep in sync
+ * with footer height (world row + version line + safe area).
+ */
 #font-toggle {
   position: fixed;
-  /* Sits above the menu footer (world row + version line + safe area). */
-  bottom: calc(7.25rem + env(safe-area-inset-bottom, 0px));
-  right: 14px;
-  z-index: 5;
+  right: max(14px, 2vw);
+  bottom: calc(3.15rem + max(6px, env(safe-area-inset-bottom, 0px)));
+  z-index: 6;
   height: 36px;
   width: auto;
+  max-width: min(420px, 92vw);
   font-size: 13pt;
   font-family: 'Segoe UI', Verdana, sans-serif;
+  pointer-events: auto;
 }
 
 #font-toggle .title {
@@ -590,11 +614,9 @@ html[data-scene='end'] #panorama-container canvas {
   bottom: auto;
   z-index: 1;
   display: flex;
-  /* Bell sits on the visual bottom so the slot anchor stays under the button; caption grows upward */
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   gap: 8px;
-  min-width: 220px;
   pointer-events: auto;
 }
 
@@ -663,12 +685,8 @@ html[data-scene='end'] #panorama-container canvas {
   color: #ccc;
   text-shadow: 1px 1px 0 #000;
   text-align: center;
-  width: 100%;
   max-width: 220px;
   line-height: 1.35;
-  /* Keeps the bell from nudging when copy wraps to a different number of lines */
-  min-height: calc(1.35em * 2);
-  box-sizing: border-box;
 }
 
 html:has(body.readable-font) {
