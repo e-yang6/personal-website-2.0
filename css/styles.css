@@ -2012,7 +2012,7 @@ html[data-scene='end'] .chat-msg.user {
 }
 
 #resume-overlay.visible .resume-book {
-  transform: translateY(0);
+  transform: translateY(clamp(20px, 3.5vh, 48px));
 }
 
 .resume-book-composite {

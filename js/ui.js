@@ -576,7 +576,11 @@ const UI = (function () {
             '<img id="bell-gif" class="bell-gif" src="" alt="" decoding="async" hidden />' +
           '</span>' +
         '</button>' +
-        '<div class="bell-caption">This bell has been rung <span id="bell-count">—</span> times</div>' +
+        '<div class="bell-caption">' +
+          '<span id="bell-caption-lead">This bell has been rung </span>' +
+          '<span id="bell-count">—</span>' +
+          '<span id="bell-caption-tail"> times</span>' +
+        '</div>' +
       '</div>'
     );
   }

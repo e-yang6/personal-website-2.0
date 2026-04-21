@@ -25,6 +25,8 @@ var Bell = (function () {
   /** Lower = stricter match (0.04 ~= 4% sampled pixels differ). */
   var LOOP_MATCH_MAX = 0.04;
 
+  var rateLimitResetTimer = null;
+
   var state = {
     buf: null,
     /** Incremented on each ring; animations compare and bail if stale. */
@@ -47,16 +49,51 @@ var Bell = (function () {
     return document.getElementById(id);
   }
 
+  function clearRateLimitChillTimer() {
+    if (rateLimitResetTimer != null) {
+      clearTimeout(rateLimitResetTimer);
+      rateLimitResetTimer = null;
+    }
+  }
+
+  function setBellCaptionRateLimitedMode(on) {
+    var lead = document.getElementById('bell-caption-lead');
+    var tail = document.getElementById('bell-caption-tail');
+    if (lead) lead.style.display = on ? 'none' : '';
+    if (tail) tail.style.display = on ? 'none' : '';
+  }
+
+  function showRateLimitedChill(retryAfterSec) {
+    var el = $('bell-count');
+    if (!el) return;
+    clearRateLimitChillTimer();
+    setBellCaptionRateLimitedMode(true);
+    el.textContent = 'chill bruh';
+    var sec =
+      typeof retryAfterSec === 'number' && !isNaN(retryAfterSec) && retryAfterSec > 0
+        ? Math.ceil(retryAfterSec)
+        : 60;
+    el.setAttribute('title', 'Slow down! Try again in about ' + String(sec) + ' seconds.');
+    rateLimitResetTimer = setTimeout(function () {
+      rateLimitResetTimer = null;
+      refreshCount();
+    }, sec * 1000);
+  }
+
   function setCountText(n) {
     var el = $('bell-count');
     if (!el) return;
-    if (n == null || typeof n !== 'number') {
-      el.textContent = '—';
-      el.setAttribute('title', 'Total rings when the counter API is running');
+    if (typeof n === 'number') {
+      clearRateLimitChillTimer();
+      setBellCaptionRateLimitedMode(false);
+      el.textContent = String(n);
+      el.removeAttribute('title');
       return;
     }
-    el.textContent = String(n);
-    el.removeAttribute('title');
+    clearRateLimitChillTimer();
+    setBellCaptionRateLimitedMode(false);
+    el.textContent = '—';
+    el.setAttribute('title', 'Total rings when the counter API is running');
   }
 
   async function refreshCount() {
@@ -74,7 +111,13 @@ var Bell = (function () {
   async function postRing() {
     try {
       var res = await fetch('/api/bell', { method: 'POST' });
-      var data = await res.json();
+      var data = await res.json().catch(function () {
+        return {};
+      });
+      if (res.status === 429 && data.error === 'rate_limited') {
+        showRateLimitedChill(data.retryAfterSec);
+        return;
+      }
       if (res.ok && typeof data.count === 'number') {
         setCountText(data.count);
         return;
@@ -410,6 +453,7 @@ var Bell = (function () {
   }
 
   function destroy() {
+    clearRateLimitChillTimer();
     clearRingAnimTimer();
     state.ringGen++;
     if (state.mountedBellBtn && state.onBellClick) {
