@@ -1397,6 +1397,9 @@ body.readable-font .pd-panel * {
   transform: scale(0.9);
   opacity: 0;
   transition: transform 0.2s ease, opacity 0.2s ease;
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: auto;
 }
 
 .pd-overlay.visible .pd-panel {
@@ -1436,6 +1439,7 @@ body.readable-font .pd-panel * {
   font-size: 18px;
   color: #3F3F3F;
   line-height: 1.4;
+  cursor: text;
 }
 
 .pd-award {
@@ -1456,6 +1460,8 @@ body.readable-font .pd-panel * {
   padding: 0 4px;
   line-height: 1;
   flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .pd-close:hover {
@@ -1497,6 +1503,7 @@ body.readable-font .pd-panel * {
   color: #3F3F3F;
   line-height: 2;
   margin-bottom: 20px;
+  cursor: text;
 }
 
 .pd-view-row {
@@ -1583,18 +1590,67 @@ body.readable-font .pd-panel * {
 .resume-book {
   transform: translateY(110%);
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 70vw;
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: max(12px, env(safe-area-inset-bottom, 0px));
+  cursor: pointer;
+}
+
+.resume-book:focus-visible {
+  outline: 3px solid #c6c6c6;
+  outline-offset: 4px;
 }
 
 #resume-overlay.visible .resume-book {
   transform: translateY(0);
 }
 
-.resume-book img {
-  width: 70vw;
-  max-width: 900px;
+.resume-book-composite {
+  position: relative;
+  display: block;
+  width: 100%;
+  line-height: 0;
+  filter: drop-shadow(0 -4px 30px rgba(0, 0, 0, 0.6));
+}
+
+.resume-book-art {
+  position: relative;
+  z-index: 0;
+  width: 100%;
+  height: auto;
   display: block;
   image-rendering: auto;
-  filter: drop-shadow(0 -4px 30px rgba(0, 0, 0, 0.6));
+  pointer-events: none;
+}
+
+/* Resume preview image on the book texture (tweak % if book art changes) */
+.resume-document {
+  position: absolute;
+  z-index: 1;
+  left: 156px;
+  top: 114px;
+  width: 62%;
+  height: 600px;
+  display: grid;
+  flex-wrap: wrap;
+  transform: rotate(360deg);
+  background: #fff;
+  border-radius: 2px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.35),
+    0 1px 4px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.resume-preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  display: block;
+  pointer-events: none;
+  image-rendering: auto;
 }
 
 /* Floating item that follows cursor */

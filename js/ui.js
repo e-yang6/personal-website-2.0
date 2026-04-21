@@ -2,6 +2,11 @@
  * ui.js — Button interactions, sub-page transitions, content
  */
 const UI = (function () {
+  var resumePdfUrl =
+    'https://raw.githubusercontent.com/e-yang6/personal-resume/main/Ethan_Yang_Resume.pdf';
+  var resumePreviewImgUrl =
+    'https://raw.githubusercontent.com/e-yang6/personal-resume/main/Ethan_Yang_Resume_Preview.jpg';
+
   var signalBars =
     '<div class="mp-signal"><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div><div class="mp-signal-bar"></div></div>';
 
@@ -424,20 +429,36 @@ const UI = (function () {
         ov.id = 'resume-overlay';
         ov.innerHTML =
           '<div class="resume-book">' +
-            '<img src="assets/book.png" alt="Resume">' +
+            '<div class="resume-book-composite">' +
+              '<img class="resume-book-art" src="assets/book.png" alt="" role="presentation">' +
+              '<div class="resume-document">' +
+                '<img class="resume-preview-img" src="' +
+                resumePreviewImgUrl +
+                '" alt="Resume preview" width="600" height="780" decoding="async">' +
+              '</div>' +
+            '</div>' +
           '</div>';
         document.body.appendChild(ov);
         requestAnimationFrame(function () {
           requestAnimationFrame(function () { ov.classList.add('visible'); });
         });
         setTimeout(function () {
-          window.open('#', '_blank');
+          window.open(resumePdfUrl, '_blank');
         }, 1500);
         var bookEl = ov.querySelector('.resume-book');
         bookEl.addEventListener('click', function (ev) {
           ev.stopPropagation();
-          window.open('#', '_blank');
+          window.open(resumePdfUrl, '_blank');
         });
+        bookEl.addEventListener('keydown', function (ev) {
+          if (ev.key !== 'Enter' && ev.key !== ' ') return;
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.open(resumePdfUrl, '_blank');
+        });
+        bookEl.setAttribute('role', 'button');
+        bookEl.setAttribute('tabindex', '0');
+        bookEl.setAttribute('aria-label', 'Open resume PDF');
         ov.addEventListener('click', function (ev) {
           if (ev.target === ov) {
             var closeSound = new Audio('assets/bookclose.mp3');

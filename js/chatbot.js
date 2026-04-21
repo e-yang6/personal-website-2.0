@@ -5,6 +5,7 @@ var Chatbot = (function () {
   var skinViewer = null;
   var typingTimer = null;
   var cursorInterval = null;
+  var skinAnimRandomTimer = null;
   var chatHistory = [];
 
   var fallbackResponses = [
@@ -100,6 +101,58 @@ var Chatbot = (function () {
 
   var isSending = false;
 
+  function applySkinVerticalOffset() {
+    if (skinViewer) skinViewer.playerObject.position.y = -8;
+  }
+
+  function clearSkinAnimRandomizer() {
+    if (skinAnimRandomTimer !== null) {
+      clearTimeout(skinAnimRandomTimer);
+      skinAnimRandomTimer = null;
+    }
+  }
+
+  function tickSkinAnimRandomizer() {
+    skinAnimRandomTimer = null;
+    if (!skinViewer || typeof skinview3d === 'undefined' || !skinViewer.animation) return;
+    if (skinViewer.animation instanceof skinview3d.IdleAnimation) return;
+    var a = skinViewer.animation;
+    a.speed = 0.55 + Math.random() * 1.65;
+    if (typeof a.addHitAnimation === 'function') {
+      a.addHitAnimation(0.45 + Math.random() * 2.1);
+    }
+    if (Math.random() < 0.14) {
+      a.paused = true;
+      setTimeout(function () {
+        if (skinViewer && skinViewer.animation === a) a.paused = false;
+      }, 35 + Math.random() * 140);
+    }
+    skinAnimRandomTimer = setTimeout(tickSkinAnimRandomizer, 160 + Math.random() * 620);
+  }
+
+  function startSkinAnimRandomizer() {
+    clearSkinAnimRandomizer();
+    skinAnimRandomTimer = setTimeout(tickSkinAnimRandomizer, 80 + Math.random() * 220);
+  }
+
+  function setSkinIdleAnimation() {
+    clearSkinAnimRandomizer();
+    if (!skinViewer || typeof skinview3d === 'undefined') return;
+    skinViewer.animation = new skinview3d.IdleAnimation();
+    skinViewer.animation.speed = 0.8;
+    applySkinVerticalOffset();
+  }
+
+  function setSkinChatRespondAnimation() {
+    if (!skinViewer || typeof skinview3d === 'undefined' || !skinview3d.CrouchAnimation) return;
+    var anim = new skinview3d.CrouchAnimation();
+    anim.speed = 0.75 + Math.random() * 1.15;
+    anim.addHitAnimation(0.65 + Math.random() * 1.5);
+    skinViewer.animation = anim;
+    applySkinVerticalOffset();
+    startSkinAnimRandomizer();
+  }
+
   function handleSend() {
     if (isSending) return;
     var inputEl = document.getElementById('chat-input');
@@ -111,8 +164,10 @@ var Chatbot = (function () {
 
     isSending = true;
     getGeminiResponse(text).then(function (reply) {
+      setSkinChatRespondAnimation();
       typeMessage(reply, function () {
         isSending = false;
+        setSkinIdleAnimation();
       });
     });
   }
@@ -157,15 +212,15 @@ var Chatbot = (function () {
       width: container.clientWidth,
       height: container.clientHeight,
       skin: 'assets/skin.png',
-      model: 'default',
+      model: 'slim',
     });
 
+    skinViewer.loadCape('assets/cape.png');
+
     skinViewer.autoRotate = false;
-    skinViewer.animation = new skinview3d.IdleAnimation();
-    skinViewer.animation.speed = 0.8;
+    setSkinIdleAnimation();
 
     skinViewer.fov = 40;
-    skinViewer.playerObject.position.y = -8;
     skinViewer.nameTag = 'Ethan';
     if (skinViewer.nameTag && skinViewer.nameTag.position) {
       skinViewer.nameTag.position.y -= 4;
@@ -204,6 +259,7 @@ var Chatbot = (function () {
   }
 
   function destroy() {
+    clearSkinAnimRandomizer();
     if (typingTimer) {
       clearTimeout(typingTimer);
       typingTimer = null;
