@@ -99,8 +99,9 @@
         <span id="copyright-text">Made with &lt;3 using HTML, CSS, and Three.js. Not affiliated with Mojang.</span>
       </div>
     </div>
-    <button class="mc-button" id="font-toggle" type="button"><span class="title">Friendly Font: Off</span></button>
   </div>
+  <!-- Sibling of #menu-dock (not inside it): footer strip and font toggle are positioned independently. -->
+  <button class="mc-button" id="font-toggle" type="button"><span class="title">Friendly Font: Off</span></button>
 
   <!-- Sub-page overlay -->
   <div id="sub-page-overlay" class="hidden">
@@ -115,8 +116,9 @@
       </nav>
       <button class="mc-button back-button" id="btn-back"><span class="title">← Back</span></button>
       <div id="sub-page-inner"></div>
-      <div id="sub-page-bell-slot" class="sub-page-bell-slot" aria-hidden="true"></div>
     </div>
+    <!-- Outside #sub-page-content flex column: bell anchoring is not affected by overlay layout. -->
+    <div id="sub-page-bell-slot" class="sub-page-bell-slot" aria-hidden="true"></div>
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>

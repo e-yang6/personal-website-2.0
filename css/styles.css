@@ -581,10 +581,9 @@ html[data-scene='end'] #panorama-container canvas {
 }
 
 /*
- * Fixed to the viewport (not flex-placed): when #font-toggle stayed a flex item in
- * .menu-dock, it could end up separated from the footer with a huge empty gap.
- * bottom: distance from viewport bottom to the button's bottom edge — keep in sync
- * with footer height (world row + version line + safe area).
+ * Own layer (not inside .menu-dock): position is only this block + the footer strip.
+ * Opacity fades with the rest of the UI via .visible from main.js (same timing as .menu-dock).
+ * bottom: viewport distance to the button's bottom edge — tune vs. #menu-footer height.
  */
 #font-toggle {
   position: fixed;
@@ -597,6 +596,12 @@ html[data-scene='end'] #panorama-container canvas {
   font-size: 13pt;
   font-family: 'Segoe UI', Verdana, sans-serif;
   pointer-events: auto;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+#font-toggle.visible {
+  opacity: 1;
 }
 
 #font-toggle .title {
@@ -939,13 +944,13 @@ body.readable-font .pd-panel * {
   margin-top: 1vh;
 }
 
-/* Bell on dirt background (Resume overlay only when visible) */
+/* Bell: direct child of #sub-page-overlay (not inside #sub-page-content flex) — viewport-fixed, no vh jump. */
 .sub-page-bell-slot {
   display: none;
   position: fixed;
   z-index: 11;
   right: max(2vw, 14px);
-  bottom: max(3vh, 20px);
+  bottom: calc(18px + env(safe-area-inset-bottom, 0px));
   pointer-events: none;
 }
 

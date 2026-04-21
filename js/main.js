@@ -33,6 +33,8 @@
     document.getElementById('main-menu').classList.add('visible');
     var dock = document.getElementById('menu-dock');
     if (dock) dock.classList.add('visible');
+    var fontToggle = document.getElementById('font-toggle');
+    if (fontToggle) fontToggle.classList.add('visible');
     UI.syncMusicPlayerForSurface();
     var mp = document.getElementById('music-player');
     if (mp && mp.classList.contains('visible')) {
