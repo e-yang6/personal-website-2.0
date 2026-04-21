@@ -63,9 +63,13 @@ html, body {
 #splash-hint {
   font-family: 'Minecraftia', monospace;
   font-size: 10px;
-  color: #333;
+  color: #ffffff;
   letter-spacing: 1px;
   margin-top: -30px;
+  text-shadow:
+    0 0 6px rgba(255, 255, 255, 0.95),
+    0 0 14px rgba(255, 255, 255, 0.65),
+    0 0 28px rgba(200, 230, 255, 0.45);
 }
 
 #panorama-container,
@@ -689,6 +693,9 @@ body.readable-font #player-artist {
 
 body.readable-font #splash-hint {
   font-size: 13px !important;
+  color: #ffffff !important;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.95), 0 0 14px rgba(255, 255, 255, 0.65),
+    0 0 28px rgba(200, 230, 255, 0.45) !important;
 }
 
 body.readable-font #splash-text {

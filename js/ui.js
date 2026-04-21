@@ -302,10 +302,8 @@ const UI = (function () {
     if (!mp) return;
     var sub = document.getElementById('sub-page-overlay');
     var subOpen = sub && sub.classList.contains('visible');
-    var pd = document.getElementById('pd-overlay');
-    var popupUp = !!(pd && pd.parentNode);
-    var mainMenuOnly = !subOpen && !popupUp;
-    if (mainMenuOnly) {
+    /* Popups: keep player visible under .pd-overlay (z-index). Sub-pages: hide it. */
+    if (!subOpen) {
       mp.classList.add('visible');
     } else {
       mp.classList.remove('visible');
