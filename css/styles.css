@@ -330,6 +330,11 @@ html, body {
   opacity: 1;
 }
 
+/* One-time on first menu reveal (see main.js); sub-page toggles stay instant. */
+#music-player.visible.mp-initial-fade {
+  transition: opacity 1.2s ease;
+}
+
 #player-top {
   display: flex;
   align-items: center;
@@ -583,8 +588,13 @@ body.readable-font *:not(#title-img):not(.ct-ingredient):not(.player-btn):not(sv
 body.readable-font .mc-button .title,
 body.readable-font .chat-send .title,
 body.readable-font .back-button .title,
+body.readable-font .sub-page-nav .mc-button .title,
 body.readable-font .mp-btn .title {
   padding-top: 0 !important;
+}
+
+body.readable-font .sub-page-nav .mc-button {
+  font-size: 13px !important;
 }
 
 body.readable-font .mc-button {
@@ -726,6 +736,35 @@ body.readable-font .pd-panel * {
   align-items: center;
   justify-content: flex-start;
   padding: 2vh 2vw;
+}
+
+.sub-page-nav {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 12;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  max-width: min(96vw, 640px);
+  pointer-events: auto;
+}
+
+.sub-page-nav-btn {
+  height: 30px;
+  width: auto;
+  min-width: 0;
+  font-size: 8pt;
+}
+
+.sub-page-nav-btn .title {
+  padding: 0 10px;
+  padding-top: 0.25em;
+}
+
+.sub-page-nav-btn.sub-page-nav-btn--active .title {
+  color: #ffffa0;
 }
 
 .back-button {

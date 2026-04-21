@@ -309,6 +309,7 @@ const UI = (function () {
       mp.classList.add('visible');
     } else {
       mp.classList.remove('visible');
+      mp.classList.remove('mp-initial-fade');
     }
   }
 
@@ -596,9 +597,39 @@ const UI = (function () {
     if (el) el.textContent = splashes[Math.floor(Math.random() * splashes.length)];
   }
 
+  function updateSubPageNavActive(pageId) {
+    var nav = document.getElementById('sub-page-nav');
+    if (!nav) return;
+    nav.querySelectorAll('[data-sub-nav-page]').forEach(function (btn) {
+      var match = !!pageId && btn.getAttribute('data-sub-nav-page') === pageId;
+      btn.classList.toggle('sub-page-nav-btn--active', match);
+    });
+  }
+
   function init() {
     var overlay = document.getElementById('sub-page-overlay');
     var inner = document.getElementById('sub-page-inner');
+
+    function loadSubPage(page) {
+      if (!pages[page]) return false;
+      if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+      clearResumeBellSlot();
+      inner.innerHTML = pages[page]();
+      overlay.classList.add('visible');
+      if (page === 'about' && typeof Chatbot !== 'undefined') {
+        Chatbot.init();
+      }
+      if (page === 'contact') {
+        initCraftingTable();
+        mountResumeBell();
+      }
+      if (page === 'projects') {
+        initMcScrollbar(inner.querySelector('.mp-list'));
+      }
+      syncMusicPlayerForSurface();
+      updateSubPageNavActive(page);
+      return true;
+    }
 
     var fontToggle = document.getElementById('font-toggle');
     fontToggle.addEventListener('click', function () {
@@ -608,30 +639,33 @@ const UI = (function () {
       fontToggle.querySelector('.title').textContent = 'Friendly Font: ' + (isOn ? 'On' : 'Off');
     });
 
-    // Sub-page buttons
+    // Sub-page buttons (main menu)
     document.querySelectorAll('[data-page]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         AudioManager.playClick();
         var page = btn.getAttribute('data-page');
-        if (pages[page]) {
-          if (typeof Chatbot !== 'undefined') Chatbot.destroy();
-          clearResumeBellSlot();
-          inner.innerHTML = pages[page]();
-          overlay.classList.add('visible');
-          if (page === 'about' && typeof Chatbot !== 'undefined') {
-            Chatbot.init();
-          }
-          if (page === 'contact') {
-            initCraftingTable();
-            mountResumeBell();
-          }
-          if (page === 'projects') {
-            initMcScrollbar(inner.querySelector('.mp-list'));
-          }
-          syncMusicPlayerForSurface();
-        }
+        loadSubPage(page);
       });
     });
+
+    // In-overlay quick nav (same pages; Contact Me / Blog open popups)
+    var subNav = document.getElementById('sub-page-nav');
+    if (subNav) {
+      subNav.addEventListener('click', function (e) {
+        var pageBtn = e.target.closest('[data-sub-nav-page]');
+        var popupBtn = e.target.closest('[data-sub-nav-popup]');
+        if (!pageBtn && !popupBtn) return;
+        e.stopPropagation();
+        AudioManager.playClick();
+        if (pageBtn) {
+          if (pageBtn.classList.contains('sub-page-nav-btn--active')) return;
+          loadSubPage(pageBtn.getAttribute('data-sub-nav-page'));
+          return;
+        }
+        var key = popupBtn.getAttribute('data-sub-nav-popup');
+        if (popups[key]) showPopup(popups[key]());
+      });
+    }
 
     // Popup buttons (Contact Me, Blog)
     document.querySelectorAll('[data-popup]').forEach(function (btn) {
@@ -657,6 +691,7 @@ const UI = (function () {
       overlay.classList.remove('visible');
       if (typeof Chatbot !== 'undefined') Chatbot.destroy();
       clearResumeBellSlot();
+      updateSubPageNavActive(null);
       randomizeSplash();
       syncMusicPlayerForSurface();
     });
@@ -672,6 +707,7 @@ const UI = (function () {
         overlay.classList.remove('visible');
         if (typeof Chatbot !== 'undefined') Chatbot.destroy();
         clearResumeBellSlot();
+        updateSubPageNavActive(null);
         randomizeSplash();
         syncMusicPlayerForSurface();
       }

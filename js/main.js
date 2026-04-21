@@ -32,6 +32,13 @@
     document.getElementById('vignette').classList.add('visible');
     document.getElementById('main-menu').classList.add('visible');
     UI.syncMusicPlayerForSurface();
+    var mp = document.getElementById('music-player');
+    if (mp && mp.classList.contains('visible')) {
+      mp.classList.add('mp-initial-fade');
+      setTimeout(function () {
+        mp.classList.remove('mp-initial-fade');
+      }, 1300);
+    }
   }, 1000);
 
   // Keep trying to start music on every interaction until it works
