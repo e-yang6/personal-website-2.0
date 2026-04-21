@@ -1,5 +1,5 @@
 /**
- * chatbot.js — 3D skin viewer + Gemini AI chatbot
+ * chatbot.js - 3D skin viewer + Gemini AI chatbot
  */
 var Chatbot = (function () {
   var skinViewer = null;
@@ -14,6 +14,123 @@ var Chatbot = (function () {
 
   var chatApiErrorMessage =
     'Sorry, chat isn\'t working right now. Use the preset questions to learn more!';
+
+  var PRESET_QA = [
+    { q: 'What are you studying?', a: 'First year Computer Engineering at the University of Toronto.' },
+    { q: 'Where are you interning?', a: 'Incoming API Development Intern at Sun Life. Looking forward to real backend and integration work.' },
+    { q: 'How do I see your projects?', a: 'Open Projects from the main menu. You get the list with blurbs, and you can open a card for more detail.' },
+    { q: 'Where is your resume?', a: 'Pick Resume on the main menu. It is the crafting table page, then craft the pattern to open the PDF.' },
+    { q: 'How can I contact you?', a: 'Email ethn.yang@mail.utoronto.ca, LinkedIn linkedin.com/in/ey6, or GitHub github.com/e-yang6.' },
+    { q: 'What is this site built with?', a: 'HTML, CSS, and Three.js for the panorama and the small skin viewer, plus plain JavaScript. The menu is styled like Minecraft Java.' },
+    { q: 'What is BeaverTrails?', a: 'An AI travel planner with TypeScript, Next.js, and Three.js. It builds itineraries and leans on 3D style maps and previews.' },
+    { q: 'What is Polymolt?', a: 'A multi agent prediction market idea with RAG and LMSR style scoring, built with Python, FastAPI, TypeScript, and GCP.' },
+    { q: 'Any hackathon wins?', a: 'Lock Block was a winner at HackHive 2026. HATSEYE was a DeltaHacks 12 finalist. Details are on the Projects page.' },
+    { q: 'What was the EngSoc project?', a: 'Digitizing cheque requisitions for U of T EngSoc with OCR on receipts, Next.js, TypeScript, PostgreSQL, and AWS.' },
+    { q: 'What are your hobbies?', a: 'Volleyball, making music, and cats. Random side projects when an idea hooks me.' },
+    { q: 'Favorite language to code in?', a: 'Lots of TypeScript lately. Python is still my comfort pick for quick experiments and ML style scripts.' },
+    { q: 'Why Computer Engineering?', a: 'I like systems that actually run in the real world. This program felt like the best fit for that kind of curiosity.' },
+    { q: 'What do you do outside tech?', a: 'Volleyball, music, and hanging out with my cats. Normal human stuff.' },
+    { q: 'Coffee or tea?', a: 'Coffee when I need to focus. Tea when I want to slow down.' },
+    { q: 'Cats or dogs?', a: 'Cats, full stop. I still like dogs when a friend brings one over.' },
+    { q: 'Is this site official Minecraft?', a: 'No. It is a fan style portfolio. Not affiliated with Mojang.' },
+    { q: 'What is the bell on the resume page?', a: 'Just a fun easter egg. Ring it if you want. There is a counter if the small API is running.' },
+    { q: 'What tech are you into?', a: 'Systems, AI and ML, and backend work. Anything where I can chase how things work under the hood.' },
+    { q: 'Tell me about Sinatra.', a: 'Browser DAW that turns your voice into instruments in real time. Python, TypeScript, React, FastAPI. More on Projects.' },
+    { q: 'Morning or night person?', a: 'More of a night owl, especially when I am deep in a build.' },
+    { q: 'What music do you listen to?', a: 'A bit of everything. I make music too so I borrow ideas from all over.' },
+    { q: 'What is the friendly font button?', a: 'Bottom right toggle. It switches the UI to a more readable system font if the pixel font is hard on your eyes.' },
+    { q: 'What are the world buttons?', a: 'Bottom center Scene row. Overworld, Nether, and End swap the sky, music, and a few colors. Just for fun.' },
+  ];
+
+  function shufflePresetIndices(len) {
+    var a = [];
+    for (var i = 0; i < len; i++) a.push(i);
+    for (var j = a.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var t = a[j];
+      a[j] = a[k];
+      a[k] = t;
+    }
+    return a;
+  }
+
+  function pickThreePresets() {
+    var n = PRESET_QA.length;
+    var take = Math.min(3, n);
+    var ix = shufflePresetIndices(n).slice(0, take);
+    return ix.map(function (i) {
+      return PRESET_QA[i];
+    });
+  }
+
+  function bindSuggestionsContainerOnce() {
+    var wrap = document.getElementById('chat-suggestions');
+    if (!wrap || wrap.dataset.bound === '1') return;
+    wrap.dataset.bound = '1';
+    wrap.addEventListener('mousedown', function (e) {
+      e.stopPropagation();
+    });
+  }
+
+  function setSuggestionsHidden(hidden) {
+    var wrap = document.getElementById('chat-suggestions');
+    if (!wrap) return;
+    wrap.classList.toggle('chat-suggestions--hidden', !!hidden);
+  }
+
+  function refreshSuggestionButtons() {
+    var wrap = document.getElementById('chat-suggestions');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    pickThreePresets().forEach(function (p) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chat-suggestion-btn';
+      btn.textContent = p.q;
+      btn.setAttribute('title', p.q);
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        handlePreset(p.q, p.a);
+      });
+      btn.addEventListener('mousedown', function (e) {
+        e.stopPropagation();
+      });
+      wrap.appendChild(btn);
+    });
+  }
+
+  function scrollChatToBottom() {
+    var messagesEl = document.getElementById('chat-messages');
+    if (!messagesEl) return;
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function finishBotTurnAndRefreshSuggestions() {
+    isSending = false;
+    setSkinIdleAnimation();
+    refreshSuggestionButtons();
+    setSuggestionsHidden(false);
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        scrollChatToBottom();
+      });
+    });
+  }
+
+  function handlePreset(question, answer) {
+    if (isSending) return;
+    isSending = true;
+    setSuggestionsHidden(true);
+    if (typeof AudioManager !== 'undefined') AudioManager.playClick();
+    addMessage(question, 'user');
+    chatHistory.push({ role: 'user', parts: [{ text: question }] });
+    setSkinChatRespondAnimation();
+    typeMessage(answer, function () {
+      chatHistory.push({ role: 'model', parts: [{ text: answer }] });
+      finishBotTurnAndRefreshSuggestions();
+    });
+  }
 
   async function getGeminiResponse(userMessage) {
     chatHistory.push({ role: 'user', parts: [{ text: userMessage }] });
@@ -156,14 +273,14 @@ var Chatbot = (function () {
     var text = inputEl.value.trim();
     if (!text) return;
     inputEl.value = '';
+    setSuggestionsHidden(true);
     addMessage(text, 'user');
 
     isSending = true;
     getGeminiResponse(text).then(function (reply) {
       setSkinChatRespondAnimation();
       typeMessage(reply, function () {
-        isSending = false;
-        setSkinIdleAnimation();
+        finishBotTurnAndRefreshSuggestions();
       });
     });
   }
@@ -197,6 +314,9 @@ var Chatbot = (function () {
         e.stopPropagation();
       });
     }
+    bindSuggestionsContainerOnce();
+    refreshSuggestionButtons();
+    setSuggestionsHidden(false);
   }
 
   function initSkin() {
@@ -275,6 +395,12 @@ var Chatbot = (function () {
     isSending = false;
     skinResponding = false;
     skinLookInfluence = 1;
+    var sug = document.getElementById('chat-suggestions');
+    if (sug) {
+      delete sug.dataset.bound;
+      sug.innerHTML = '';
+      sug.classList.remove('chat-suggestions--hidden');
+    }
   }
 
   return {

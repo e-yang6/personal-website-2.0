@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-scene="overworld">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -81,6 +81,16 @@
         <span class="title"><img src="https://i.ibb.co/99187Lk/lang.png" alt="Link"></span>
       </button>
     </div>
+
+    <div id="scene-switch" class="scene-switch scene-switch--menu" role="group" aria-label="World scene">
+      <div class="scene-switch-title">World</div>
+      <div class="scene-switch-row">
+        <button type="button" class="mc-button scene-mc-btn" data-scene="overworld"><span class="title">Overworld</span></button>
+        <button type="button" class="mc-button scene-mc-btn" data-scene="nether"><span class="title">Nether</span></button>
+        <button type="button" class="mc-button scene-mc-btn" data-scene="end"><span class="title">End</span></button>
+      </div>
+    </div>
+
     <button class="mc-button" id="font-toggle"><span class="title">Friendly Font: Off</span></button>
 
     <!-- Bottom bar -->
@@ -109,6 +119,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/skinview3d@3.4.1/bundles/skinview3d.bundle.min.js"></script>
+  <script src="js/scene.js"></script>
   <script src="js/panorama.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/chatbot.js"></script>

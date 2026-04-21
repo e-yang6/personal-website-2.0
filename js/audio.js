@@ -7,13 +7,34 @@ const AudioManager = (function () {
   let currentIndex = 0;
   let targetVolume = 0.35;
 
-  var allTracks = [
-    { title: 'Mice on Venus', artist: 'C418', src: 'assets/miceonvenus.mp3' },
-    { title: 'Minecraft', artist: 'C418', src: 'assets/minecraft.mp3' },
-    { title: 'Subwoofer Lullaby', artist: 'C418', src: 'assets/subwooferlullaby.mp3' },
-    { title: 'Sweden', artist: 'C418', src: 'assets/sweden.mp3' },
-    { title: 'Wet Hands', artist: 'C418', src: 'assets/wet hands.mp3' },
-  ];
+  function buildTrackList() {
+    var b = SiteScene.base();
+    var scene = SiteScene.get();
+
+    if (scene === 'nether') {
+      return [
+        { title: 'Pigstep', artist: 'Lena Raine', src: b + '/pigstep.mp3' },
+        { title: 'Concrete Halls', artist: 'C418', src: b + '/concretehalls.mp3' },
+        { title: 'Dead Voxel', artist: 'C418', src: b + '/deadvoxel.mp3' },
+        { title: 'Ballad of the Cats', artist: 'C418', src: b + '/balladofthecats.mp3' },
+        { title: 'Warmth', artist: 'C418', src: b + '/warmth.mp3' },
+      ];
+    }
+
+    if (scene === 'end') {
+      return [{ title: 'The End', artist: 'C418', src: b + '/theend.mp3' }];
+    }
+
+    return [
+      { title: 'Mice on Venus', artist: 'C418', src: b + '/miceonvenus.mp3' },
+      { title: 'Minecraft', artist: 'C418', src: b + '/minecraft.mp3' },
+      { title: 'Subwoofer Lullaby', artist: 'C418', src: b + '/subwooferlullaby.mp3' },
+      { title: 'Sweden', artist: 'C418', src: b + '/sweden.mp3' },
+      { title: 'Wet Hands', artist: 'C418', src: b + '/wet hands.mp3' },
+    ];
+  }
+
+  var allTracks = buildTrackList();
 
   function shuffleArray(arr) {
     for (var i = arr.length - 1; i > 0; i--) {
@@ -23,7 +44,17 @@ const AudioManager = (function () {
     return arr;
   }
 
-  var playlist = [allTracks[0]].concat(shuffleArray(allTracks.slice(1)));
+  function shufflePlaylistFromTracks(tracks) {
+    if (SiteScene.get() === 'nether') {
+      return shuffleArray(tracks.slice());
+    }
+    if (SiteScene.get() === 'end') {
+      return tracks.slice();
+    }
+    return [tracks[0]].concat(shuffleArray(tracks.slice(1)));
+  }
+
+  var playlist = shufflePlaylistFromTracks(allTracks);
 
   var bgMusic = new Audio();
   bgMusic.preload = 'auto';
@@ -112,7 +143,7 @@ const AudioManager = (function () {
   function nextTrack() {
     var next = currentIndex + 1;
     if (next >= playlist.length) {
-      playlist = [allTracks[0]].concat(shuffleArray(allTracks.slice(1)));
+      playlist = shufflePlaylistFromTracks(allTracks);
       next = 0;
     }
     loadTrack(next);
@@ -173,6 +204,23 @@ const AudioManager = (function () {
 
   loadTrack(0);
   updatePlayButton();
+
+  function applySceneToPlaylist() {
+    var wasPlaying = isPlaying;
+    allTracks = buildTrackList();
+    playlist = shufflePlaylistFromTracks(allTracks);
+    currentIndex = 0;
+    loadTrack(0);
+    if (wasPlaying) {
+      playTrack();
+    } else {
+      bgMusic.pause();
+      isPlaying = false;
+      updatePlayButton();
+    }
+  }
+
+  window.addEventListener('sitescenechange', applySceneToPlaylist);
 
   function playClick() {
     clickSound.currentTime = 0;

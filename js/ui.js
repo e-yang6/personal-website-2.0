@@ -167,6 +167,7 @@ const UI = (function () {
                 '<div class="chat-messages" id="chat-messages">' +
                   '<div class="chat-msg bot">Hey! Ask me anything about myself.</div>' +
                 '</div>' +
+                '<div class="chat-suggestions" id="chat-suggestions" aria-label="Suggested questions"></div>' +
                 '<div class="chat-input-row">' +
                   '<input type="text" class="chat-input" id="chat-input" placeholder="Ask about Ethan..." autocomplete="off">' +
                   '<button class="chat-send" id="chat-send"><span class="title">Send</span></button>' +
