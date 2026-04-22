@@ -292,6 +292,13 @@ const UI = (function () {
                   '<span class="pd-contact-value">x.com/e_yang6</span>' +
                 '</div>' +
               '</div>' +
+              '<div style="display: flex; align-items: center; justify-content: center; gap: 15px; width: 100%; box-sizing: border-box; margin-top: 8px; padding: 4px 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; text-shadow: none; line-height: normal; letter-spacing: normal;">' +
+                '<a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=prev" style="color: #333; text-decoration: none; font-size: 1.5rem;">←</a>' +
+                '<a href="https://WebRing.skule.ca/#https://ethanyang.dev" target="_blank">' +
+                '<img src="https://WebRing.skule.ca/img/icon.svg" alt="SKULE WebRing" style="width: 32px; height: 32px;"/>' +
+                '</a>' +
+                '<a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=next" style="color: #333; text-decoration: none; font-size: 1.5rem;">→</a>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>'
