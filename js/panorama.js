@@ -64,6 +64,21 @@ const Panorama = (function () {
 
   function rebuildCubemap() {
     if (!containerRef || !scene) return;
+    var video = document.getElementById('secret-video');
+    if (SiteScene.get() === 'secret') {
+      disposeCube();
+      if (renderer) renderer.domElement.style.display = 'none';
+      if (video) {
+        video.play().catch(function () {});
+      }
+      return;
+    }
+    // Switching back from secret to a normal theme
+    if (video) {
+      video.pause();
+      video.currentTime = 0;
+    }
+    if (renderer) renderer.domElement.style.display = '';
     disposeCube();
     buildCubemap(SiteScene.base());
   }

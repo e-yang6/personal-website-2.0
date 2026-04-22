@@ -321,6 +321,7 @@ const UI = (function () {
                 '<button class="pd-close" id="pd-close">\u00D7</button>' +
               '</div>' +
               '<div class="pd-desc pd-construction">Under construction...</div>' +
+              '<div class="pd-photosensitive">This page may contain flashing lights.</div>' +
             '</div>' +
           '</div>' +
         '</div>'
@@ -342,6 +343,151 @@ const UI = (function () {
     }
   }
 
+  function triggerGlitchSequence() {
+    // Close any open popup
+    var existing = document.getElementById('pd-overlay');
+    if (existing) {
+      existing.classList.remove('visible');
+      setTimeout(function () { existing.remove(); }, 100);
+    }
+
+    // Create fullscreen glitch overlay
+    var overlay = document.createElement('div');
+    overlay.id = 'glitch-overlay';
+    overlay.innerHTML =
+      '<div class="glitch-bars"></div>' +
+      '<div class="glitch-rects"></div>' +
+      '<div class="glitch-text" data-text="get out of my head">get out of my head</div>';
+    document.body.appendChild(overlay);
+
+    // Start video immediately while we still have the user gesture context
+    // (keeps it muted during glitch — audio.js will unmute on scene change)
+    var secretVideo = document.getElementById('secret-video');
+    if (secretVideo) {
+      secretVideo.muted = true;
+      secretVideo.play().catch(function () {});
+    }
+
+    var textEl = overlay.querySelector('.glitch-text');
+    var barsEl = overlay.querySelector('.glitch-bars');
+    var rectsEl = overlay.querySelector('.glitch-rects');
+
+    // Spawn random black/white rectangles that flash across the screen
+    var rectsInterval = setInterval(function () {
+      // Clear previous batch
+      rectsEl.innerHTML = '';
+      // Spawn 3-8 random rectangles per tick
+      var count = 3 + Math.floor(Math.random() * 6);
+      for (var i = 0; i < count; i++) {
+        var rect = document.createElement('div');
+        var w = 20 + Math.random() * 250;
+        var h = 4 + Math.random() * 40;
+        rect.style.cssText =
+          'position:absolute;' +
+          'left:' + (Math.random() * 100) + '%;' +
+          'top:' + (Math.random() * 100) + '%;' +
+          'width:' + w + 'px;' +
+          'height:' + h + 'px;' +
+          'background:' + (Math.random() < 0.5 ? '#fff' : '#000') + ';' +
+          'pointer-events:none;' +
+          'mix-blend-mode:difference;';
+        rectsEl.appendChild(rect);
+      }
+    }, 40);
+
+    // JS-driven intense randomness layered on top of CSS animations
+    var sporadicInterval = setInterval(function () {
+      // Aggressively flicker the text on and off
+      if (Math.random() < 0.5) {
+        textEl.style.opacity = '0';
+        setTimeout(function () { textEl.style.opacity = '1'; }, 15 + Math.random() * 40);
+      }
+      // Violently jolt the text position
+      textEl.style.transform = 'translate(' +
+        ((Math.random() - 0.5) * 40) + 'px,' +
+        ((Math.random() - 0.5) * 20) + 'px) skewX(' +
+        ((Math.random() - 0.5) * 15) + 'deg)';
+      // Large random horizontal tear offset on the flash bars
+      var xShift = (Math.random() - 0.5) * 80;
+      var yShift = (Math.random() - 0.5) * 30;
+      barsEl.style.transform = 'translate(' + xShift + 'px,' + yShift + 'px) scaleY(' + (0.9 + Math.random() * 0.2) + ')';
+      // Aggressive horizontal screen-tear slices
+      if (Math.random() < 0.6) {
+        var y1 = Math.floor(Math.random() * 80);
+        var y2 = Math.min(100, y1 + 8 + Math.floor(Math.random() * 30));
+        barsEl.style.clipPath = 'inset(' + y1 + '% 0 ' + (100 - y2) + '% 0)';
+      } else {
+        barsEl.style.clipPath = '';
+      }
+      // Randomly invert the whole overlay
+      overlay.style.filter = Math.random() < 0.3 ? 'invert(1)' : '';
+    }, 30);
+
+    // Brutally distort currently playing music
+    var bgMusic = (typeof AudioManager !== 'undefined' && AudioManager.getBgMusic)
+      ? AudioManager.getBgMusic() : null;
+    var origRate = bgMusic ? bgMusic.playbackRate : 1;
+    var origVol = bgMusic ? bgMusic.volume : 0;
+    var distortInterval = null;
+    if (bgMusic && !bgMusic.paused) {
+      bgMusic.volume = origVol;
+      distortInterval = setInterval(function () {
+        bgMusic.playbackRate = Math.random() < 0.3 ? 0.2 + Math.random() * 0.3 : 1.5 + Math.random() * 1.5;
+        bgMusic.volume = Math.random() < 0.15 ? 0 : origVol * (0.5 + Math.random() * 0.7);
+        if (Math.random() < 0.15 && bgMusic.duration) {
+          bgMusic.currentTime = Math.random() * bgMusic.duration;
+        }
+      }, 40);
+    }
+
+    // Synthesized glitch sound bursts via Web Audio API
+    var actx = null;
+    try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+    var glitchSfxInterval = null;
+    if (actx) {
+      glitchSfxInterval = setInterval(function () {
+        if (Math.random() < 0.45) return;
+        var duration = 0.02 + Math.random() * 0.08;
+        var bufSize = Math.floor(actx.sampleRate * duration);
+        var buf = actx.createBuffer(1, bufSize, actx.sampleRate);
+        var data = buf.getChannelData(0);
+        for (var i = 0; i < bufSize; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+        var src = actx.createBufferSource();
+        src.buffer = buf;
+        var gain = actx.createGain();
+        gain.gain.value = 0.04 + Math.random() * 0.06;
+        src.connect(gain);
+        gain.connect(actx.destination);
+        src.start();
+        src.stop(actx.currentTime + duration);
+      }, 60);
+    }
+
+    // After 1.2s glitch, fade to black then switch scene
+    setTimeout(function () {
+      clearInterval(sporadicInterval);
+      clearInterval(rectsInterval);
+      if (distortInterval) clearInterval(distortInterval);
+      if (glitchSfxInterval) clearInterval(glitchSfxInterval);
+      if (actx) actx.close().catch(function () {});
+      if (bgMusic) {
+        bgMusic.playbackRate = origRate;
+        bgMusic.volume = origVol;
+      }
+
+      // Fade to solid black
+      overlay.innerHTML = '';
+      overlay.style.background = '#000';
+
+      setTimeout(function () {
+        SiteScene.set('secret');
+        setTimeout(function () {
+          overlay.remove();
+        }, 300);
+      }, 400);
+    }, 1200);
+  }
+
   function showPopup(html) {
     var existing = document.getElementById('pd-overlay');
     if (existing) existing.remove();
@@ -351,6 +497,14 @@ const UI = (function () {
     var pdOverlay = document.getElementById('pd-overlay');
     syncMusicPlayerForSurface();
     requestAnimationFrame(function () { pdOverlay.classList.add('visible'); });
+    // Bind secret trigger on blog "Under construction..." text
+    var constructionEl = pdOverlay.querySelector('.pd-construction');
+    if (constructionEl && SiteScene.get() !== 'secret') {
+      constructionEl.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        triggerGlitchSequence();
+      });
+    }
     document.getElementById('pd-close').addEventListener('click', function (ev) {
       ev.stopPropagation();
       pdOverlay.classList.remove('visible');
@@ -627,7 +781,9 @@ const UI = (function () {
 
   function randomizeSplash() {
     var el = document.getElementById('splash-text');
-    if (el) el.textContent = splashes[Math.floor(Math.random() * splashes.length)];
+    if (!el) return;
+    if (SiteScene.get() === 'secret') { el.textContent = '???'; return; }
+    el.textContent = splashes[Math.floor(Math.random() * splashes.length)];
   }
 
   function updateSubPageNavActive(pageId) {

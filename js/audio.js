@@ -11,6 +11,11 @@ const AudioManager = (function () {
     var b = SiteScene.base();
     var scene = SiteScene.get();
 
+    if (scene === 'secret') {
+      // No playlist for secret mode — video has its own audio
+      return [{ title: '???', artist: '???', src: '', gain: 0 }];
+    }
+
     if (scene === 'nether') {
       return [
         { title: 'Pigstep', artist: 'Lena Raine', src: b + '/pigstep.mp3', gain: 0.18 },
@@ -204,6 +209,10 @@ const AudioManager = (function () {
       clickSound.volume = targetVolume;
       bellSound.volume = Math.min(1, targetVolume * 1.1);
       textVolume = targetVolume * 0.4;
+      var video = document.getElementById('secret-video');
+      if (video && SiteScene.get() === 'secret') {
+        video.volume = targetVolume;
+      }
     });
   }
 
@@ -219,6 +228,25 @@ const AudioManager = (function () {
   updatePlayButton();
 
   function applySceneToPlaylist() {
+    var video = document.getElementById('secret-video');
+    if (SiteScene.get() === 'secret') {
+      // Mute bgMusic, let the video's own audio play
+      bgMusic.pause();
+      isPlaying = false;
+      updatePlayButton();
+      if (trackEl) trackEl.textContent = '???';
+      if (artistEl) artistEl.textContent = '???';
+      // Unmute the video and apply user volume
+      if (video) {
+        video.muted = false;
+        video.volume = targetVolume;
+      }
+      return;
+    }
+    // Switching back to normal — mute video
+    if (video) {
+      video.muted = true;
+    }
     var wasPlaying = isPlaying;
     allTracks = buildTrackList();
     playlist = shufflePlaylistFromTracks(allTracks);
@@ -288,5 +316,6 @@ const AudioManager = (function () {
     prevTrack: prevTrack,
     addTrack: addTrack,
     getPlaylist: getPlaylist,
+    getBgMusic: function () { return bgMusic; },
   };
 })();

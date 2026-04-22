@@ -4,7 +4,7 @@
  */
 const SiteScene = (function () {
   var STORAGE_KEY = 'portfolio-site-scene';
-  var VALID = ['overworld', 'nether', 'end'];
+  var VALID = ['overworld', 'nether', 'end', 'secret'];
   var current = 'overworld';
 
   function base() {
@@ -28,7 +28,8 @@ const SiteScene = (function () {
     if (VALID.indexOf(id) === -1) return;
     current = id;
     try {
-      localStorage.setItem(STORAGE_KEY, current);
+      // Never persist the secret theme — it resets to overworld on reload
+      if (id !== 'secret') localStorage.setItem(STORAGE_KEY, current);
     } catch (e) {}
     document.documentElement.setAttribute('data-scene', current);
     refreshButtons();
@@ -51,7 +52,7 @@ const SiteScene = (function () {
   function init() {
     try {
       var s = localStorage.getItem(STORAGE_KEY);
-      if (s && VALID.indexOf(s) !== -1) current = s;
+      if (s && s !== 'secret' && VALID.indexOf(s) !== -1) current = s;
     } catch (e) {}
     document.documentElement.setAttribute('data-scene', current);
     bindBar();

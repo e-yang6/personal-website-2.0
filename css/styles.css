@@ -37,6 +37,21 @@ html[data-scene='end'] {
   --scene-chatbot-bg: url('../assets/end/chatbotbackground.png');
 }
 
+html[data-scene='secret'] {
+  --scene-subpage-bg: linear-gradient(#120000, #000);
+  --scene-chatbot-bg: linear-gradient(#120000, #000);
+}
+
+html[data-scene='secret'] #sub-page-bg {
+  animation: secret-glow 3s ease-in-out infinite;
+}
+
+@keyframes secret-glow {
+  0%   { background: linear-gradient(#120000, #000); }
+  50%  { background: linear-gradient(#200000 0%, #0a0000 25%, #000 100%); }
+  100% { background: linear-gradient(#120000, #000); }
+}
+
 html, body {
   width: 100%;
   height: 100%;
@@ -2112,5 +2127,172 @@ html[data-scene='end'] .chat-msg.user {
   width: 64px;
   height: 64px;
   filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.5));
+}
+
+/* ═══════════════════════════════════════
+   SECRET VIDEO BACKGROUND
+   ═══════════════════════════════════════ */
+#secret-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  display: none;
+}
+
+html[data-scene='secret'] #secret-video {
+  display: block;
+}
+
+html[data-scene='secret'] #panorama-container {
+  display: none;
+}
+
+/* ═══════════════════════════════════════
+   GLITCH OVERLAY
+   ═══════════════════════════════════════ */
+#glitch-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+}
+
+#glitch-overlay .glitch-text {
+  font-family: 'Minecraftia', monospace;
+  font-size: clamp(24px, 6vw, 64px);
+  color: #fff;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+  text-transform: lowercase;
+  letter-spacing: 0.1em;
+}
+
+#glitch-overlay .glitch-text::before,
+#glitch-overlay .glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #fff;
+}
+
+#glitch-overlay .glitch-text::before {
+  animation: glitch-shift-r 0.04s steps(1) infinite;
+  clip-path: inset(0 0 50% 0);
+}
+
+#glitch-overlay .glitch-text::after {
+  animation: glitch-shift-l 0.05s steps(1) infinite;
+  clip-path: inset(50% 0 0 0);
+}
+
+#glitch-overlay .glitch-rects {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+#glitch-overlay .glitch-bars {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  animation: glitch-screen 0.08s steps(1) infinite;
+}
+
+@keyframes glitch-screen {
+  0%   { background: #fff; transform: translate(0, 0) scaleX(1); }
+  4%   { background: #000; transform: translate(-20px, 5px) scaleX(1.02); }
+  8%   { background: #fff; transform: translate(15px, -8px) scaleX(0.98); }
+  12%  { background: #000; transform: translate(-8px, 0) scaleX(1); }
+  15%  { background: #fff; transform: translate(25px, 10px) scaleX(1.04); }
+  18%  { background: #000; transform: translate(0, -15px) scaleX(1); }
+  22%  { background: #fff; transform: translate(-30px, 0) scaleX(0.96); }
+  25%  { background: #000; transform: translate(10px, 8px) scaleX(1); }
+  30%  { background: #fff; transform: translate(0, 0) scaleX(1.05); }
+  32%  { background: #000; transform: translate(-15px, -10px) scaleX(1); }
+  38%  { background: #000; transform: translate(20px, 0) scaleX(0.97); }
+  40%  { background: #fff; transform: translate(0, 12px) scaleX(1); }
+  42%  { background: #000; transform: translate(-25px, -5px) scaleX(1.03); }
+  48%  { background: #fff; transform: translate(0, 0) scaleX(1); }
+  50%  { background: #000; transform: translate(18px, -12px) scaleX(0.95); }
+  55%  { background: #fff; transform: translate(-10px, 8px) scaleX(1); }
+  58%  { background: #000; transform: translate(0, 0) scaleX(1.06); }
+  62%  { background: #fff; transform: translate(30px, 0) scaleX(1); }
+  65%  { background: #000; transform: translate(-20px, 15px) scaleX(0.94); }
+  70%  { background: #fff; transform: translate(0, -10px) scaleX(1); }
+  72%  { background: #000; transform: translate(12px, 0) scaleX(1.02); }
+  78%  { background: #fff; transform: translate(-18px, 6px) scaleX(1); }
+  80%  { background: #000; transform: translate(0, 0) scaleX(0.98); }
+  85%  { background: #fff; transform: translate(22px, -8px) scaleX(1); }
+  88%  { background: #000; transform: translate(-12px, 10px) scaleX(1.04); }
+  92%  { background: #fff; transform: translate(0, 0) scaleX(1); }
+  95%  { background: #000; transform: translate(15px, -5px) scaleX(0.96); }
+  100% { background: #000; transform: translate(0, 0) scaleX(1); }
+}
+
+@keyframes glitch-shift-r {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(12px, -4px); }
+  20%  { transform: translate(-18px, 6px); }
+  30%  { transform: translate(8px, 0); }
+  40%  { transform: translate(-14px, -8px); }
+  50%  { transform: translate(20px, 3px); }
+  60%  { transform: translate(-6px, -5px); }
+  70%  { transform: translate(16px, 7px); }
+  80%  { transform: translate(-10px, 0); }
+  90%  { transform: translate(14px, -6px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes glitch-shift-l {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-14px, 3px); }
+  20%  { transform: translate(10px, -7px); }
+  30%  { transform: translate(-20px, 0); }
+  40%  { transform: translate(16px, 5px); }
+  50%  { transform: translate(-8px, -4px); }
+  60%  { transform: translate(18px, 8px); }
+  70%  { transform: translate(-12px, -2px); }
+  80%  { transform: translate(6px, 6px); }
+  90%  { transform: translate(-16px, -3px); }
+  100% { transform: translate(0, 0); }
+}
+
+.pd-construction {
+  cursor: pointer;
+}
+
+.pd-construction:hover {
+  color: #444;
+}
+
+.pd-photosensitive {
+  text-align: center;
+  color: #999;
+  font-size: 10px;
+  margin-top: 14px;
+  font-family: 'Minecraftia', monospace;
 }
 

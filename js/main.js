@@ -20,6 +20,15 @@
   var splashEl = document.getElementById('splash-text');
   splashEl.textContent = splashes[Math.floor(Math.random() * splashes.length)];
 
+  // Update splash on scene change
+  window.addEventListener('sitescenechange', function (e) {
+    if (e.detail && e.detail.id === 'secret') {
+      splashEl.textContent = '???';
+    } else {
+      splashEl.textContent = splashes[Math.floor(Math.random() * splashes.length)];
+    }
+  });
+
   // Init panorama
   Panorama.init(document.getElementById('panorama-container'));
 
