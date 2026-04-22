@@ -1160,6 +1160,29 @@ html[data-scene='end'] .chat-msg.user {
   color: #f2e4b8;
 }
 
+html[data-scene='secret'] .poem-text.cyan,
+html[data-scene='secret'] .chat-msg.bot {
+  color: #cccccc;
+}
+
+html[data-scene='secret'] .poem-text.green,
+html[data-scene='secret'] .chat-msg.user {
+  color: #888888;
+}
+
+html[data-scene='secret'] .inline-link:hover {
+  color: #ffffff;
+}
+
+.scramble-word {
+  color: #fff;
+  display: inline-block;
+  font-family: 'Minecraftia', monospace;
+  overflow: hidden;
+  vertical-align: baseline;
+  line-height: inherit;
+}
+
 .poem-img {
   height: 100%;
   max-height: 100%;

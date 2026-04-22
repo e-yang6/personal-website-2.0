@@ -795,18 +795,104 @@ const UI = (function () {
     });
   }
 
+  /* ── Secret-theme scramble effect ────────────────────────────
+     Picks random words from the about-me poem texts and replaces
+     them with rapidly cycling characters, like the Minecraft end
+     credits poem. Each scrambled word is white and changes every
+     50 ms. The original text is preserved in a data attribute so
+     the effect is purely visual.
+  ────────────────────────────────────────────────────────────── */
+  var scrambleTimers = [];
+  var SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+
+  function applySecretScramble() {
+    // clean up any previous timers
+    scrambleTimers.forEach(function (id) { clearInterval(id); });
+    scrambleTimers = [];
+
+    var poemEls = document.querySelectorAll('.poem-text.cyan, .poem-text.green');
+    poemEls.forEach(function (el) {
+      // Walk only top-level text nodes (skip <a> links)
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+      var textNodes = [];
+      while (walker.nextNode()) {
+        // only include direct children or text nodes not inside <a>
+        var parent = walker.currentNode.parentNode;
+        if (parent === el) textNodes.push(walker.currentNode);
+      }
+
+      textNodes.forEach(function (node) {
+        var text = node.textContent;
+        var words = text.split(/(\s+)/); // preserve whitespace tokens
+        if (words.length < 2) return;
+
+        var frag = document.createDocumentFragment();
+        words.forEach(function (word) {
+          // whitespace or empty — keep as-is
+          if (/^\s*$/.test(word)) {
+            frag.appendChild(document.createTextNode(word));
+            return;
+          }
+          // ~15% chance to scramble a word
+          if (Math.random() < 0.15) {
+            var span = document.createElement('span');
+            span.className = 'scramble-word';
+            span.setAttribute('data-original', word);
+            span.setAttribute('data-len', word.length);
+            // render original text first so we can measure
+            span.textContent = word;
+            frag.appendChild(span);
+          } else {
+            frag.appendChild(document.createTextNode(word));
+          }
+        });
+        node.parentNode.replaceChild(frag, node);
+      });
+    });
+
+    // After DOM update: measure each scramble-word, lock dimensions, then start cycling
+    requestAnimationFrame(function () {
+      var spans = document.querySelectorAll('.scramble-word');
+      spans.forEach(function (span) {
+        var rect = span.getBoundingClientRect();
+        span.style.width = rect.width + 'px';
+        span.style.height = rect.height + 'px';
+        var len = parseInt(span.getAttribute('data-len'), 10);
+        span.textContent = randomString(len);
+        var tid = setInterval(function () {
+          span.textContent = randomString(len);
+        }, 50);
+        scrambleTimers.push(tid);
+      });
+    });
+  }
+
+  function randomString(len) {
+    var s = '';
+    for (var i = 0; i < len; i++) {
+      s += SCRAMBLE_CHARS.charAt(Math.floor(Math.random() * SCRAMBLE_CHARS.length));
+    }
+    return s;
+  }
+
   function init() {
     var overlay = document.getElementById('sub-page-overlay');
     var inner = document.getElementById('sub-page-inner');
 
     function loadSubPage(page) {
       if (!pages[page]) return false;
+      // clean up scramble timers from about page
+      scrambleTimers.forEach(function (id) { clearInterval(id); });
+      scrambleTimers = [];
       if (typeof Chatbot !== 'undefined') Chatbot.destroy();
       clearResumeBellSlot();
       inner.innerHTML = pages[page]();
       overlay.classList.add('visible');
       if (page === 'about' && typeof Chatbot !== 'undefined') {
         Chatbot.init();
+      }
+      if (page === 'about' && SiteScene.get() === 'secret') {
+        applySecretScramble();
       }
       if (page === 'contact') {
         initCraftingTable();

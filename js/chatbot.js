@@ -259,10 +259,85 @@ var Chatbot = (function () {
     skinAnimRandomTimer = setTimeout(tickSkinAnimRandomizer, 80 + Math.random() * 220);
   }
 
+  var secretJumpTimer = null;
+
+  function setSecretIdleAnimation() {
+    skinResponding = false;
+    clearSkinAnimRandomizer();
+    clearSecretJumpTimer();
+    if (!skinViewer || typeof skinview3d === 'undefined') return;
+    skinViewer.animation = new skinview3d.IdleAnimation();
+    skinViewer.animation.speed = 0.3;
+    applySkinVerticalOffset();
+    startSecretJumpLoop();
+  }
+
+  function clearSecretJumpTimer() {
+    if (secretJumpTimer !== null) {
+      clearTimeout(secretJumpTimer);
+      secretJumpTimer = null;
+    }
+  }
+
+  function startSecretJumpLoop() {
+    clearSecretJumpTimer();
+    secretJumpTimer = setTimeout(function doSecretJump() {
+      if (!skinViewer) return;
+      var player = skinViewer.playerObject;
+      var baseY = -8;
+
+      // random twitch: sudden head snap or body jolt or small jump
+      var action = Math.random();
+      if (action < 0.35) {
+        // head snap — sudden rotation then return
+        var headX = (Math.random() - 0.5) * 1.2;
+        var headY = (Math.random() - 0.5) * 1.4;
+        player.skin.head.rotation.x += headX;
+        player.skin.head.rotation.y += headY;
+        setTimeout(function () {
+          if (!skinViewer) return;
+          player.skin.head.rotation.x -= headX;
+          player.skin.head.rotation.y -= headY;
+        }, 80 + Math.random() * 120);
+      } else if (action < 0.65) {
+        // small vertical jump
+        player.position.y = baseY + 3 + Math.random() * 4;
+        setTimeout(function () {
+          if (!skinViewer) return;
+          player.position.y = baseY;
+        }, 100 + Math.random() * 80);
+      } else if (action < 0.85) {
+        // body rotation jolt
+        var jolt = (Math.random() - 0.5) * 0.6;
+        player.rotation.y += jolt;
+        setTimeout(function () {
+          if (!skinViewer) return;
+          player.rotation.y -= jolt;
+        }, 60 + Math.random() * 100);
+      } else {
+        // arm/leg twitch via brief animation speed burst
+        if (skinViewer.animation) {
+          skinViewer.animation.speed = 3 + Math.random() * 4;
+          setTimeout(function () {
+            if (!skinViewer || !skinViewer.animation) return;
+            skinViewer.animation.speed = 0.3;
+          }, 80 + Math.random() * 120);
+        }
+      }
+
+      secretJumpTimer = setTimeout(doSecretJump, 400 + Math.random() * 1800);
+    }, 300 + Math.random() * 1000);
+  }
+
   function setSkinIdleAnimation() {
     skinResponding = false;
     clearSkinAnimRandomizer();
+    clearSecretJumpTimer();
     if (!skinViewer || typeof skinview3d === 'undefined') return;
+    if (typeof SiteScene !== 'undefined' && SiteScene.get() === 'secret') {
+      setSecretIdleAnimation();
+      return;
+    }
     skinViewer.animation = new skinview3d.IdleAnimation();
     skinViewer.animation.speed = 0.8;
     applySkinVerticalOffset();
@@ -336,18 +411,26 @@ var Chatbot = (function () {
     var container = document.getElementById('skin-viewer');
     if (!container || typeof skinview3d === 'undefined') return;
 
+    var isSecret = typeof SiteScene !== 'undefined' && SiteScene.get() === 'secret';
+
     skinViewer = new skinview3d.SkinViewer({
       canvas: document.createElement('canvas'),
       width: container.clientWidth,
       height: container.clientHeight,
-      skin: 'assets/skin.png',
+      skin: isSecret ? 'assets/secretskin.png' : 'assets/skin.png',
       model: 'default',
     });
 
-    skinViewer.loadCape('assets/cape.png');
+    if (!isSecret) {
+      skinViewer.loadCape('assets/cape.png');
+    }
 
     skinViewer.autoRotate = false;
-    setSkinIdleAnimation();
+    if (isSecret) {
+      setSecretIdleAnimation();
+    } else {
+      setSkinIdleAnimation();
+    }
 
     skinViewer.fov = 40;
     skinViewer.nameTag = 'Ethan';
@@ -404,6 +487,7 @@ var Chatbot = (function () {
 
   function destroy() {
     clearSkinAnimRandomizer();
+    clearSecretJumpTimer();
     if (typingTimer) {
       clearTimeout(typingTimer);
       typingTimer = null;

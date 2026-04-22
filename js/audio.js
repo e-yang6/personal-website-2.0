@@ -243,22 +243,15 @@ const AudioManager = (function () {
       }
       return;
     }
-    // Switching back to normal — mute video
+    // Switching back to normal — mute video, auto-play music
     if (video) {
       video.muted = true;
     }
-    var wasPlaying = isPlaying;
     allTracks = buildTrackList();
     playlist = shufflePlaylistFromTracks(allTracks);
     currentIndex = 0;
     loadTrack(0);
-    if (wasPlaying) {
-      playTrack();
-    } else {
-      bgMusic.pause();
-      isPlaying = false;
-      updatePlayButton();
-    }
+    playTrack();
   }
 
   window.addEventListener('sitescenechange', applySceneToPlaylist);
