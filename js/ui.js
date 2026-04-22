@@ -350,6 +350,12 @@ const UI = (function () {
       existing.classList.remove('visible');
       setTimeout(function () { existing.remove(); }, 100);
     }
+    // Close sub-page overlay so user returns to main menu
+    var subOverlay = document.getElementById('sub-page-overlay');
+    if (subOverlay) {
+      if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+      subOverlay.classList.remove('visible');
+    }
 
     // Create fullscreen glitch overlay
     var overlay = document.createElement('div');
