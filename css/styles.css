@@ -2208,14 +2208,16 @@ html[data-scene='secret'] #panorama-container {
 }
 
 #glitch-overlay .glitch-text {
-  font-family: 'Minecraftia', monospace;
+  font-family: 'Didot', 'Bodoni MT', 'Noto Serif Display', 'GFS Didot', Georgia, serif;
   font-size: clamp(24px, 6vw, 64px);
+  font-weight: 400;
+  font-style: italic;
   color: #fff;
   text-align: center;
   position: relative;
   z-index: 1;
   text-transform: lowercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
 }
 
 #glitch-overlay .glitch-text::before,
