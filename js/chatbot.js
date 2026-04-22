@@ -286,46 +286,62 @@ var Chatbot = (function () {
       var player = skinViewer.playerObject;
       var baseY = -8;
 
-      // random twitch: sudden head snap or body jolt or small jump
+      // random twitch: head snap, body jolt, jump, limb spasm, or multi-glitch
       var action = Math.random();
-      if (action < 0.35) {
-        // head snap — sudden rotation then return
-        var headX = (Math.random() - 0.5) * 1.2;
-        var headY = (Math.random() - 0.5) * 1.4;
+      if (action < 0.3) {
+        // head snap — violent sudden rotation then return
+        var headX = (Math.random() - 0.5) * 2.2;
+        var headY = (Math.random() - 0.5) * 2.4;
         player.skin.head.rotation.x += headX;
         player.skin.head.rotation.y += headY;
         setTimeout(function () {
           if (!skinViewer) return;
           player.skin.head.rotation.x -= headX;
           player.skin.head.rotation.y -= headY;
-        }, 80 + Math.random() * 120);
-      } else if (action < 0.65) {
-        // small vertical jump
-        player.position.y = baseY + 3 + Math.random() * 4;
+        }, 50 + Math.random() * 100);
+      } else if (action < 0.45) {
+        // small vertical jump (kept subtle)
+        player.position.y = baseY + 2 + Math.random() * 2;
         setTimeout(function () {
           if (!skinViewer) return;
           player.position.y = baseY;
-        }, 100 + Math.random() * 80);
-      } else if (action < 0.85) {
-        // body rotation jolt
-        var jolt = (Math.random() - 0.5) * 0.6;
+        }, 80 + Math.random() * 60);
+      } else if (action < 0.65) {
+        // body rotation jolt — stronger swing
+        var jolt = (Math.random() - 0.5) * 1.4;
         player.rotation.y += jolt;
         setTimeout(function () {
           if (!skinViewer) return;
           player.rotation.y -= jolt;
-        }, 60 + Math.random() * 100);
-      } else {
-        // arm/leg twitch via brief animation speed burst
+        }, 40 + Math.random() * 80);
+      } else if (action < 0.8) {
+        // arm/leg spasm — faster burst, longer duration
         if (skinViewer.animation) {
-          skinViewer.animation.speed = 3 + Math.random() * 4;
+          skinViewer.animation.speed = 6 + Math.random() * 6;
           setTimeout(function () {
             if (!skinViewer || !skinViewer.animation) return;
             skinViewer.animation.speed = 0.3;
-          }, 80 + Math.random() * 120);
+          }, 100 + Math.random() * 200);
         }
+      } else {
+        // multi-glitch: head snap + body jolt + spasm at once
+        var mHeadX = (Math.random() - 0.5) * 2.0;
+        var mHeadY = (Math.random() - 0.5) * 2.0;
+        var mJolt = (Math.random() - 0.5) * 1.0;
+        player.skin.head.rotation.x += mHeadX;
+        player.skin.head.rotation.y += mHeadY;
+        player.rotation.y += mJolt;
+        if (skinViewer.animation) skinViewer.animation.speed = 8 + Math.random() * 5;
+        setTimeout(function () {
+          if (!skinViewer) return;
+          player.skin.head.rotation.x -= mHeadX;
+          player.skin.head.rotation.y -= mHeadY;
+          player.rotation.y -= mJolt;
+          if (skinViewer.animation) skinViewer.animation.speed = 0.3;
+        }, 60 + Math.random() * 140);
       }
 
-      secretJumpTimer = setTimeout(doSecretJump, 400 + Math.random() * 1800);
+      secretJumpTimer = setTimeout(doSecretJump, 300 + Math.random() * 1500);
     }, 300 + Math.random() * 1000);
   }
 
