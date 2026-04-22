@@ -299,6 +299,13 @@ const UI = (function () {
                 '</a>' +
                 '<a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=next" style="color: #333; text-decoration: none; font-size: 1.5rem;">→</a>' +
               '</div>' +
+              '<div style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; box-sizing: border-box; margin-top: 6px; padding: 4px 0; font-family: system-ui, -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, Helvetica, Arial, sans-serif; text-shadow: none; line-height: normal; letter-spacing: normal;">' +
+                '<a href="https://uoftwebring.com/redirect?nav=prev&amp;id=46" aria-label="Previous site in UofT Webring" style="color: #333; text-decoration: none; font-size: 1.5rem;">←</a>' +
+                '<a href="https://uoftwebring.com" target="_blank">' +
+                '<img src="https://uoftwebring.com/ring_logo.png" alt="UofT Webring" style="width: 24px; height: auto;"/>' +
+                '</a>' +
+                '<a href="https://uoftwebring.com/redirect?nav=next&amp;id=46" aria-label="Next site in UofT Webring" style="color: #333; text-decoration: none; font-size: 1.5rem;">→</a>' +
+              '</div>' +
             '</div>' +
           '</div>' +
         '</div>'
