@@ -522,8 +522,22 @@ html[data-scene='end'] #panorama-container canvas {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
   padding: 0 0.8vw;
   box-sizing: border-box;
+}
+
+#site-badge-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+#site-badge {
+  display: block;
 }
 
 .scene-switch.scene-switch--menu {
