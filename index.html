@@ -128,7 +128,12 @@
   <div id="image-lightbox" role="dialog" aria-modal="true" aria-hidden="true">
     <button id="image-lightbox-close" type="button" aria-label="Close">&times;</button>
     <button id="image-lightbox-prev" type="button" aria-label="Previous image">&lt;</button>
-    <img id="image-lightbox-img" src="" alt="">
+    <div id="image-lightbox-stack">
+      <div id="image-lightbox-frame">
+        <img id="image-lightbox-img" src="" alt="">
+      </div>
+      <div id="image-lightbox-caption"></div>
+    </div>
     <button id="image-lightbox-next" type="button" aria-label="Next image">&gt;</button>
   </div>
 

@@ -161,18 +161,18 @@ const UI = (function () {
             '<div class="poem-left">' +
               '<div class="poem-row left">' +
                 '<div class="poem-text cyan">Hi! I\'m Ethan, and I\'m a first year computer engineering student at the <a href="https://www.utoronto.ca/" target="_blank" class="inline-link">University of Toronto</a>, and an incoming API Development Intern at <a href="https://www.sunlife.ca/en/" target="_blank" class="inline-link">Sun Life</a>.</div>' +
-                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
+                '<div class="poem-img" data-lightbox="assets/image1.png" data-caption="hello world" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image1.png" alt=""></div>' +
               '</div>' +
               '<div class="poem-row right">' +
-                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
+                '<div class="poem-img" data-lightbox="assets/image2.png" data-caption="volleyball nationals 2022" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image2.png" alt=""></div>' +
                 '<div class="poem-text green">I find systems, AI/ML, and backend really interesting, and I enjoy building whatever catches my curiosity.</div>' +
               '</div>' +
               '<div class="poem-row left">' +
                 '<div class="poem-text cyan">Outside of school and coding, you\'ll find me playing volleyball or making music. I also love cats <3</div>' +
-                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
+                '<div class="poem-img" data-lightbox="assets/image3.png" data-caption="jam sesh" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image3.png" alt=""></div>' +
               '</div>' +
               '<div class="poem-row right">' +
-                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
+                '<div class="poem-img" data-lightbox="assets/image4.png" data-caption="ollie (right) and luna (left), the best cats in the world <3" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image4.png" alt=""></div>' +
                 '<div class="poem-text green">Thanks for stopping by my world. If you want to know more, feel free to explore or ask me on the right!</div>' +
               '</div>' +
             '</div>' +
@@ -914,6 +914,8 @@ const UI = (function () {
     var lightboxClose = document.getElementById('image-lightbox-close');
     var lightboxPrev = document.getElementById('image-lightbox-prev');
     var lightboxNext = document.getElementById('image-lightbox-next');
+    var lightboxCaption = document.getElementById('image-lightbox-caption');
+    var lightboxStack = document.getElementById('image-lightbox-stack');
 
     var lightboxGroup = [];
     var lightboxIndex = 0;
@@ -936,8 +938,11 @@ const UI = (function () {
     function showLightboxAt(idx) {
       if (!lightboxGroup.length || !lightboxImg) return;
       lightboxIndex = ((idx % lightboxGroup.length) + lightboxGroup.length) % lightboxGroup.length;
-      var src = lightboxGroup[lightboxIndex].getAttribute('data-lightbox');
-      lightboxImg.src = src;
+      var node = lightboxGroup[lightboxIndex];
+      lightboxImg.src = node.getAttribute('data-lightbox');
+      if (lightboxCaption) {
+        lightboxCaption.textContent = node.getAttribute('data-caption') || '';
+      }
     }
 
     function openLightbox(trigger) {
@@ -955,6 +960,7 @@ const UI = (function () {
       lightbox.classList.remove('visible');
       lightbox.setAttribute('aria-hidden', 'true');
       if (lightboxImg) lightboxImg.src = '';
+      if (lightboxCaption) lightboxCaption.textContent = '';
       lightboxGroup = [];
     }
     function playLightboxOpenSound() {
@@ -993,6 +999,7 @@ const UI = (function () {
     if (lightbox) {
       lightbox.addEventListener('click', function (e) {
         if (e.target === lightboxImg) return;
+        if (lightboxStack && lightboxStack.contains(e.target)) return;
         if (e.target === lightboxPrev || e.target === lightboxNext) return;
         closeLightbox();
       });
