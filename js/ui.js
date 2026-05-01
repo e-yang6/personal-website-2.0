@@ -161,18 +161,18 @@ const UI = (function () {
             '<div class="poem-left">' +
               '<div class="poem-row left">' +
                 '<div class="poem-text cyan">Hi! I\'m Ethan, and I\'m a first year computer engineering student at the <a href="https://www.utoronto.ca/" target="_blank" class="inline-link">University of Toronto</a>, and an incoming API Development Intern at <a href="https://www.sunlife.ca/en/" target="_blank" class="inline-link">Sun Life</a>.</div>' +
-                '<div class="poem-img"></div>' +
+                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
               '</div>' +
               '<div class="poem-row right">' +
-                '<div class="poem-img"></div>' +
+                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
                 '<div class="poem-text green">I find systems, AI/ML, and backend really interesting, and I enjoy building whatever catches my curiosity.</div>' +
               '</div>' +
               '<div class="poem-row left">' +
                 '<div class="poem-text cyan">Outside of school and coding, you\'ll find me playing volleyball or making music. I also love cats <3</div>' +
-                '<div class="poem-img"></div>' +
+                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
               '</div>' +
               '<div class="poem-row right">' +
-                '<div class="poem-img"></div>' +
+                '<div class="poem-img" data-lightbox="assets/map.png" role="button" tabindex="0" title="Click to enlarge"></div>' +
                 '<div class="poem-text green">Thanks for stopping by my world. If you want to know more, feel free to explore or ask me on the right!</div>' +
               '</div>' +
             '</div>' +
@@ -362,8 +362,7 @@ const UI = (function () {
     overlay.id = 'glitch-overlay';
     overlay.innerHTML =
       '<div class="glitch-bars"></div>' +
-      '<div class="glitch-rects"></div>' +
-      '<div class="glitch-text" data-text="get out of my head">get out of my head</div>';
+      '<div class="glitch-rects"></div>';
     document.body.appendChild(overlay);
 
     // Start video immediately while we still have the user gesture context
@@ -374,7 +373,6 @@ const UI = (function () {
       secretVideo.play().catch(function () {});
     }
 
-    var textEl = overlay.querySelector('.glitch-text');
     var barsEl = overlay.querySelector('.glitch-bars');
     var rectsEl = overlay.querySelector('.glitch-rects');
 
@@ -403,16 +401,6 @@ const UI = (function () {
 
     // JS-driven intense randomness layered on top of CSS animations
     var sporadicInterval = setInterval(function () {
-      // Aggressively flicker the text on and off
-      if (Math.random() < 0.5) {
-        textEl.style.opacity = '0';
-        setTimeout(function () { textEl.style.opacity = '1'; }, 15 + Math.random() * 40);
-      }
-      // Violently jolt the text position
-      textEl.style.transform = 'translate(' +
-        ((Math.random() - 0.5) * 40) + 'px,' +
-        ((Math.random() - 0.5) * 20) + 'px) skewX(' +
-        ((Math.random() - 0.5) * 15) + 'deg)';
       // Large random horizontal tear offset on the flash bars
       var xShift = (Math.random() - 0.5) * 80;
       var yShift = (Math.random() - 0.5) * 30;
@@ -688,6 +676,7 @@ const UI = (function () {
         ov.id = 'resume-overlay';
         ov.innerHTML =
           '<div class="resume-book">' +
+            '<div class="resume-book-hint">Click the book to open resume</div>' +
             '<div class="resume-book-composite">' +
               '<img class="resume-book-art" src="assets/book.png" alt="" role="presentation">' +
               '<div class="resume-document">' +
@@ -701,9 +690,6 @@ const UI = (function () {
         requestAnimationFrame(function () {
           requestAnimationFrame(function () { ov.classList.add('visible'); });
         });
-        setTimeout(function () {
-          openResumeInNewTab();
-        }, 1500);
         var bookEl = ov.querySelector('.resume-book');
         bookEl.addEventListener('click', function (ev) {
           ev.stopPropagation();
@@ -919,6 +905,116 @@ const UI = (function () {
       var isOn = document.body.classList.contains('readable-font');
       fontToggle.querySelector('.title').textContent = 'Friendly Font: ' + (isOn ? 'On' : 'Off');
     });
+
+    // Image lightbox: any element with [data-lightbox="path"] opens that image fullscreen.
+    // When multiple [data-lightbox] elements exist in the same container, prev/next arrows
+    // step through them in DOM order.
+    var lightbox = document.getElementById('image-lightbox');
+    var lightboxImg = document.getElementById('image-lightbox-img');
+    var lightboxClose = document.getElementById('image-lightbox-close');
+    var lightboxPrev = document.getElementById('image-lightbox-prev');
+    var lightboxNext = document.getElementById('image-lightbox-next');
+
+    var lightboxGroup = [];
+    var lightboxIndex = 0;
+
+    function buildGalleryFor(trigger) {
+      // Prefer triggers within the same logical container so unrelated lightbox
+      // images elsewhere on the page aren't pulled in.
+      var scope = trigger.closest('.about-columns, .mp-page, #sub-page-inner, #main-menu') || document;
+      var nodes = scope.querySelectorAll('[data-lightbox]');
+      if (!nodes || nodes.length < 1) return [trigger];
+      return Array.prototype.slice.call(nodes);
+    }
+
+    function updateNavButtons() {
+      var hasMultiple = lightboxGroup.length > 1;
+      if (lightboxPrev) lightboxPrev.hidden = !hasMultiple;
+      if (lightboxNext) lightboxNext.hidden = !hasMultiple;
+    }
+
+    function showLightboxAt(idx) {
+      if (!lightboxGroup.length || !lightboxImg) return;
+      lightboxIndex = ((idx % lightboxGroup.length) + lightboxGroup.length) % lightboxGroup.length;
+      var src = lightboxGroup[lightboxIndex].getAttribute('data-lightbox');
+      lightboxImg.src = src;
+    }
+
+    function openLightbox(trigger) {
+      if (!lightbox || !lightboxImg || !trigger) return;
+      lightboxGroup = buildGalleryFor(trigger);
+      var startIdx = lightboxGroup.indexOf(trigger);
+      if (startIdx < 0) startIdx = 0;
+      showLightboxAt(startIdx);
+      updateNavButtons();
+      lightbox.classList.add('visible');
+      lightbox.setAttribute('aria-hidden', 'false');
+    }
+    function closeLightbox() {
+      if (!lightbox) return;
+      lightbox.classList.remove('visible');
+      lightbox.setAttribute('aria-hidden', 'true');
+      if (lightboxImg) lightboxImg.src = '';
+      lightboxGroup = [];
+    }
+    function playLightboxOpenSound() {
+      try {
+        var s = new Audio('assets/book.mp3');
+        s.volume = 1;
+        s.play().catch(function () {});
+      } catch (e) {}
+    }
+    function stepLightbox(delta) {
+      if (lightboxGroup.length < 2) return;
+      showLightboxAt(lightboxIndex + delta);
+      playLightboxOpenSound();
+    }
+    document.addEventListener('click', function (e) {
+      var trigger = e.target.closest && e.target.closest('[data-lightbox]');
+      if (!trigger) return;
+      e.preventDefault();
+      playLightboxOpenSound();
+      openLightbox(trigger);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (!lightbox || !lightbox.classList.contains('visible')) {
+        // Allow Enter/Space to activate keyboard-focused lightbox triggers
+        if ((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.matches('[data-lightbox]')) {
+          e.preventDefault();
+          playLightboxOpenSound();
+          openLightbox(document.activeElement);
+        }
+        return;
+      }
+      if (e.key === 'Escape') closeLightbox();
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); stepLightbox(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); stepLightbox(1); }
+    });
+    if (lightbox) {
+      lightbox.addEventListener('click', function (e) {
+        if (e.target === lightboxImg) return;
+        if (e.target === lightboxPrev || e.target === lightboxNext) return;
+        closeLightbox();
+      });
+    }
+    if (lightboxClose) {
+      lightboxClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeLightbox();
+      });
+    }
+    if (lightboxPrev) {
+      lightboxPrev.addEventListener('click', function (e) {
+        e.stopPropagation();
+        stepLightbox(-1);
+      });
+    }
+    if (lightboxNext) {
+      lightboxNext.addEventListener('click', function (e) {
+        e.stopPropagation();
+        stepLightbox(1);
+      });
+    }
 
     // Sub-page buttons (main menu)
     document.querySelectorAll('[data-page]').forEach(function (btn) {

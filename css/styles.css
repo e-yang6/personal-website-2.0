@@ -1188,10 +1188,96 @@ html[data-scene='secret'] .inline-link:hover {
   max-height: 100%;
   aspect-ratio: 1;
   flex-shrink: 0;
-  border: 3px solid rgba(180, 150, 120, 0.5);
-  border-radius: 3px;
-  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
-  background: linear-gradient(135deg, #5a4a3a 0%, #7a6a5a 50%, #5a4a3a 100%);
+  background-color: transparent;
+  background-image: url('../assets/map.png');
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  cursor: pointer;
+  transition: filter 0.15s ease;
+}
+
+.poem-img:hover {
+  filter: drop-shadow(0 0 6px rgba(255, 230, 180, 0.7));
+}
+
+#image-lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  cursor: zoom-out;
+}
+
+#image-lightbox.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#image-lightbox img {
+  max-width: calc(90vw - 160px);
+  max-height: 90vh;
+  border: none;
+  background: transparent;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  flex: 0 0 auto;
+}
+
+#image-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: 'Minecraftia', monospace;
+  font-size: 40px;
+  cursor: pointer;
+  text-shadow: 2px 2px 0 #000;
+  line-height: 1;
+}
+
+#image-lightbox-prev,
+#image-lightbox-next {
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  padding-top: 48px;
+  color: #fff;
+  font-family: 'Minecraftia', monospace;
+  font-size: 48px;
+  line-height: 1;
+  text-shadow: 3px 3px 0 #000;
+  cursor: pointer;
+  user-select: none;
+  image-rendering: pixelated;
+  transition: color 0.1s ease, transform 0.1s ease;
+}
+
+#image-lightbox-prev:hover,
+#image-lightbox-next:hover {
+  color: #ffffa0;
+}
+
+#image-lightbox-prev:active,
+#image-lightbox-next:active {
+  transform: translateY(2px);
+}
+
+#image-lightbox-prev[hidden],
+#image-lightbox-next[hidden] {
+  display: none;
 }
 
 .skin-right {
@@ -2151,6 +2237,39 @@ html[data-scene='secret'] .inline-link:hover {
   display: block;
   pointer-events: none;
   image-rendering: auto;
+}
+
+.resume-book {
+  position: relative;
+}
+
+.resume-book-hint {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 14px;
+  text-align: center;
+  font-family: 'Minecraftia', monospace;
+  font-size: 20px;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.35s ease 0.35s;
+  animation: resumeHintBob 1.6s ease-in-out infinite;
+}
+
+#resume-overlay.visible .resume-book-hint {
+  opacity: 1;
+}
+
+@keyframes resumeHintBob {
+  0%, 100% { transform: translate(-50%, 0); }
+  50% { transform: translate(-50%, 6px); }
 }
 
 /* Floating item that follows cursor */

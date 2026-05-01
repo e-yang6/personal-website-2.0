@@ -260,16 +260,19 @@ var Chatbot = (function () {
   }
 
   var secretJumpTimer = null;
+  var secretFlickerTimer = null;
 
   function setSecretIdleAnimation() {
     skinResponding = false;
     clearSkinAnimRandomizer();
     clearSecretJumpTimer();
+    clearSecretFlickerTimer();
     if (!skinViewer || typeof skinview3d === 'undefined') return;
     skinViewer.animation = new skinview3d.IdleAnimation();
     skinViewer.animation.speed = 0.3;
     applySkinVerticalOffset();
     startSecretJumpLoop();
+    startSecretFlickerLoop();
   }
 
   function clearSecretJumpTimer() {
@@ -277,6 +280,55 @@ var Chatbot = (function () {
       clearTimeout(secretJumpTimer);
       secretJumpTimer = null;
     }
+  }
+
+  function clearSecretFlickerTimer() {
+    if (secretFlickerTimer !== null) {
+      clearTimeout(secretFlickerTimer);
+      secretFlickerTimer = null;
+    }
+    if (skinViewer && skinViewer.canvas) {
+      skinViewer.canvas.style.visibility = '';
+    }
+  }
+
+  function startSecretFlickerLoop() {
+    clearSecretFlickerTimer();
+    var canvas = skinViewer && skinViewer.canvas;
+    if (!canvas) return;
+    function tick() {
+      if (!skinViewer || !skinViewer.canvas) {
+        secretFlickerTimer = null;
+        return;
+      }
+      // Brief "disappear" — very short hide so it snaps back in fast
+      skinViewer.canvas.style.visibility = 'hidden';
+      var hideMs = 8 + Math.random() * 22;
+      secretFlickerTimer = setTimeout(function () {
+        if (!skinViewer || !skinViewer.canvas) {
+          secretFlickerTimer = null;
+          return;
+        }
+        skinViewer.canvas.style.visibility = 'visible';
+        // Occasionally do a rapid double-blink for extra glitchiness
+        if (Math.random() < 0.2) {
+          var blinkOn = 40 + Math.random() * 80;
+          var blinkOff = 8 + Math.random() * 18;
+          secretFlickerTimer = setTimeout(function () {
+            if (!skinViewer || !skinViewer.canvas) { secretFlickerTimer = null; return; }
+            skinViewer.canvas.style.visibility = 'hidden';
+            secretFlickerTimer = setTimeout(function () {
+              if (!skinViewer || !skinViewer.canvas) { secretFlickerTimer = null; return; }
+              skinViewer.canvas.style.visibility = 'visible';
+              secretFlickerTimer = setTimeout(tick, 1200 + Math.random() * 2800);
+            }, blinkOff);
+          }, blinkOn);
+        } else {
+          secretFlickerTimer = setTimeout(tick, 1500 + Math.random() * 3500);
+        }
+      }, hideMs);
+    }
+    secretFlickerTimer = setTimeout(tick, 800 + Math.random() * 2000);
   }
 
   function startSecretJumpLoop() {
@@ -349,6 +401,7 @@ var Chatbot = (function () {
     skinResponding = false;
     clearSkinAnimRandomizer();
     clearSecretJumpTimer();
+    clearSecretFlickerTimer();
     if (!skinViewer || typeof skinview3d === 'undefined') return;
     if (typeof SiteScene !== 'undefined' && SiteScene.get() === 'secret') {
       setSecretIdleAnimation();
@@ -504,6 +557,7 @@ var Chatbot = (function () {
   function destroy() {
     clearSkinAnimRandomizer();
     clearSecretJumpTimer();
+    clearSecretFlickerTimer();
     if (typingTimer) {
       clearTimeout(typingTimer);
       typingTimer = null;
