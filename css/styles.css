@@ -1289,6 +1289,35 @@ html[data-scene='secret'] .inline-link:hover {
   display: none;
 }
 
+/* Plain mode (e.g. project screenshots): no map frame, larger image. */
+#image-lightbox.plain #image-lightbox-frame {
+  width: auto;
+  height: auto;
+  max-width: min(1200px, calc(95vw - 160px));
+  max-height: 88vh;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#image-lightbox.plain #image-lightbox-img {
+  position: static;
+  top: auto;
+  left: auto;
+  width: auto;
+  height: auto;
+  max-width: min(1200px, calc(95vw - 160px));
+  max-height: 88vh;
+  transform: none;
+  object-fit: contain;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Anchor the side arrows further out so they sit beside the larger plain image. */
+#image-lightbox.plain #image-lightbox-prev { right: calc(50% + min(620px, 47vw - 60px)); }
+#image-lightbox.plain #image-lightbox-next { left:  calc(50% + min(620px, 47vw - 60px)); }
+
 #image-lightbox-close {
   position: absolute;
   top: 16px;
@@ -1728,6 +1757,14 @@ html[data-scene='secret'] .inline-link:hover {
   image-rendering: pixelated;
 }
 
+.mp-icon-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #2a2a2a;
+}
+
 .mp-info {
   flex: 1;
   min-width: 0;
@@ -2144,6 +2181,30 @@ html[data-scene='secret'] .inline-link:hover {
   image-rendering: pixelated;
   display: inline-flex;
   align-items: center;
+}
+
+.pd-image {
+  display: block;
+  width: 100%;
+  margin: 0 0 16px;
+  border: 2px solid #3f3f3f;
+  background: #2a2a2a;
+  cursor: pointer;
+  overflow: hidden;
+  line-height: 0;
+  transition: filter 0.15s ease, border-color 0.15s ease;
+}
+
+.pd-image img {
+  display: block;
+  width: 100%;
+  max-height: 260px;
+  object-fit: cover;
+}
+
+.pd-image:hover {
+  filter: brightness(1.1) saturate(1.1);
+  border-color: #ffffa0;
 }
 
 .pd-desc {

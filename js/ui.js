@@ -41,6 +41,7 @@ const UI = (function () {
       skills: ['TypeScript', 'Next.js', 'Three.js', 'React.js'],
       motd: 'AI travel planner generating personalized itineraries with 3D maps and immersive 360/VR previews.',
       desc: 'An AI-powered travel planner that generates personalized itineraries tailored to your preferences and budget. Explore destinations through interactive 3D maps, immersive 360 degree street-level previews, and VR-ready views before you even book your trip. Built to make travel planning visual, intuitive, and fun.',
+      image: 'assets/beavertrails.jpg',
       github: 'https://github.com/e-yang6/beavertrail',
       devpost: '#'
     },
@@ -50,6 +51,7 @@ const UI = (function () {
       skills: ['Python', 'FastAPI', 'RAG', 'TypeScript', 'Google Cloud Platform (GCP)'],
       motd: 'Multi-agent AI prediction market using RAG and LMSR to evaluate real-world claims in real time.',
       desc: 'A multi-agent AI prediction market platform that leverages Retrieval-Augmented Generation (RAG) and Logarithmic Market Scoring Rule (LMSR) to evaluate real-world claims in real time. Multiple AI agents independently research and assess claims, then aggregate their predictions into calibrated probability estimates for more accurate forecasting.',
+      image: 'assets/polymolt.jpg',
       github: 'https://github.com/e-yang6/Polymolt',
       devpost: '#'
     },
@@ -59,6 +61,7 @@ const UI = (function () {
       skills: ['Python', 'TypeScript', 'React.js', 'FastAPI'],
       motd: 'Browser-based digital audio workstation that lets you create music by turning your voice into instruments.',
       desc: 'A browser-based digital audio workstation that transforms your voice into any instrument. Sing or hum a melody, and Sinatra processes your audio input in real time to map it onto synthesized instruments, letting anyone create music without needing to know how to play an instrument.',
+      image: 'assets/sinatra.jpg',
       github: 'https://github.com/e-yang6/sinatra',
       devpost: '#',
       demo: '#'
@@ -70,6 +73,7 @@ const UI = (function () {
       skills: ['Arduino', 'Python', 'OpenCV', 'Flask', 'JavaScript'],
       motd: 'Voice-activated AI vision assistant with haptic feedback for real-time environmental awareness for visually impaired users.',
       desc: 'A voice-activated AI vision assistant designed for visually impaired users. Combines computer vision with natural language processing to describe the surrounding environment in real time, and delivers haptic feedback through wearable hardware to alert users of nearby obstacles, providing a more independent and safer navigation experience.',
+      image: 'assets/hatseye.jpg',
       github: 'https://github.com/e-yang6/hatseye',
       devpost: '#'
     },
@@ -80,6 +84,7 @@ const UI = (function () {
       skills: ['Blockchain', 'Arduino', 'Python', 'OpenCV', 'Flask'],
       motd: 'Smart home security system using facial recognition and blockchain authentication to auto-lock doors when a stranger is detected.',
       desc: 'A smart home security system that combines facial recognition with blockchain-based authentication to automatically secure your home. When an unrecognized face is detected by the camera, the system triggers an Arduino-controlled lock mechanism and logs the event on a tamper-proof blockchain ledger for verifiable security history.',
+      image: 'assets/lockblock.png',
       github: 'https://github.com/e-yang6/lockblock',
       devpost: '#'
     },
@@ -90,6 +95,7 @@ const UI = (function () {
       skills: ['Python', 'Quantitative Finance'],
       motd: 'Quantitative trading strategy with MA crossovers and momentum selection, delivering 24.3% return and 1.78 Sharpe ratio.',
       desc: 'Developed and backtested a quantitative trading strategy using moving-average crossovers, ADX trend confirmation, and momentum-based stock selection. Applied grid optimization to systematically tune parameters for consistency and robustness, ultimately delivering a 24.3% return with a Sharpe ratio of 1.78 in backtesting.',
+      image: 'assets/quantifi.jpg',
       github: 'https://github.com/e-yang6/quantifi'
     },
     {
@@ -98,6 +104,7 @@ const UI = (function () {
       skills: ['TypeScript', 'React', 'Python', 'Selenium', 'BeautifulSoup'],
       motd: '"Tinder for Kijiji" that helps you efficiently browse and match with local listings.',
       desc: 'A "Tinder for Kijiji" experience that reimagines local marketplace browsing. Swipe through curated local listings with an intuitive card-based interface, save your favorites, and instantly connect with sellers, making it faster and more enjoyable to find secondhand deals near you.',
+      image: 'assets/binder.jpg',
       github: 'https://github.com/e-yang6/binder',
       devpost: '#'
     }
@@ -108,9 +115,11 @@ const UI = (function () {
     for (var i = 0; i < projectData.length; i++) {
       var p = projectData[i];
       var displayName = p.name;
+      var iconSrc = p.image || 'assets/default.jpg';
+      var iconHtml = '<img class="mp-icon-img" src="' + iconSrc + '" alt="" loading="lazy">';
       html +=
         '<div class="mp-entry" data-project="' + i + '">' +
-          '<div class="mp-icon"><div class="mp-icon-placeholder"></div></div>' +
+          '<div class="mp-icon">' + iconHtml + '</div>' +
           '<div class="mp-info">' +
             '<div class="mp-name">' + displayName + '</div>' +
             '<div class="mp-motd">' + p.motd + '</div>' +
@@ -130,6 +139,11 @@ const UI = (function () {
 
     var awardHtml = p.award ? '<div class="pd-award">' + p.award + '</div>' : '';
     var viewLink = p.github || p.devpost || p.demo || '#';
+    var imageHtml = p.image
+      ? '<div class="pd-image" data-lightbox="' + p.image + '" data-caption="' + p.name + '" role="button" tabindex="0" title="Click to enlarge">' +
+          '<img src="' + p.image + '" alt="' + p.name + ' preview" loading="lazy">' +
+        '</div>'
+      : '';
 
     return (
       '<div class="pd-overlay" id="pd-overlay">' +
@@ -142,6 +156,7 @@ const UI = (function () {
             awardHtml +
             '<div class="pd-date">' + p.date + '</div>' +
             '<div class="pd-skills">' + skillsHtml + '</div>' +
+            imageHtml +
             '<div class="pd-desc">' + p.desc + '</div>' +
             '<div class="pd-view-row">' +
               '<button class="mc-button pd-view-btn" onclick="window.open(\'' + viewLink + '\',\'_blank\');event.stopPropagation();"><span class="title">View Project</span></button>' +
@@ -172,7 +187,7 @@ const UI = (function () {
                 '<div class="poem-img" data-lightbox="assets/image3.png" data-caption="jam sesh" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image3.png" alt=""></div>' +
               '</div>' +
               '<div class="poem-row right">' +
-                '<div class="poem-img" data-lightbox="assets/image4.png" data-caption="ollie (right) and luna (left), the best cats in the world <3" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image4.png" alt=""></div>' +
+                '<div class="poem-img" data-lightbox="assets/image4.png" data-caption="ollie (right) and luna (left), the cutest cats in the world <3" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image4.png" alt=""></div>' +
                 '<div class="poem-text green">Thanks for stopping by my world. If you want to know more, feel free to explore or ask me on the right!</div>' +
               '</div>' +
             '</div>' +
@@ -923,7 +938,7 @@ const UI = (function () {
     function buildGalleryFor(trigger) {
       // Prefer triggers within the same logical container so unrelated lightbox
       // images elsewhere on the page aren't pulled in.
-      var scope = trigger.closest('.about-columns, .mp-page, #sub-page-inner, #main-menu') || document;
+      var scope = trigger.closest('.pd-overlay, .about-columns, .mp-page, #sub-page-inner, #main-menu') || document;
       var nodes = scope.querySelectorAll('[data-lightbox]');
       if (!nodes || nodes.length < 1) return [trigger];
       return Array.prototype.slice.call(nodes);
@@ -950,6 +965,10 @@ const UI = (function () {
       lightboxGroup = buildGalleryFor(trigger);
       var startIdx = lightboxGroup.indexOf(trigger);
       if (startIdx < 0) startIdx = 0;
+      // Project-popup images and any explicit data-lightbox-plain triggers skip the
+      // map.png frame and use a larger, plain presentation so screenshots are legible.
+      var plain = !!(trigger.closest && (trigger.closest('.pd-overlay') || trigger.hasAttribute('data-lightbox-plain')));
+      lightbox.classList.toggle('plain', plain);
       showLightboxAt(startIdx);
       updateNavButtons();
       lightbox.classList.add('visible');
@@ -958,6 +977,7 @@ const UI = (function () {
     function closeLightbox() {
       if (!lightbox) return;
       lightbox.classList.remove('visible');
+      lightbox.classList.remove('plain');
       lightbox.setAttribute('aria-hidden', 'true');
       if (lightboxImg) lightboxImg.src = '';
       if (lightboxCaption) lightboxCaption.textContent = '';
