@@ -1089,6 +1089,133 @@ const UI = (function () {
       });
     });
 
+    // Quick-view overview toggle (#btn-overview hides the menu buttons and
+    // fades in a one-page condensed portfolio).
+    var overviewPage = document.getElementById('overview-page');
+    var overviewBtn = document.getElementById('btn-overview');
+    var overviewBuilt = false;
+
+    function buildOverviewHtml() {
+      var projectsHtml = '';
+      for (var i = 0; i < projectData.length; i++) {
+        var p = projectData[i];
+        projectsHtml +=
+          '<button class="ov-project" type="button" data-project="' + i + '">' +
+            '<span class="ov-project-name">' + p.name + '</span>' +
+            '<span class="ov-project-date">' + p.date + '</span>' +
+          '</button>';
+      }
+      return (
+        '<button class="ov-back" type="button" id="overview-back" aria-label="Back to menu" title="Back to menu">\u2190</button>' +
+        '<div class="ov-tagline">First-year Computer Engineering @ University of Toronto</div>' +
+        '<div class="ov-section ov-about">' +
+          '<div class="ov-heading">About</div>' +
+          '<p>Hi, I\'m Ethan. First-year Computer Engineering at the University of Toronto, ' +
+          'and an incoming API Development Intern at Sun Life. I find systems, AI/ML, and backend ' +
+          'really interesting, and I enjoy building whatever catches my curiosity. Outside of school ' +
+          'and coding you\'ll find me playing volleyball or making music.</p>' +
+        '</div>' +
+        '<div class="ov-section">' +
+          '<div class="ov-heading">Projects</div>' +
+          '<div class="ov-project-list">' + projectsHtml + '</div>' +
+        '</div>' +
+        '<div class="ov-row-split">' +
+          '<div class="ov-section">' +
+            '<div class="ov-heading">Resume</div>' +
+            '<button class="ov-resume-link" type="button" id="overview-resume">View PDF \u2192</button>' +
+          '</div>' +
+          '<div class="ov-section">' +
+            '<div class="ov-heading">Contact</div>' +
+            '<div class="ov-contacts">' +
+              '<a class="ov-contact-link" href="mailto:ethn.yang@mail.utoronto.ca">Email</a>' +
+              '<a class="ov-contact-link" href="https://www.linkedin.com/in/ey6/" target="_blank" rel="noopener">LinkedIn</a>' +
+              '<a class="ov-contact-link" href="https://github.com/e-yang6" target="_blank" rel="noopener">GitHub</a>' +
+              '<a class="ov-contact-link" href="https://x.com/e_yang6" target="_blank" rel="noopener">Twitter</a>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }
+
+    function ensureOverviewBuilt() {
+      if (overviewBuilt || !overviewPage) return;
+      overviewPage.innerHTML = buildOverviewHtml();
+      overviewBuilt = true;
+
+      var backBtn = document.getElementById('overview-back');
+      if (backBtn) {
+        backBtn.addEventListener('click', function () {
+          AudioManager.playClick();
+          closeOverview();
+        });
+      }
+
+      var resumeBtn = document.getElementById('overview-resume');
+      if (resumeBtn) {
+        resumeBtn.addEventListener('click', function () {
+          AudioManager.playClick();
+          openResumeInNewTab();
+        });
+      }
+
+      overviewPage.addEventListener('click', function (e) {
+        var proj = e.target.closest('.ov-project');
+        if (!proj) return;
+        AudioManager.playClick();
+        var idx = parseInt(proj.getAttribute('data-project'), 10);
+        if (!isNaN(idx)) {
+          showPopup(buildProjectDetail(idx));
+        }
+      });
+    }
+
+    var langHintEl = overviewBtn ? overviewBtn.querySelector('.lang-hint') : null;
+
+    function setLangHint(text) {
+      if (langHintEl) langHintEl.textContent = text;
+    }
+
+    function openOverview() {
+      if (!overviewPage) return;
+      ensureOverviewBuilt();
+      document.body.classList.add('overview-mode');
+      overviewPage.classList.add('visible');
+      overviewPage.setAttribute('aria-hidden', 'false');
+      setLangHint('Back to Menu');
+      if (overviewBtn) overviewBtn.setAttribute('title', 'Return to the main menu');
+    }
+
+    function closeOverview() {
+      if (!overviewPage) return;
+      document.body.classList.remove('overview-mode');
+      overviewPage.classList.remove('visible');
+      overviewPage.setAttribute('aria-hidden', 'true');
+      setLangHint('Quick View');
+      if (overviewBtn) overviewBtn.setAttribute('title', 'Quick view of everything on one page');
+    }
+
+    if (overviewBtn) {
+      overviewBtn.addEventListener('click', function () {
+        AudioManager.playClick();
+        if (document.body.classList.contains('overview-mode')) {
+          closeOverview();
+        } else {
+          openOverview();
+        }
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && document.body.classList.contains('overview-mode')) {
+        // Don't fight other Escape handlers (lightbox, popups). Only close if those aren't visible.
+        var lb = document.getElementById('image-lightbox');
+        var pd = document.getElementById('pd-overlay');
+        var sub = document.getElementById('sub-page-overlay');
+        if ((lb && lb.classList.contains('visible')) || pd || (sub && sub.classList.contains('visible'))) return;
+        closeOverview();
+      }
+    });
+
     // Back button
     document.getElementById('btn-back').addEventListener('click', function () {
       AudioManager.playClick();

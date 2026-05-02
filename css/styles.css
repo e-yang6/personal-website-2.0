@@ -127,6 +127,24 @@ html, body {
   opacity: 1;
 }
 
+/* Quick-view mode: fade out all menu buttons (main menu, world scene switch,
+   friendly font toggle). The dedicated back button inside the overview panel
+   is the way back. */
+#menu-buttons > .mc-button,
+#menu-buttons > .double,
+#scene-switch,
+#font-toggle {
+  transition: opacity 0.4s ease;
+}
+
+body.overview-mode #menu-buttons > .mc-button,
+body.overview-mode #menu-buttons > .double,
+body.overview-mode #scene-switch,
+body.overview-mode #font-toggle {
+  opacity: 0;
+  pointer-events: none;
+}
+
 #music-player:not(.visible) {
   pointer-events: none;
 }
@@ -359,10 +377,61 @@ html[data-scene='end'] #panorama-container canvas {
   box-shadow: inset -2px -4px #0004, inset 2px 2px #fff5;
 }
 
+.mc-button.lang {
+  position: relative;
+  /* Subtle attention pulse so the button reads as something to try. */
+  animation: lang-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes lang-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 85, 0); }
+  50%      { box-shadow: 0 0 0 4px rgba(255, 255, 85, 0.45); }
+}
+
+body.overview-mode .mc-button.lang {
+  animation: none;
+}
+
 .mc-button.lang img {
   width: 40px;
   height: 40px;
 }
+
+/* Persistent label under the lang button so its purpose is obvious. */
+.lang-hint {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Minecraftia', monospace;
+  font-size: 13px;
+  letter-spacing: 1px;
+  color: #ffff55;
+  text-shadow: 2px 2px 0 #3f3f00, 3px 3px 0 #000;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  opacity: 1;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+/* Tiny upward chevron above the label to point at the button. */
+.lang-hint::before {
+  content: '\25B2';
+  display: block;
+  font-size: 8px;
+  line-height: 1;
+  margin-bottom: 3px;
+  text-align: center;
+  opacity: 0.9;
+  animation: lang-hint-bob 1.6s ease-in-out infinite;
+}
+
+@keyframes lang-hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
 
 .mc-button.lang .title {
   padding-top: 0;
@@ -2572,5 +2641,261 @@ html[data-scene='secret'] #panorama-container {
   font-size: 10px;
   margin-top: 14px;
   font-family: 'Minecraftia', monospace;
+}
+
+/* ═══════════════════════════════════════
+   QUICK-VIEW OVERVIEW
+   Toggled by #btn-overview. Fades in directly on the main page in
+   place of the menu buttons. No card chrome — just text on the panorama.
+   ═══════════════════════════════════════ */
+.overview-page {
+  position: fixed;
+  /* Sits below the title with breathing room. The bottom dock buttons fade
+     out in overview mode, so we only need a small bottom gutter for the
+     version/copyright strip. */
+  top: clamp(190px, 23vh, 270px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(880px, 92vw);
+  max-height: calc(100vh - clamp(220px, 27vh, 310px));
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  /* Dark translucent panel for legible text on every panorama scene. */
+  background: rgba(0, 0, 0, 0.62);
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55);
+  padding: 14px clamp(20px, 3vw, 36px) 26px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.overview-page.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.overview-page::-webkit-scrollbar { width: 6px; }
+.overview-page::-webkit-scrollbar-track { background: transparent; }
+.overview-page::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); }
+
+/* Back button: lives inside the dark box at top-left, intentionally
+   different look from the lang/earth button so it's clearly "exit". */
+.ov-back {
+  position: sticky;
+  top: 0;
+  align-self: flex-end;
+  margin: -2px -8px -10px 0;
+  width: 32px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: rgba(35, 35, 35, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  /* Use a system font for the arrow glyph; Minecraftia's bitmap glyphs can
+     sit oddly inside small buttons. */
+  font-family: 'Segoe UI', Verdana, sans-serif;
+  font-size: 16px;
+  line-height: 1;
+  color: #ddd;
+  text-shadow: 1px 1px 0 #000;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+
+.ov-back:hover {
+  background: rgba(70, 70, 70, 0.95);
+  color: #ffff55;
+  border-color: rgba(255, 255, 160, 0.55);
+}
+
+.ov-tagline {
+  font-family: 'Minecraftia', monospace;
+  font-size: 15px;
+  color: #cccccc;
+  text-shadow: 2px 2px 0 #000;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.ov-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ov-heading {
+  font-family: 'Minecraftia', monospace;
+  font-size: 22px;
+  color: #ffff55;
+  text-shadow: 2px 2px 0 #3f3f00, 3px 3px 0 #000;
+  letter-spacing: 1px;
+}
+
+.ov-about p {
+  margin: 0;
+  font-family: 'Minecraftia', monospace;
+  font-size: 15px;
+  color: #f0f0f0;
+  line-height: 2.1;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.ov-project-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 24px;
+}
+
+.ov-project {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: transparent;
+  border: none;
+  padding: 4px 0;
+  font-family: 'Minecraftia', monospace;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  transition: color 0.12s ease, transform 0.12s ease;
+}
+
+.ov-project:hover {
+  color: #ffffa0;
+  transform: translateX(3px);
+}
+
+.ov-project-name {
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1;
+  min-width: 0;
+}
+
+.ov-project-award {
+  color: #ffaa00;
+  margin-left: 6px;
+}
+
+.ov-project-date {
+  font-size: 12px;
+  color: #bbb;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.ov-row-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+}
+
+.ov-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-family: 'Minecraftia', monospace;
+  font-size: 15px;
+}
+
+.ov-contact-link {
+  color: #55ffff;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: -1px;
+  text-shadow: 1px 1px 0 #000;
+  transition: color 0.12s ease;
+}
+
+.ov-contact-link:hover {
+  color: #ffff55;
+}
+
+.ov-resume-link {
+  display: inline-block;
+  padding: 0;
+  background: transparent;
+  border: none;
+  font-family: 'Minecraftia', monospace;
+  font-size: 15px;
+  color: #55ffff;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: -1px;
+  text-shadow: 2px 2px 0 #000;
+  cursor: pointer;
+  transition: color 0.12s ease;
+}
+
+.ov-resume-link:hover {
+  color: #ffff55;
+}
+
+/* Medium widths and shorter desktop windows: tighten spacing and shrink type
+   so the panel doesn't fight the title above. */
+@media (max-width: 1100px), (max-height: 800px) {
+  .overview-page {
+    top: clamp(150px, 19vh, 210px);
+    max-height: calc(100vh - clamp(170px, 22vh, 240px));
+    width: min(820px, 94vw);
+    padding: 12px clamp(16px, 2.5vw, 28px) 20px;
+    gap: 14px;
+  }
+
+  .ov-tagline      { font-size: 13px; }
+  .ov-heading      { font-size: 18px; }
+  .ov-about p      { font-size: 13px; line-height: 1.8; }
+  .ov-project-name { font-size: 13px; }
+  .ov-project-date { font-size: 11px; }
+  .ov-resume-link,
+  .ov-contacts     { font-size: 13px; }
+
+  .ov-section      { gap: 8px; }
+  .ov-project-list { gap: 4px 18px; }
+  .ov-row-split    { gap: 18px; }
+}
+
+/* Narrow viewports: stack the project list and resume/contact split. */
+@media (max-width: 900px) {
+  .overview-page {
+    width: min(680px, 96vw);
+    gap: 12px;
+  }
+
+  .ov-project-list,
+  .ov-row-split {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .ov-row-split    { gap: 12px; }
+  .ov-contacts     { gap: 6px 14px; }
+}
+
+/* Very short windows: pull the panel up and let it use almost all the
+   leftover height (the title above is small at this size). */
+@media (max-height: 640px) {
+  .overview-page {
+    top: clamp(115px, 16vh, 165px);
+    max-height: calc(100vh - clamp(135px, 18vh, 190px));
+    padding-top: 10px;
+    padding-bottom: 16px;
+  }
+
+  .ov-about p      { line-height: 1.7; }
+  .ov-section      { gap: 6px; }
 }
 
