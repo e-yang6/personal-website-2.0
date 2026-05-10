@@ -1021,8 +1021,7 @@ const UI = (function () {
         }
         return;
       }
-      if (e.key === 'Escape') closeLightbox();
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); stepLightbox(-1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); stepLightbox(-1); }
       else if (e.key === 'ArrowRight') { e.preventDefault(); stepLightbox(1); }
     });
     if (lightbox) {
@@ -1222,13 +1221,50 @@ const UI = (function () {
     }
 
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && document.body.classList.contains('overview-mode')) {
-        // Don't fight other Escape handlers (lightbox, popups). Only close if those aren't visible.
-        var lb = document.getElementById('image-lightbox');
-        var pd = document.getElementById('pd-overlay');
-        var sub = document.getElementById('sub-page-overlay');
-        if ((lb && lb.classList.contains('visible')) || pd || (sub && sub.classList.contains('visible'))) return;
+      if (e.key !== 'Escape') return;
+
+      var lb = document.getElementById('image-lightbox');
+      if (lb && lb.classList.contains('visible')) {
+        closeLightbox();
+        e.preventDefault();
+        return;
+      }
+
+      var resumeOv = document.getElementById('resume-overlay');
+      if (resumeOv && resumeOv.classList.contains('visible')) {
+        try {
+          var closeSound = new Audio('assets/bookclose.mp3');
+          closeSound.volume = 1;
+          closeSound.play().catch(function () {});
+        } catch (err) {}
+        resumeOv.classList.remove('visible');
+        setTimeout(function () { resumeOv.remove(); }, 500);
+        e.preventDefault();
+        return;
+      }
+
+      var pd = document.getElementById('pd-overlay');
+      if (pd && pd.classList.contains('visible')) {
+        pd.classList.remove('visible');
+        setTimeout(function () {
+          pd.remove();
+          syncMusicPlayerForSurface();
+        }, 200);
+        e.preventDefault();
+        return;
+      }
+
+      var sub = document.getElementById('sub-page-overlay');
+      if (sub && sub.classList.contains('visible')) {
+        AudioManager.playClick();
+        closeSubPageToMainMenu();
+        e.preventDefault();
+        return;
+      }
+
+      if (document.body.classList.contains('overview-mode')) {
         closeOverview();
+        e.preventDefault();
       }
     });
 
