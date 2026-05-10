@@ -913,6 +913,15 @@ const UI = (function () {
       return true;
     }
 
+    function closeSubPageToMainMenu() {
+      overlay.classList.remove('visible');
+      if (typeof Chatbot !== 'undefined') Chatbot.destroy();
+      clearResumeBellSlot();
+      updateSubPageNavActive(null);
+      randomizeSplash();
+      syncMusicPlayerForSurface();
+    }
+
     var fontToggle = document.getElementById('font-toggle');
     fontToggle.addEventListener('click', function () {
       AudioManager.playClick();
@@ -1056,6 +1065,13 @@ const UI = (function () {
     var subNav = document.getElementById('sub-page-nav');
     if (subNav) {
       subNav.addEventListener('click', function (e) {
+        var mainMenuBtn = e.target.closest('[data-sub-nav-main-menu]');
+        if (mainMenuBtn) {
+          e.stopPropagation();
+          AudioManager.playClick();
+          closeSubPageToMainMenu();
+          return;
+        }
         var pageBtn = e.target.closest('[data-sub-nav-page]');
         var popupBtn = e.target.closest('[data-sub-nav-popup]');
         if (!pageBtn && !popupBtn) return;
@@ -1219,12 +1235,7 @@ const UI = (function () {
     // Back button
     document.getElementById('btn-back').addEventListener('click', function () {
       AudioManager.playClick();
-      overlay.classList.remove('visible');
-      if (typeof Chatbot !== 'undefined') Chatbot.destroy();
-      clearResumeBellSlot();
-      updateSubPageNavActive(null);
-      randomizeSplash();
-      syncMusicPlayerForSurface();
+      closeSubPageToMainMenu();
     });
 
     // Project view buttons inside sub-pages also play click
@@ -1235,12 +1246,7 @@ const UI = (function () {
       // Cancel/Done button on mp-pages
       if (e.target.closest('.mp-cancel')) {
         AudioManager.playClick();
-        overlay.classList.remove('visible');
-        if (typeof Chatbot !== 'undefined') Chatbot.destroy();
-        clearResumeBellSlot();
-        updateSubPageNavActive(null);
-        randomizeSplash();
-        syncMusicPlayerForSurface();
+        closeSubPageToMainMenu();
       }
       var entry = e.target.closest('.mp-entry');
       if (entry) {
