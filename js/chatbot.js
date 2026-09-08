@@ -17,8 +17,8 @@ var Chatbot = (function () {
     'Sorry, chat isn\'t working right now. Use the preset questions to learn more!';
 
   var PRESET_QA = [
-    { q: 'What are you studying?', a: 'First year Computer Engineering at the University of Toronto.' },
-    { q: 'Where are you interning?', a: 'Incoming API Development Intern at Sun Life. Looking forward to real backend and integration work.' },
+    { q: 'What are you studying?', a: 'Second year Computer Engineering at the University of Toronto.' },
+    { q: 'Where have you worked?', a: 'Previously an API Development Intern at Sun Life. Got hands-on experience with backend and integration work.' },
     { q: 'How do I see your projects?', a: 'Open Projects from the main menu. You get the list with blurbs, and you can open a card for more detail.' },
     { q: 'Where is your resume?', a: 'Pick Resume on the main menu. It is the crafting table page, then craft the pattern to open the PDF.' },
     { q: 'How can I contact you?', a: 'Email ethn.yang@mail.utoronto.ca, LinkedIn linkedin.com/in/ey6, or GitHub github.com/e-yang6.' },

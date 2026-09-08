@@ -175,7 +175,7 @@ const UI = (function () {
 
             '<div class="poem-left">' +
               '<div class="poem-row left">' +
-                '<div class="poem-text cyan">Hi! I\'m Ethan, and I\'m a first year computer engineering student at the <a href="https://www.utoronto.ca/" target="_blank" class="inline-link">University of Toronto</a>, and an incoming API Development Intern at <a href="https://www.sunlife.ca/en/" target="_blank" class="inline-link">Sun Life</a>.</div>' +
+                '<div class="poem-text cyan">Hi! I\'m Ethan, and I\'m a second year computer engineering student at the <a href="https://www.utoronto.ca/" target="_blank" class="inline-link">University of Toronto</a>, previously an API Development Intern at <a href="https://www.sunlife.ca/en/" target="_blank" class="inline-link">Sun Life</a>.</div>' +
                 '<div class="poem-img" data-lightbox="assets/image1.png" data-caption="hello world" role="button" tabindex="0" title="Click to enlarge"><img class="poem-img-photo" src="assets/image1.png" alt=""></div>' +
               '</div>' +
               '<div class="poem-row right">' +
@@ -1122,11 +1122,11 @@ const UI = (function () {
       }
       return (
         '<button class="ov-back" type="button" id="overview-back" aria-label="Back to menu" title="Back to menu">\u2190</button>' +
-        '<div class="ov-tagline">First-year Computer Engineering @ University of Toronto</div>' +
+        '<div class="ov-tagline">Second-year Computer Engineering @ University of Toronto</div>' +
         '<div class="ov-section ov-about">' +
           '<div class="ov-heading">About</div>' +
-          '<p>Hi, I\'m Ethan. First-year Computer Engineering at the University of Toronto, ' +
-          'and an incoming API Development Intern at Sun Life. I find systems, AI/ML, and backend ' +
+          '<p>Hi, I\'m Ethan. Second-year Computer Engineering at the University of Toronto, ' +
+          'previously an API Development Intern at Sun Life. I find systems, AI/ML, and backend ' +
           'really interesting, and I enjoy building whatever catches my curiosity. Outside of school ' +
           'and coding you\'ll find me playing volleyball or making music.</p>' +
         '</div>' +
