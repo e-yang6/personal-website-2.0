@@ -1195,8 +1195,8 @@ const UI = (function () {
       document.body.classList.remove('overview-mode');
       overviewPage.classList.remove('visible');
       overviewPage.setAttribute('aria-hidden', 'true');
-      setLangHint('Quick View');
-      if (overviewBtn) overviewBtn.setAttribute('title', 'Quick view of everything on one page');
+      setLangHint('Back to Menu');
+      if (overviewBtn) overviewBtn.setAttribute('title', 'Back to menu');
     }
 
     if (overviewBtn) {
