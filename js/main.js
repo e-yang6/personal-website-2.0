@@ -39,10 +39,19 @@
   var splashLogo = document.getElementById('splash-logo');
   var splashChoices = document.getElementById('splash-choices');
 
+  var menuBgVideo = document.getElementById('menu-bg-video');
+
   // Phase 1: fade out logo after a hold
   setTimeout(function () {
     splashLogo.classList.add('hidden');
   }, 1500);
+
+  // Phase 1.5: fade in background video as splash bg goes transparent
+  setTimeout(function () {
+    splashScreen.classList.add('bg-transparent');
+    menuBgVideo.classList.add('visible');
+    menuBgVideo.play().catch(function () {});
+  }, 2000);
 
   // Phase 2: show choices after logo fades
   setTimeout(function () {
