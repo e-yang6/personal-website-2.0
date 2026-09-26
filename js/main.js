@@ -34,8 +34,29 @@
   // Init UI
   UI.init();
 
-  // After a brief moment, fade in the site on top of the splash
+  // --- Splash screen sequence ---
+  var splashScreen = document.getElementById('splash-screen');
+  var splashLogo = document.getElementById('splash-logo');
+  var splashChoices = document.getElementById('splash-choices');
+
+  // Phase 1: fade in logo
   setTimeout(function () {
+    splashLogo.classList.add('visible');
+  }, 200);
+
+  // Phase 2: fade out logo
+  setTimeout(function () {
+    splashLogo.classList.add('hidden');
+  }, 2000);
+
+  // Phase 3: show choices
+  setTimeout(function () {
+    splashChoices.classList.add('visible');
+  }, 2800);
+
+  function revealSite() {
+    splashScreen.classList.add('fade-out');
+
     document.getElementById('panorama-container').classList.add('visible');
     document.getElementById('vignette').classList.add('visible');
     document.getElementById('main-menu').classList.add('visible');
@@ -51,17 +72,29 @@
         mp.classList.remove('mp-initial-fade');
       }, 1300);
     }
-  }, 1000);
 
-  // Keep trying to start music on every interaction until it works
-  function tryStartMusic() {
-    AudioManager.startMusic(function () {
-      document.removeEventListener('click', tryStartMusic);
-      document.removeEventListener('keydown', tryStartMusic);
-      document.removeEventListener('touchstart', tryStartMusic);
-    });
+    setTimeout(function () {
+      splashScreen.style.display = 'none';
+    }, 900);
+
+    // Start music
+    function tryStartMusic() {
+      AudioManager.startMusic(function () {
+        document.removeEventListener('click', tryStartMusic);
+        document.removeEventListener('keydown', tryStartMusic);
+        document.removeEventListener('touchstart', tryStartMusic);
+      });
+    }
+    tryStartMusic();
+    document.addEventListener('click', tryStartMusic);
+    document.addEventListener('keydown', tryStartMusic);
+    document.addEventListener('touchstart', tryStartMusic);
   }
-  document.addEventListener('click', tryStartMusic);
-  document.addEventListener('keydown', tryStartMusic);
-  document.addEventListener('touchstart', tryStartMusic);
+
+  // Minecraft version: reveal the full site
+  document.getElementById('choice-minecraft').addEventListener('click', revealSite);
+
+  // Normal website: placeholder for now
+  document.getElementById('choice-normal').addEventListener('click', function () {
+  });
 })();

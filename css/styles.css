@@ -82,24 +82,73 @@ html, body {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 9000;
   background: #000000;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  gap: 0;
+  transition: opacity 0.8s ease;
 }
 
-#splash-screen {
-  flex-direction: column;
-  gap: 0;
+#splash-screen.fade-out {
+  opacity: 0;
+  pointer-events: none;
 }
 
 #splash-logo {
   width: 340px;
   height: auto;
-  opacity: 0.3;
+  opacity: 0;
   filter: grayscale(100%) brightness(0.6);
+  transition: opacity 0.8s ease;
+}
+
+#splash-logo.visible {
+  opacity: 0.3;
+}
+
+#splash-logo.hidden {
+  opacity: 0;
+}
+
+#splash-choices {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  margin-top: 40px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+
+#splash-choices.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.splash-choice {
+  display: block;
+  width: 300px;
+  padding: 14px 24px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ccc;
+  font-family: 'Minecraftia', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  letter-spacing: 1px;
+  transition: border-color 0.2s, color 0.2s, background 0.2s, text-shadow 0.2s;
+}
+
+.splash-choice:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.04);
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 #splash-hint {
@@ -107,7 +156,7 @@ html, body {
   font-size: 10px;
   color: #ffffff;
   letter-spacing: 1px;
-  margin-top: -30px;
+  margin-top: 2px;
   text-shadow:
     0 0 6px rgba(255, 255, 255, 0.95),
     0 0 14px rgba(255, 255, 255, 0.65),
