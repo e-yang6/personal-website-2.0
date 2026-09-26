@@ -59,22 +59,19 @@
     splashChoices.classList.add('visible');
   }, 2400);
 
+  var audioFadeTimer = null;
   function fadeOutVideo() {
     menuBgVideo.classList.remove('visible');
-    var fadeAudio = setInterval(function () {
+    audioFadeTimer = setInterval(function () {
       if (menuBgVideo.volume > 0.005) {
         menuBgVideo.volume = Math.max(0, menuBgVideo.volume - 0.005);
       } else {
         menuBgVideo.volume = 0;
-        clearInterval(fadeAudio);
+        clearInterval(audioFadeTimer);
+        audioFadeTimer = null;
+        menuBgVideo.pause();
       }
     }, 50);
-    menuBgVideo.addEventListener('transitionend', function () {
-      clearInterval(fadeAudio);
-      menuBgVideo.pause();
-      menuBgVideo.removeAttribute('src');
-      menuBgVideo.load();
-    }, { once: true });
   }
 
   function revealSite() {
@@ -124,8 +121,6 @@
   splashScreen.addEventListener('click', unmuteBgVideo);
   splashScreen.addEventListener('touchstart', unmuteBgVideo);
 
-  var videoSrc = menuBgVideo.getAttribute('src');
-
   window.returnToSplash = function () {
     // Hide minecraft portfolio UI
     document.getElementById('panorama-container').classList.remove('visible');
@@ -147,9 +142,9 @@
     splashScreen.classList.add('bg-transparent');
     splashChoices.classList.add('visible');
 
-    // Reload and play the video
-    menuBgVideo.setAttribute('src', videoSrc);
-    menuBgVideo.load();
+    // Resume the video instantly (already loaded)
+    if (audioFadeTimer) { clearInterval(audioFadeTimer); audioFadeTimer = null; }
+    menuBgVideo.currentTime = 0;
     menuBgVideo.volume = 0.15;
     menuBgVideo.muted = false;
     menuBgVideo.classList.add('visible');
