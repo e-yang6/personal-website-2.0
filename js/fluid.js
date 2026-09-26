@@ -22,7 +22,7 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         PRESSURE_ITERATIONS: 20,
         CURL: 30,
         SPLAT_RADIUS: 0.15,
-        SPLAT_FORCE: 3000,
+        SPLAT_FORCE: 2000,
         SHADING: true,
         COLORFUL: true,
         COLOR_UPDATE_SPEED: 10,
@@ -32,8 +32,8 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         BLOOM: true,
         BLOOM_ITERATIONS: 8,
         BLOOM_RESOLUTION: 256,
-        BLOOM_INTENSITY: 0.35,
-        BLOOM_THRESHOLD: 0.3,
+        BLOOM_INTENSITY: 0.2,
+        BLOOM_THRESHOLD: 0.4,
         BLOOM_SOFT_KNEE: 0.7,
         SUNRAYS: false,
         SUNRAYS_RESOLUTION: 196,
@@ -1046,26 +1046,21 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         return radius;
     }
 
-    // Mouse/touch: always splat on move (no click required) — fin-through-water effect
-    canvas.addEventListener('mousemove', function (e) {
+    // Mouse: track across entire page (not just canvas) — fin-through-water effect
+    document.addEventListener('mousemove', function (e) {
         var pointer = pointers[0];
+        var rect = canvas.getBoundingClientRect();
+        var posX = scaleByPixelRatio(e.clientX - rect.left);
+        var posY = scaleByPixelRatio(e.clientY - rect.top);
         if (!pointer.down) {
             pointer.down = true;
             pointer.color = generateColor();
-            var posX = scaleByPixelRatio(e.offsetX);
-            var posY = scaleByPixelRatio(e.offsetY);
             pointer.texcoordX = posX / canvas.width;
             pointer.texcoordY = 1.0 - posY / canvas.height;
             pointer.prevTexcoordX = pointer.texcoordX;
             pointer.prevTexcoordY = pointer.texcoordY;
         }
-        var posX = scaleByPixelRatio(e.offsetX);
-        var posY = scaleByPixelRatio(e.offsetY);
         updatePointerMoveData(pointer, posX, posY);
-    });
-
-    canvas.addEventListener('mouseleave', function () {
-        pointers[0].down = false;
     });
 
     canvas.addEventListener('touchstart', function (e) {
@@ -1142,10 +1137,10 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
 
     function generateColor () {
         var hue = 0.5 + Math.random() * 0.17;
-        var c = HSVtoRGB(hue, 0.5, 0.5);
-        c.r *= 0.12;
-        c.g *= 0.12;
-        c.b *= 0.12;
+        var c = HSVtoRGB(hue, 0.4, 0.35);
+        c.r *= 0.05;
+        c.g *= 0.05;
+        c.b *= 0.05;
         return c;
     }
 
