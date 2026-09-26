@@ -42,6 +42,24 @@
   var menuBgVideo = document.getElementById('menu-bg-video');
   menuBgVideo.volume = 0.15;
 
+  // Subtle parallax on splash background video
+  var parallaxX = 0, parallaxY = 0, targetX = 0, targetY = 0;
+  var parallaxFrame = 0;
+  function lerpParallax() {
+    parallaxX += (targetX - parallaxX) * 0.06;
+    parallaxY += (targetY - parallaxY) * 0.06;
+    menuBgVideo.style.transform = 'translate(' + parallaxX + 'px,' + parallaxY + 'px)';
+    parallaxFrame = requestAnimationFrame(lerpParallax);
+  }
+  splashScreen.addEventListener('mousemove', function (e) {
+    var cx = (e.clientX / window.innerWidth - 0.5) * 2;
+    var cy = (e.clientY / window.innerHeight - 0.5) * 2;
+    targetX = cx * -12;
+    targetY = cy * -8;
+    if (!parallaxFrame) parallaxFrame = requestAnimationFrame(lerpParallax);
+  });
+  parallaxFrame = requestAnimationFrame(lerpParallax);
+
   // Phase 1: fade out logo after a hold
   setTimeout(function () {
     splashLogo.classList.add('hidden');
@@ -60,7 +78,13 @@
   }, 2400);
 
   var audioFadeTimer = null;
+  function stopParallax() {
+    if (parallaxFrame) { cancelAnimationFrame(parallaxFrame); parallaxFrame = 0; }
+    menuBgVideo.style.transform = '';
+  }
+
   function fadeOutVideo() {
+    stopParallax();
     menuBgVideo.classList.remove('visible');
     audioFadeTimer = setInterval(function () {
       if (menuBgVideo.volume > 0.005) {
@@ -151,6 +175,7 @@
     menuBgVideo.muted = false;
     menuBgVideo.classList.add('visible');
     menuBgVideo.play().catch(function () {});
+    parallaxFrame = requestAnimationFrame(lerpParallax);
   };
 
   // Minecraft version: reveal the full site
