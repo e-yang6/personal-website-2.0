@@ -22,7 +22,7 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         PRESSURE_ITERATIONS: 20,
         CURL: 30,
         SPLAT_RADIUS: 0.15,
-        SPLAT_FORCE: 2000,
+        SPLAT_FORCE: 3000,
         SHADING: true,
         COLORFUL: true,
         COLOR_UPDATE_SPEED: 10,
@@ -32,8 +32,8 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         BLOOM: true,
         BLOOM_ITERATIONS: 8,
         BLOOM_RESOLUTION: 256,
-        BLOOM_INTENSITY: 0.2,
-        BLOOM_THRESHOLD: 0.4,
+        BLOOM_INTENSITY: 0.35,
+        BLOOM_THRESHOLD: 0.3,
         BLOOM_SOFT_KNEE: 0.7,
         SUNRAYS: false,
         SUNRAYS_RESOLUTION: 196,
@@ -1142,10 +1142,10 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
 
     function generateColor () {
         var hue = 0.5 + Math.random() * 0.17;
-        var c = HSVtoRGB(hue, 0.4, 0.35);
-        c.r *= 0.05;
-        c.g *= 0.05;
-        c.b *= 0.05;
+        var c = HSVtoRGB(hue, 0.5, 0.5);
+        c.r *= 0.12;
+        c.g *= 0.12;
+        c.b *= 0.12;
         return c;
     }
 
