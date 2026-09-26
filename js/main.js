@@ -167,6 +167,8 @@
     splashLogo.classList.add('hidden');
     splashScreen.classList.add('bg-transparent');
     splashChoices.classList.add('visible');
+    var credit = document.getElementById('splash-credit');
+    if (credit) credit.style.display = '';
 
     // Resume the video instantly (already loaded)
     if (audioFadeTimer) { clearInterval(audioFadeTimer); audioFadeTimer = null; }
