@@ -97,16 +97,6 @@ const UI = (function () {
       desc: 'Developed and backtested a quantitative trading strategy using moving-average crossovers, ADX trend confirmation, and momentum-based stock selection. Applied grid optimization to systematically tune parameters for consistency and robustness, ultimately delivering a 24.3% return with a Sharpe ratio of 1.78 in backtesting.',
       image: 'assets/quantifi.jpg',
       github: 'https://github.com/e-yang6/quantifi'
-    },
-    {
-      name: 'binder.',
-      date: 'Oct 2025',
-      skills: ['TypeScript', 'React', 'Python', 'Selenium', 'BeautifulSoup'],
-      motd: '"Tinder for Kijiji" that helps you efficiently browse and match with local listings.',
-      desc: 'A "Tinder for Kijiji" experience that reimagines local marketplace browsing. Swipe through curated local listings with an intuitive card-based interface, save your favorites, and instantly connect with sellers, making it faster and more enjoyable to find secondhand deals near you.',
-      image: 'assets/binder.jpg',
-      github: 'https://github.com/e-yang6/binder',
-      devpost: '#'
     }
   ];
 
