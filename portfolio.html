@@ -46,7 +46,23 @@
       font-weight: 600;
       line-height: 1;
       letter-spacing: -0.03em;
-      color: #f5f4f0;
+      color: transparent;
+      background: linear-gradient(to right, #f5f4f0, #999, #f5f4f0);
+      background-size: 200% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+      cursor: default;
+    }
+
+    h1:hover {
+      animation: shimmer 2.2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
     }
 
     .tagline {
