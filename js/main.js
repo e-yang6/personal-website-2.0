@@ -60,22 +60,40 @@
   });
   parallaxFrame = requestAnimationFrame(lerpParallax);
 
-  // Phase 1: fade out logo after a hold
-  setTimeout(function () {
+  // Wait for user click to proceed past the logo
+  var splashProceed = document.getElementById('splash-proceed');
+  var splashCredit = document.getElementById('splash-credit');
+  var proceeded = false;
+
+  function proceedFromLogo() {
+    if (proceeded) return;
+    proceeded = true;
+    splashScreen.removeEventListener('click', proceedFromLogo);
+    splashScreen.removeEventListener('touchstart', proceedFromLogo);
+
+    // Hide logo and "click to continue"
     splashLogo.classList.add('hidden');
-  }, 1500);
+    if (splashProceed) splashProceed.classList.add('hidden');
 
-  // Phase 1.5: fade in background video as splash bg goes transparent
-  setTimeout(function () {
-    splashScreen.classList.add('bg-transparent');
-    menuBgVideo.classList.add('visible');
-    menuBgVideo.play().catch(function () {});
-  }, 2000);
+    // Fade in video after logo fades
+    setTimeout(function () {
+      splashScreen.classList.add('bg-transparent');
+      menuBgVideo.classList.add('visible');
+      menuBgVideo.play().catch(function () {});
+      if (splashCredit) splashCredit.classList.add('visible');
+    }, 500);
 
-  // Phase 2: show choices after logo fades
-  setTimeout(function () {
-    splashChoices.classList.add('visible');
-  }, 2400);
+    // Show choices after video starts appearing
+    setTimeout(function () {
+      splashChoices.classList.add('visible');
+    }, 900);
+
+    // Unmute on this interaction
+    menuBgVideo.muted = false;
+  }
+
+  splashScreen.addEventListener('click', proceedFromLogo);
+  splashScreen.addEventListener('touchstart', proceedFromLogo);
 
   var audioFadeTimer = null;
   function stopParallax() {
@@ -100,8 +118,7 @@
 
   function revealSite() {
     splashScreen.classList.add('fade-out');
-    var credit = document.getElementById('splash-credit');
-    if (credit) credit.style.display = 'none';
+    if (splashCredit) splashCredit.classList.remove('visible');
     fadeOutVideo();
 
     document.getElementById('panorama-container').classList.add('visible');
@@ -138,14 +155,6 @@
     document.addEventListener('touchstart', tryStartMusic);
   }
 
-  // Unmute video on first user interaction with the splash screen
-  function unmuteBgVideo() {
-    menuBgVideo.muted = false;
-    splashScreen.removeEventListener('click', unmuteBgVideo);
-    splashScreen.removeEventListener('touchstart', unmuteBgVideo);
-  }
-  splashScreen.addEventListener('click', unmuteBgVideo);
-  splashScreen.addEventListener('touchstart', unmuteBgVideo);
 
   window.returnToSplash = function () {
     // Hide minecraft portfolio UI
@@ -161,14 +170,14 @@
     var bg = AudioManager.getBgMusic();
     if (bg) { bg.pause(); bg.currentTime = 0; }
 
-    // Restore splash screen with video
+    // Restore splash screen with video (skip logo phase)
     splashScreen.style.display = '';
     splashScreen.classList.remove('fade-out');
     splashLogo.classList.add('hidden');
+    if (splashProceed) splashProceed.classList.add('hidden');
     splashScreen.classList.add('bg-transparent');
     splashChoices.classList.add('visible');
-    var credit = document.getElementById('splash-credit');
-    if (credit) credit.style.display = '';
+    if (splashCredit) { splashCredit.style.display = ''; splashCredit.classList.add('visible'); }
 
     // Resume the video instantly (already loaded)
     if (audioFadeTimer) { clearInterval(audioFadeTimer); audioFadeTimer = null; }
