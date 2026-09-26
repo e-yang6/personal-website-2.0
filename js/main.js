@@ -40,6 +40,7 @@
   var splashChoices = document.getElementById('splash-choices');
 
   var menuBgVideo = document.getElementById('menu-bg-video');
+  menuBgVideo.volume = 0.15;
 
   // Phase 1: fade out logo after a hold
   setTimeout(function () {
@@ -60,7 +61,16 @@
 
   function fadeOutVideo() {
     menuBgVideo.classList.remove('visible');
+    var fadeAudio = setInterval(function () {
+      if (menuBgVideo.volume > 0.005) {
+        menuBgVideo.volume = Math.max(0, menuBgVideo.volume - 0.005);
+      } else {
+        menuBgVideo.volume = 0;
+        clearInterval(fadeAudio);
+      }
+    }, 50);
     menuBgVideo.addEventListener('transitionend', function () {
+      clearInterval(fadeAudio);
       menuBgVideo.pause();
       menuBgVideo.removeAttribute('src');
       menuBgVideo.load();
