@@ -6,7 +6,7 @@
   <title>Ethan Yang</title>
   <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -39,9 +39,9 @@
     header { margin-bottom: 48px; }
 
     h1 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: clamp(2.4rem, 6vw, 3.8rem);
-      font-weight: 400;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: clamp(2.2rem, 5.5vw, 3.2rem);
+      font-weight: 600;
       line-height: 1;
       letter-spacing: -0.03em;
       color: #f5f4f0;
@@ -50,7 +50,7 @@
     .tagline {
       margin: 12px 0 24px;
       font-size: clamp(0.95rem, 1.4vw, 1.1rem);
-      color: #888;
+      color: #aaa;
       line-height: 1.6;
     }
 
@@ -102,7 +102,7 @@
     /* --- About --- */
     .about p {
       font-size: clamp(0.95rem, 1.3vw, 1.05rem);
-      color: #bbb;
+      color: #ccc;
       line-height: 1.8;
       margin-bottom: 12px;
     }
@@ -117,17 +117,18 @@
     .about a:hover { color: #fff; }
 
     /* --- Projects --- */
-    .projects-list { display: grid; gap: 32px; }
+    .projects-list { display: grid; gap: 0; }
 
     .project {
       display: block;
       text-decoration: none;
       color: inherit;
-      padding: 16px;
-      margin: -16px;
-      border-radius: 4px;
+      padding: 20px 16px;
+      border-bottom: 1px solid #1e1e1e;
       transition: background 0.15s;
     }
+
+    .project:first-child { border-top: 1px solid #1e1e1e; }
 
     .project:hover { background: rgba(255, 255, 255, 0.03); }
 
@@ -140,10 +141,10 @@
     }
 
     .project h3 {
-      font-family: 'Source Serif 4', Georgia, serif;
-      font-size: 1.15rem;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 1.1rem;
       font-weight: 600;
-      color: #e8e6e1;
+      color: #eee;
       transition: color 0.15s;
     }
 
@@ -151,7 +152,7 @@
 
     .project-date {
       font-size: 0.75rem;
-      color: #666;
+      color: #888;
       white-space: nowrap;
       flex-shrink: 0;
     }
@@ -164,7 +165,7 @@
 
     .project p {
       font-size: 0.9rem;
-      color: #888;
+      color: #aaa;
       line-height: 1.6;
       margin-bottom: 8px;
     }
@@ -173,7 +174,7 @@
       font-size: 0.7rem;
       font-weight: 500;
       letter-spacing: 0.08em;
-      color: #555;
+      color: #777;
       text-transform: uppercase;
     }
 
@@ -310,7 +311,7 @@
 
       .back-link { top: auto; bottom: 16px; left: 16px; }
 
-      .project { padding: 12px; margin: -12px; }
+      .project { padding: 16px 12px; }
 
       .webrings { flex-direction: column; gap: 12px; }
     }
