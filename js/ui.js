@@ -1212,10 +1212,8 @@ const UI = (function () {
     if (overviewBtn) {
       overviewBtn.addEventListener('click', function () {
         AudioManager.playClick();
-        if (document.body.classList.contains('overview-mode')) {
-          closeOverview();
-        } else {
-          openOverview();
+        if (typeof window.returnToSplash === 'function') {
+          window.returnToSplash();
         }
       });
     }

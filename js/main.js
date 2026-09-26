@@ -124,6 +124,38 @@
   splashScreen.addEventListener('click', unmuteBgVideo);
   splashScreen.addEventListener('touchstart', unmuteBgVideo);
 
+  var videoSrc = menuBgVideo.getAttribute('src');
+
+  window.returnToSplash = function () {
+    // Hide minecraft portfolio UI
+    document.getElementById('panorama-container').classList.remove('visible');
+    document.getElementById('vignette').classList.remove('visible');
+    document.getElementById('main-menu').classList.remove('visible');
+    var dock = document.getElementById('menu-dock');
+    if (dock) dock.classList.remove('visible');
+    var fontToggle = document.getElementById('font-toggle');
+    if (fontToggle) fontToggle.classList.remove('visible');
+    var mp = document.getElementById('music-player');
+    if (mp) mp.classList.remove('visible');
+    var bg = AudioManager.getBgMusic();
+    if (bg) { bg.pause(); bg.currentTime = 0; }
+
+    // Restore splash screen with video
+    splashScreen.style.display = '';
+    splashScreen.classList.remove('fade-out');
+    splashLogo.classList.add('hidden');
+    splashScreen.classList.add('bg-transparent');
+    splashChoices.classList.add('visible');
+
+    // Reload and play the video
+    menuBgVideo.setAttribute('src', videoSrc);
+    menuBgVideo.load();
+    menuBgVideo.volume = 0.15;
+    menuBgVideo.muted = false;
+    menuBgVideo.classList.add('visible');
+    menuBgVideo.play().catch(function () {});
+  };
+
   // Minecraft version: reveal the full site
   document.getElementById('choice-minecraft').addEventListener('click', revealSite);
 
