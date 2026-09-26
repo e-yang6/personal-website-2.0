@@ -39,20 +39,15 @@
   var splashLogo = document.getElementById('splash-logo');
   var splashChoices = document.getElementById('splash-choices');
 
-  // Phase 1: fade in logo
-  setTimeout(function () {
-    splashLogo.classList.add('visible');
-  }, 200);
-
-  // Phase 2: fade out logo
+  // Phase 1: fade out logo after a hold
   setTimeout(function () {
     splashLogo.classList.add('hidden');
-  }, 2000);
+  }, 1500);
 
-  // Phase 3: show choices
+  // Phase 2: show choices after logo fades
   setTimeout(function () {
     splashChoices.classList.add('visible');
-  }, 2800);
+  }, 2400);
 
   function revealSite() {
     splashScreen.classList.add('fade-out');
