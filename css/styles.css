@@ -193,14 +193,20 @@ html, body {
 }
 
 #splash-credit {
-  position: absolute;
-  bottom: 14px;
-  right: 16px;
+  position: fixed;
+  bottom: 16px;
+  right: 18px;
+  z-index: 9001;
   font-family: 'Minecraftia', monospace;
-  font-size: 9px;
-  color: rgba(255, 255, 255, 0.6);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
   letter-spacing: 0.5px;
+}
+
+#splash-screen.fade-out ~ #splash-credit,
+#splash-screen[style*="display: none"] ~ #splash-credit {
+  display: none;
 }
 
 #panorama-container,
