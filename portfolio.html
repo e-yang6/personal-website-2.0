@@ -315,14 +315,13 @@
 
       .webrings { flex-direction: column; gap: 12px; }
     }
-    /* --- Ripple canvas --- */
+    /* --- Fluid canvas --- */
     #ripple-canvas {
       position: fixed;
       inset: 0;
       width: 100%;
       height: 100%;
       z-index: 0;
-      pointer-events: none;
     }
 
     .page { position: relative; z-index: 1; }
@@ -501,104 +500,6 @@
     </footer>
   </div>
 
-  <script>
-  (function () {
-    var canvas = document.getElementById('ripple-canvas');
-    var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (!gl) return;
-
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    var vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}';
-    var fs = [
-      'precision mediump float;',
-      'uniform float t;',
-      'uniform vec2 res;',
-      'uniform vec2 drops[8];',
-      'uniform float ages[8];',
-      'void main(){',
-      '  vec2 uv=(gl_FragCoord.xy/res)*2.0-1.0;',
-      '  uv.x*=res.x/res.y;',
-      '  float c=0.0;',
-      '  for(int i=0;i<8;i++){',
-      '    if(ages[i]<0.0)continue;',
-      '    vec2 d=drops[i];d.x*=res.x/res.y;',
-      '    float dist=length(uv-d);',
-      '    float age=ages[i];',
-      '    float r=age*0.8;',
-      '    float w=sin((dist-r)*28.0)*exp(-dist*2.8)*exp(-age*1.2);',
-      '    w*=smoothstep(0.0,0.15,age);',
-      '    c+=w;',
-      '  }',
-      '  vec3 bg=vec3(0.039,0.039,0.039);',
-      '  vec3 col=bg+vec3(c*0.08,c*0.09,c*0.12);',
-      '  gl_FragColor=vec4(col,1.0);',
-      '}'
-    ].join('\n');
-
-    function makeShader(src, type) {
-      var s = gl.createShader(type);
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      return s;
-    }
-    var prog = gl.createProgram();
-    gl.attachShader(prog, makeShader(vs, gl.VERTEX_SHADER));
-    gl.attachShader(prog, makeShader(fs, gl.FRAGMENT_SHADER));
-    gl.linkProgram(prog);
-    gl.useProgram(prog);
-
-    var buf = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
-    var pLoc = gl.getAttribLocation(prog, 'p');
-    gl.enableVertexAttribArray(pLoc);
-    gl.vertexAttribPointer(pLoc, 2, gl.FLOAT, false, 0, 0);
-
-    var uT = gl.getUniformLocation(prog, 't');
-    var uRes = gl.getUniformLocation(prog, 'res');
-    var uDrops = [];
-    var uAges = [];
-    for (var i = 0; i < 8; i++) {
-      uDrops.push(gl.getUniformLocation(prog, 'drops[' + i + ']'));
-      uAges.push(gl.getUniformLocation(prog, 'ages[' + i + ']'));
-    }
-
-    var drops = [];
-    for (var j = 0; j < 8; j++) drops.push({ x: 0, y: 0, time: -1 });
-    var dropIdx = 0;
-    var lastDrop = 0;
-
-    document.addEventListener('mousemove', function (e) {
-      var now = performance.now();
-      if (now - lastDrop < 120) return;
-      lastDrop = now;
-      var d = drops[dropIdx % 8];
-      d.x = (e.clientX / window.innerWidth) * 2 - 1;
-      d.y = (e.clientY / window.innerHeight) * 2 - 1;
-      d.time = now;
-      dropIdx++;
-    });
-
-    function frame(now) {
-      gl.uniform1f(uT, now * 0.001);
-      gl.uniform2f(uRes, canvas.width, canvas.height);
-      for (var k = 0; k < 8; k++) {
-        var dr = drops[k];
-        gl.uniform2f(uDrops[k], dr.x, dr.y);
-        gl.uniform1f(uAges[k], dr.time < 0 ? -1.0 : (now - dr.time) * 0.001);
-      }
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      requestAnimationFrame(frame);
-    }
-    requestAnimationFrame(frame);
-  })();
-  </script>
+  <script src="js/fluid.js"></script>
 </body>
 </html>
