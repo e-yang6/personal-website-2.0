@@ -30,9 +30,11 @@
       width: min(720px, calc(100% - 48px));
       margin: clamp(48px, 8vh, 96px) auto 80px;
       padding: clamp(28px, 5vw, 56px);
-      background: rgba(18, 18, 18, 0.92);
+      background: rgba(14, 14, 14, 0.55);
       border: 1px solid rgba(255, 255, 255, 0.06);
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
 
     /* --- Header --- */
@@ -120,7 +122,9 @@
     .projects-list { display: grid; gap: 0; }
 
     .project {
-      display: block;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
       text-decoration: none;
       color: inherit;
       padding: 20px 16px;
@@ -131,6 +135,8 @@
     .project:first-child { border-top: 1px solid #1e1e1e; }
 
     .project:hover { background: rgba(255, 255, 255, 0.03); }
+
+    .project-body { flex: 1; min-width: 0; }
 
     .project-header {
       display: flex;
@@ -178,14 +184,44 @@
       text-transform: uppercase;
     }
 
-    .project-img {
-      width: 100%;
+    .project-thumb {
+      width: 110px;
       aspect-ratio: 16 / 9;
       object-fit: cover;
-      border: 1px solid #222;
-      margin-bottom: 12px;
-      display: block;
+      border: 1px solid #262626;
+      border-radius: 4px;
+      flex-shrink: 0;
+      cursor: zoom-in;
+      transition: opacity 0.15s, border-color 0.15s;
       background: #111;
+      margin-top: 2px;
+    }
+
+    .project-thumb:hover {
+      opacity: 0.8;
+      border-color: #444;
+    }
+
+    /* --- Lightbox --- */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.88);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+    }
+
+    .lightbox.active { display: flex; }
+
+    .lightbox img {
+      max-width: 90%;
+      max-height: 90vh;
+      object-fit: contain;
+      border: 1px solid #333;
+      border-radius: 4px;
     }
 
     /* --- Contact --- */
@@ -199,16 +235,16 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
       text-decoration: none;
       color: inherit;
       transition: background 0.15s, border-color 0.15s;
     }
 
     .contact-item:hover {
-      background: rgba(255, 255, 255, 0.06);
-      border-color: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
     }
 
     .contact-label {
@@ -314,6 +350,8 @@
       .project { padding: 16px 12px; }
 
       .webrings { flex-direction: column; gap: 12px; }
+
+      .project-thumb { width: 80px; }
     }
     /* --- Fluid canvas --- */
     #ripple-canvas {
@@ -377,75 +415,89 @@
       <div class="projects-list">
 
         <a class="project" href="https://github.com/e-yang6/finance-digitisation-esp" target="_blank" rel="noreferrer">
-          <div class="project-header">
-            <h3>Finance Digitization</h3>
-            <span class="project-date">Jan 2026 &ndash; Apr 2026</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>Finance Digitization</h3>
+              <span class="project-date">Jan 2026 &ndash; Apr 2026</span>
+            </div>
+            <p>Full-stack app to digitize UofT EngSoc cheque requisitions with OCR receipt parsing and e-signature approval.</p>
+            <div class="stack">TypeScript / Next.js / PostgreSQL / AWS</div>
           </div>
-          <p>Full-stack app to digitize UofT EngSoc cheque requisitions with OCR receipt parsing and e-signature approval.</p>
-          <div class="stack">TypeScript / Next.js / PostgreSQL / AWS</div>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/beavertrail" target="_blank" rel="noreferrer">
-          <img class="project-img" src="assets/beavertrails.jpg" alt="BeaverTrails preview" loading="lazy">
-          <div class="project-header">
-            <h3>BeaverTrails</h3>
-            <span class="project-date">Mar 2026</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>BeaverTrails</h3>
+              <span class="project-date">Mar 2026</span>
+            </div>
+            <p>AI travel planner generating personalized itineraries with 3D maps and immersive 360/VR previews.</p>
+            <div class="stack">TypeScript / Next.js / Three.js / React</div>
           </div>
-          <p>AI travel planner generating personalized itineraries with 3D maps and immersive 360/VR previews.</p>
-          <div class="stack">TypeScript / Next.js / Three.js / React</div>
+          <img class="project-thumb" src="assets/beavertrails.jpg" alt="BeaverTrails preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/Polymolt" target="_blank" rel="noreferrer">
-          <img class="project-img" src="assets/polymolt.jpg" alt="Polymolt preview" loading="lazy">
-          <div class="project-header">
-            <h3>Polymolt</h3>
-            <span class="project-date">Mar 2026</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>Polymolt</h3>
+              <span class="project-date">Mar 2026</span>
+            </div>
+            <p>Multi-agent AI prediction market using RAG and LMSR to evaluate real-world claims in real time.</p>
+            <div class="stack">Python / FastAPI / RAG / TypeScript / GCP</div>
           </div>
-          <p>Multi-agent AI prediction market using RAG and LMSR to evaluate real-world claims in real time.</p>
-          <div class="stack">Python / FastAPI / RAG / TypeScript / GCP</div>
+          <img class="project-thumb" src="assets/polymolt.jpg" alt="Polymolt preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/sinatra" target="_blank" rel="noreferrer">
-          <img class="project-img" src="assets/sinatra.jpg" alt="Sinatra preview" loading="lazy">
-          <div class="project-header">
-            <h3>Sinatra</h3>
-            <span class="project-date">Feb &ndash; Mar 2026</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>Sinatra</h3>
+              <span class="project-date">Feb &ndash; Mar 2026</span>
+            </div>
+            <p>Browser-based digital audio workstation that lets you create music by turning your voice into instruments.</p>
+            <div class="stack">Python / TypeScript / React / FastAPI</div>
           </div>
-          <p>Browser-based digital audio workstation that lets you create music by turning your voice into instruments.</p>
-          <div class="stack">Python / TypeScript / React / FastAPI</div>
+          <img class="project-thumb" src="assets/sinatra.jpg" alt="Sinatra preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/hatseye" target="_blank" rel="noreferrer">
-          <img class="project-img" src="assets/hatseye.jpg" alt="HATSEYE preview" loading="lazy">
-          <div class="project-header">
-            <h3>HATSEYE</h3>
-            <span class="project-date">Jan 2026</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>HATSEYE</h3>
+              <span class="project-date">Jan 2026</span>
+            </div>
+            <div class="project-award">DeltaHacks 12 Finalist</div>
+            <p>Voice-activated AI vision assistant with haptic feedback for real-time environmental awareness for visually impaired users.</p>
+            <div class="stack">Arduino / Python / OpenCV / Flask / JavaScript</div>
           </div>
-          <div class="project-award">DeltaHacks 12 Finalist</div>
-          <p>Voice-activated AI vision assistant with haptic feedback for real-time environmental awareness for visually impaired users.</p>
-          <div class="stack">Arduino / Python / OpenCV / Flask / JavaScript</div>
+          <img class="project-thumb" src="assets/hatseye.jpg" alt="HATSEYE preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/lockblock" target="_blank" rel="noreferrer">
-          <img class="project-img" src="assets/lockblock.png" alt="Lock Block preview" loading="lazy">
-          <div class="project-header">
-            <h3>Lock Block</h3>
-            <span class="project-date">Jan 2026</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>Lock Block</h3>
+              <span class="project-date">Jan 2026</span>
+            </div>
+            <div class="project-award">HackHive 2026 Winner</div>
+            <p>Smart home security system using facial recognition and blockchain authentication to auto-lock doors when a stranger is detected.</p>
+            <div class="stack">Blockchain / Arduino / Python / OpenCV / Flask</div>
           </div>
-          <div class="project-award">HackHive 2026 Winner</div>
-          <p>Smart home security system using facial recognition and blockchain authentication to auto-lock doors when a stranger is detected.</p>
-          <div class="stack">Blockchain / Arduino / Python / OpenCV / Flask</div>
+          <img class="project-thumb" src="assets/lockblock.png" alt="Lock Block preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/quantifi" target="_blank" rel="noreferrer">
-          <img class="project-img" src="assets/quantifi.jpg" alt="QuantiFi preview" loading="lazy">
-          <div class="project-header">
-            <h3>QuantiFi</h3>
-            <span class="project-date">Nov 2025</span>
+          <div class="project-body">
+            <div class="project-header">
+              <h3>QuantiFi</h3>
+              <span class="project-date">Nov 2025</span>
+            </div>
+            <div class="project-award">3rd Place @ UTEFA Competition 2025</div>
+            <p>Quantitative trading strategy with MA crossovers and momentum selection, delivering 24.3% return and 1.78 Sharpe ratio.</p>
+            <div class="stack">Python / Quantitative Finance</div>
           </div>
-          <div class="project-award">3rd Place @ UTEFA Competition 2025</div>
-          <p>Quantitative trading strategy with MA crossovers and momentum selection, delivering 24.3% return and 1.78 Sharpe ratio.</p>
-          <div class="stack">Python / Quantitative Finance</div>
+          <img class="project-thumb" src="assets/quantifi.jpg" alt="QuantiFi preview" loading="lazy" data-lightbox>
         </a>
 
       </div>
@@ -500,6 +552,34 @@
     </footer>
   </div>
 
+  <div class="lightbox" id="lightbox">
+    <img src="" alt="">
+  </div>
+
   <script src="js/fluid.js"></script>
+  <script>
+  (function () {
+    var lightbox = document.getElementById('lightbox');
+    var lightboxImg = lightbox.querySelector('img');
+
+    document.querySelectorAll('[data-lightbox]').forEach(function (thumb) {
+      thumb.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        lightboxImg.src = thumb.src;
+        lightboxImg.alt = thumb.alt;
+        lightbox.classList.add('active');
+      });
+    });
+
+    lightbox.addEventListener('click', function () {
+      lightbox.classList.remove('active');
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') lightbox.classList.remove('active');
+    });
+  })();
+  </script>
 </body>
 </html>
