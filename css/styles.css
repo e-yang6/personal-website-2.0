@@ -71,6 +71,7 @@ html, body {
   cursor: default;
   user-select: none;
   -webkit-user-select: none;
+  background: #000;
 }
 
 /* ═══════════════════════════════════════
