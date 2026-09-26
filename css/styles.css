@@ -192,6 +192,17 @@ html, body {
     0 0 28px rgba(200, 230, 255, 0.45);
 }
 
+#splash-credit {
+  position: fixed;
+  bottom: 12px;
+  right: 14px;
+  font-family: 'Minecraftia', monospace;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+  text-shadow: 1px 1px 0 #000;
+  letter-spacing: 0.5px;
+}
+
 #panorama-container,
 #vignette,
 #main-menu {
