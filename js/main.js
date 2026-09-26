@@ -58,8 +58,18 @@
     splashChoices.classList.add('visible');
   }, 2400);
 
+  function fadeOutVideo() {
+    menuBgVideo.classList.remove('visible');
+    menuBgVideo.addEventListener('transitionend', function () {
+      menuBgVideo.pause();
+      menuBgVideo.removeAttribute('src');
+      menuBgVideo.load();
+    }, { once: true });
+  }
+
   function revealSite() {
     splashScreen.classList.add('fade-out');
+    fadeOutVideo();
 
     document.getElementById('panorama-container').classList.add('visible');
     document.getElementById('vignette').classList.add('visible');
@@ -95,10 +105,20 @@
     document.addEventListener('touchstart', tryStartMusic);
   }
 
+  // Unmute video on first user interaction with the splash screen
+  function unmuteBgVideo() {
+    menuBgVideo.muted = false;
+    splashScreen.removeEventListener('click', unmuteBgVideo);
+    splashScreen.removeEventListener('touchstart', unmuteBgVideo);
+  }
+  splashScreen.addEventListener('click', unmuteBgVideo);
+  splashScreen.addEventListener('touchstart', unmuteBgVideo);
+
   // Minecraft version: reveal the full site
   document.getElementById('choice-minecraft').addEventListener('click', revealSite);
 
   // Normal website: placeholder for now
   document.getElementById('choice-normal').addEventListener('click', function () {
+    fadeOutVideo();
   });
 })();
