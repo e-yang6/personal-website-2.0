@@ -46,23 +46,33 @@
       font-weight: 600;
       line-height: 1;
       letter-spacing: -0.03em;
-      color: transparent;
-      background: linear-gradient(to right, #f5f4f0, #999, #f5f4f0);
-      background-size: 200% 100%;
-      -webkit-background-clip: text;
-      background-clip: text;
+      color: #f5f4f0;
       position: relative;
       display: inline-block;
       cursor: default;
     }
 
-    h1:hover {
+    h1::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 4px;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0) 100%);
+      background-size: 200% 100%;
+      mix-blend-mode: overlay;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
+    }
+
+    h1:hover::after {
+      opacity: 1;
       animation: shimmer 2.2s linear infinite;
     }
 
     @keyframes shimmer {
-      0% { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
     }
 
     .tagline {
