@@ -76,6 +76,8 @@
 
   function revealSite() {
     splashScreen.classList.add('fade-out');
+    var credit = document.getElementById('splash-credit');
+    if (credit) credit.style.display = 'none';
     fadeOutVideo();
 
     document.getElementById('panorama-container').classList.add('visible');
@@ -154,8 +156,8 @@
   // Minecraft version: reveal the full site
   document.getElementById('choice-minecraft').addEventListener('click', revealSite);
 
-  // Normal website: placeholder for now
+  // Normal website: navigate to portfolio page
   document.getElementById('choice-normal').addEventListener('click', function () {
-    fadeOutVideo();
+    window.location.href = 'portfolio.html';
   });
 })();
