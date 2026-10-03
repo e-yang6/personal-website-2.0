@@ -1212,4 +1212,6 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         }
         return hash;
     }
+
+    window._fluidPointer = pointers[0];
 })();
