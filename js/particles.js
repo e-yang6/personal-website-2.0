@@ -29,7 +29,7 @@
         depth: depth,
         size: 0.5 + depth * 1.5,
         baseOpacity: 0.15 + depth * 0.45,
-        twinkleSpeed: 1.5 + Math.random() * 3,
+        twinkleSpeed: Math.random() < 0.3 ? 0 : 0.3 + Math.random() * 4,
         twinkleOffset: Math.random() * Math.PI * 2,
         driftX: (Math.random() - 0.5) * 0.08,
         driftY: (Math.random() - 0.5) * 0.08
