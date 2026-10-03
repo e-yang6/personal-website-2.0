@@ -27,7 +27,7 @@
     a { color: inherit; }
 
     .page {
-      width: min(720px, calc(100% - 48px));
+      width: min(820px, calc(100% - 48px));
       margin: clamp(48px, 8vh, 96px) auto 80px;
       padding: clamp(28px, 5vw, 56px);
       background: rgba(14, 14, 14, 0.55);
@@ -143,10 +143,10 @@
 
     .about a:hover { color: #fff; }
 
-    /* --- Projects --- */
+    /* --- Projects (list for Experience) --- */
     .projects-list { display: grid; gap: 0; }
 
-    .project {
+    .projects-list .project {
       display: flex;
       align-items: flex-start;
       gap: 16px;
@@ -157,23 +157,48 @@
       transition: background 0.15s;
     }
 
-    .project:first-child { border-top: 1px solid #1e1e1e; }
+    .projects-list .project:first-child { border-top: 1px solid #1e1e1e; }
+    .projects-list .project:hover { background: rgba(255, 255, 255, 0.03); }
+    .projects-list .project h3 { font-size: 1.1rem; }
 
-    .project:hover { background: rgba(255, 255, 255, 0.03); }
+    /* --- Projects (grid for Projects section) --- */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .projects-grid .project {
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      color: inherit;
+      padding: 0;
+      border: 1px solid #1e1e1e;
+      border-radius: 6px;
+      overflow: hidden;
+      transition: background 0.15s, border-color 0.2s;
+    }
+
+    .projects-grid .project:hover {
+      background: rgba(255, 255, 255, 0.03);
+      border-color: #333;
+    }
 
     .project-body { flex: 1; min-width: 0; }
+    .projects-grid .project-body { padding: 16px; }
 
     .project-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 12px;
+      gap: 8px;
       margin-bottom: 4px;
     }
 
     .project h3 {
       font-family: 'Inter', system-ui, sans-serif;
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 600;
       color: #eee;
       transition: color 0.15s;
@@ -182,7 +207,7 @@
     .project:hover h3 { color: #fff; }
 
     .project-date {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: #888;
       white-space: nowrap;
       flex-shrink: 0;
@@ -195,14 +220,14 @@
     }
 
     .project p {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       color: #aaa;
-      line-height: 1.6;
+      line-height: 1.55;
       margin-bottom: 8px;
     }
 
     .project .stack {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 500;
       letter-spacing: 0.08em;
       color: #777;
@@ -210,21 +235,21 @@
     }
 
     .project-thumb {
-      width: 110px;
+      width: 100%;
       aspect-ratio: 16 / 9;
       object-fit: cover;
-      border: 1px solid #262626;
-      border-radius: 4px;
+      border: none;
+      border-bottom: 1px solid #1e1e1e;
+      border-radius: 0;
       flex-shrink: 0;
       cursor: zoom-in;
-      transition: opacity 0.15s, border-color 0.15s;
+      transition: opacity 0.15s;
       background: #111;
-      margin-top: 2px;
+      display: block;
     }
 
     .project-thumb:hover {
-      opacity: 0.8;
-      border-color: #444;
+      opacity: 0.85;
     }
 
     /* --- Lightbox --- */
@@ -372,11 +397,9 @@
 
       .back-link { top: auto; bottom: 16px; left: 16px; }
 
-      .project { padding: 16px 12px; }
+      .projects-grid { grid-template-columns: 1fr; }
 
       .webrings { flex-direction: column; gap: 12px; }
-
-      .project-thumb { width: 80px; }
     }
     /* --- Fluid canvas --- */
     #ripple-canvas {
@@ -437,7 +460,7 @@
 
     <div class="section">
       <h2>Projects</h2>
-      <div class="projects-list">
+      <div class="projects-grid">
 
         <a class="project" href="https://github.com/e-yang6/finance-digitisation-esp" target="_blank" rel="noreferrer">
           <div class="project-body">
@@ -451,6 +474,7 @@
         </a>
 
         <a class="project" href="https://github.com/e-yang6/beavertrail" target="_blank" rel="noreferrer">
+          <img class="project-thumb" src="assets/beavertrails.jpg" alt="BeaverTrails preview" loading="lazy" data-lightbox>
           <div class="project-body">
             <div class="project-header">
               <h3>BeaverTrails</h3>
@@ -459,10 +483,10 @@
             <p>AI travel planner generating personalized itineraries with 3D maps and immersive 360/VR previews.</p>
             <div class="stack">TypeScript / Next.js / Three.js / React</div>
           </div>
-          <img class="project-thumb" src="assets/beavertrails.jpg" alt="BeaverTrails preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/Polymolt" target="_blank" rel="noreferrer">
+          <img class="project-thumb" src="assets/polymolt.jpg" alt="Polymolt preview" loading="lazy" data-lightbox>
           <div class="project-body">
             <div class="project-header">
               <h3>Polymolt</h3>
@@ -471,10 +495,10 @@
             <p>Multi-agent AI prediction market using RAG and LMSR to evaluate real-world claims in real time.</p>
             <div class="stack">Python / FastAPI / RAG / TypeScript / GCP</div>
           </div>
-          <img class="project-thumb" src="assets/polymolt.jpg" alt="Polymolt preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/sinatra" target="_blank" rel="noreferrer">
+          <img class="project-thumb" src="assets/sinatra.jpg" alt="Sinatra preview" loading="lazy" data-lightbox>
           <div class="project-body">
             <div class="project-header">
               <h3>Sinatra</h3>
@@ -483,10 +507,10 @@
             <p>Browser-based digital audio workstation that lets you create music by turning your voice into instruments.</p>
             <div class="stack">Python / TypeScript / React / FastAPI</div>
           </div>
-          <img class="project-thumb" src="assets/sinatra.jpg" alt="Sinatra preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/hatseye" target="_blank" rel="noreferrer">
+          <img class="project-thumb" src="assets/hatseye.jpg" alt="HATSEYE preview" loading="lazy" data-lightbox>
           <div class="project-body">
             <div class="project-header">
               <h3>HATSEYE</h3>
@@ -496,10 +520,10 @@
             <p>Voice-activated AI vision assistant with haptic feedback for real-time environmental awareness for visually impaired users.</p>
             <div class="stack">Arduino / Python / OpenCV / Flask / JavaScript</div>
           </div>
-          <img class="project-thumb" src="assets/hatseye.jpg" alt="HATSEYE preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/lockblock" target="_blank" rel="noreferrer">
+          <img class="project-thumb" src="assets/lockblock.png" alt="Lock Block preview" loading="lazy" data-lightbox>
           <div class="project-body">
             <div class="project-header">
               <h3>Lock Block</h3>
@@ -509,10 +533,10 @@
             <p>Smart home security system using facial recognition and blockchain authentication to auto-lock doors when a stranger is detected.</p>
             <div class="stack">Blockchain / Arduino / Python / OpenCV / Flask</div>
           </div>
-          <img class="project-thumb" src="assets/lockblock.png" alt="Lock Block preview" loading="lazy" data-lightbox>
         </a>
 
         <a class="project" href="https://github.com/e-yang6/quantifi" target="_blank" rel="noreferrer">
+          <img class="project-thumb" src="assets/quantifi.jpg" alt="QuantiFi preview" loading="lazy" data-lightbox>
           <div class="project-body">
             <div class="project-header">
               <h3>QuantiFi</h3>
@@ -522,7 +546,6 @@
             <p>Quantitative trading strategy with MA crossovers and momentum selection, delivering 24.3% return and 1.78 Sharpe ratio.</p>
             <div class="stack">Python / Quantitative Finance</div>
           </div>
-          <img class="project-thumb" src="assets/quantifi.jpg" alt="QuantiFi preview" loading="lazy" data-lightbox>
         </a>
 
       </div>
