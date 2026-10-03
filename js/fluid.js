@@ -1054,12 +1054,12 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         var posY = scaleByPixelRatio(e.clientY - rect.top);
         if (!pointer.down) {
             pointer.down = true;
-            pointer.color = generateColor();
             pointer.texcoordX = posX / canvas.width;
             pointer.texcoordY = 1.0 - posY / canvas.height;
             pointer.prevTexcoordX = pointer.texcoordX;
             pointer.prevTexcoordY = pointer.texcoordY;
         }
+        pointer.color = generateColor();
         updatePointerMoveData(pointer, posX, posY);
     });
 
@@ -1135,8 +1135,14 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         return delta;
     }
 
+    var _cursorX = 0.5, _cursorY = 0.5;
+    document.addEventListener('mousemove', function (e) {
+        _cursorX = e.clientX / window.innerWidth;
+        _cursorY = e.clientY / window.innerHeight;
+    });
+
     function generateColor () {
-        var hue = 0.5 + Math.random() * 0.17;
+        var hue = _cursorX;
         var c = HSVtoRGB(hue, 0.4, 0.35);
         c.r *= 0.05;
         c.g *= 0.05;

@@ -6,7 +6,7 @@
   <title>Ethan Yang</title>
   <link rel="icon" type="image/png" href="assets/favicon.png?v=3">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -22,6 +22,17 @@
     body {
       overflow-y: auto;
       -webkit-font-smoothing: antialiased;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
     }
 
     a { color: inherit; }
@@ -41,9 +52,9 @@
     header { margin-bottom: 48px; }
 
     h1 {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
       font-size: clamp(2.2rem, 5.5vw, 3.2rem);
-      font-weight: 600;
+      font-weight: 700;
       line-height: 1;
       letter-spacing: -0.03em;
       color: #f5f4f0;
@@ -111,7 +122,8 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      font-size: 0.72rem;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.18em;
       text-transform: uppercase;
@@ -197,7 +209,7 @@
     }
 
     .project h3 {
-      font-family: 'Inter', system-ui, sans-serif;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
       font-size: 1rem;
       font-weight: 600;
       color: #eee;
