@@ -1138,8 +1138,8 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
     var _colorTime = Math.random() * 1000;
 
     function generateColor () {
-        _colorTime += 0.002;
-        var hue = (_colorTime * 0.05) % 1;
+        _colorTime += 0.01;
+        var hue = (_colorTime * 0.12) % 1;
         var c = HSVtoRGB(hue, 0.4, 0.35);
         c.r *= 0.05;
         c.g *= 0.05;

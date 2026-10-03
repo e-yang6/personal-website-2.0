@@ -5,8 +5,8 @@
 
   var mouse = { x: -1, y: -1, vx: 0, vy: 0 };
   var prevMouse = { x: -1, y: -1 };
-  var PUSH_RADIUS = 140;
-  var PUSH_STRENGTH = 2;
+  var PUSH_RADIUS = 80;
+  var PUSH_STRENGTH = 0.6;
   var time = 0;
 
   var stars = [];
