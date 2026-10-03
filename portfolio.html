@@ -161,7 +161,11 @@
       border-radius: 6px;
       border: 1px solid #262626;
       flex-shrink: 0;
+      cursor: zoom-in;
+      transition: border-color 0.15s;
     }
+
+    .about-img:hover { border-color: #444; }
 
     .about-caption {
       font-size: 0.7rem;
@@ -473,7 +477,7 @@
   <div class="page">
     <header>
       <h1>Ethan Yang</h1>
-      <p class="tagline">Second year Computer Engineering @ University of Toronto.</p>
+      <p class="tagline">tagline</p>
       <nav class="links">
         <a href="mailto:ethn.yang@mail.utoronto.ca">Email</a>
         <a href="https://github.com/e-yang6" target="_blank" rel="noreferrer">GitHub</a>
@@ -487,17 +491,16 @@
       <div class="about-content">
         <div class="about-text">
           <p>
-            Computer Engineering student at
+            Second year Computer Engineering at
             <a href="https://www.utoronto.ca/" target="_blank" style="display: inline-flex; align-items: center; gap: 5px;"><img src="assets/Utoronto_coa.svg.webp" alt="" style="width: 18px; height: 18px; object-fit: contain; vertical-align: middle;">University of Toronto</a>,
             interested in systems, AI/ML, and backend development.
-            I like building things that solve real problems, whether that's digitizing paper workflows or turning voice into music.
           </p>
           <p>
-            Outside of work, I play volleyball and occasionally make music. I also have two cats.
+            Outside of school I play volleyball, make music, and have two cats.
           </p>
         </div>
         <div class="about-img-wrap">
-          <img class="about-img" src="assets/image4.png" alt="Ollie and Luna">
+          <img class="about-img" src="assets/image4.png" alt="Ollie and Luna" data-lightbox>
           <div class="about-caption">Ollie &amp; Luna</div>
         </div>
       </div>
