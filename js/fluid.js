@@ -1135,14 +1135,11 @@ https://github.com/PavelDoGreat/WebGL-Fluid-Simulation
         return delta;
     }
 
-    var _cursorX = 0.5, _cursorY = 0.5;
-    document.addEventListener('mousemove', function (e) {
-        _cursorX = e.clientX / window.innerWidth;
-        _cursorY = e.clientY / window.innerHeight;
-    });
+    var _colorTime = Math.random() * 1000;
 
     function generateColor () {
-        var hue = _cursorX;
+        _colorTime += 0.002;
+        var hue = (_colorTime * 0.05) % 1;
         var c = HSVtoRGB(hue, 0.4, 0.35);
         c.r *= 0.05;
         c.g *= 0.05;
