@@ -500,11 +500,9 @@
     .back-link:hover { color: #fff; }
 
     /* --- Webrings --- */
-    .webrings {
+    .webrings-row {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 24px;
       margin-top: 12px;
       padding-top: 12px;
       border-top: 1px solid #1a1a1a;
@@ -513,7 +511,15 @@
     .made-with {
       font-size: 0.72rem;
       color: #444;
-      margin-top: 8px;
+      white-space: nowrap;
+    }
+
+    .webrings {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      flex: 1;
     }
 
     .webring {
@@ -553,6 +559,7 @@
 
       .projects-grid { grid-template-columns: 1fr; }
 
+      .webrings-row { flex-direction: column; gap: 12px; }
       .webrings { flex-direction: column; gap: 12px; }
     }
     /* --- Fluid canvas --- */
@@ -721,23 +728,25 @@
     </div>
 
     <div class="section">
-      <div class="webrings">
-        <div class="webring">
-          <a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=prev">&larr;</a>
-          <a href="https://WebRing.skule.ca/#https://ethanyang.dev" target="_blank">
-            <img src="https://webring.skule.ca/img/icon.svg" alt="SKULE WebRing">
-          </a>
-          <a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=next">&rarr;</a>
-        </div>
-        <div class="webring">
-          <a href="https://uoftwebring.com/redirect?nav=prev&id=46">&larr;</a>
-          <a href="https://uoftwebring.com" target="_blank">
-            <img src="https://uoftwebring.com/ring_logo.svg" alt="UofT Webring">
-          </a>
-          <a href="https://uoftwebring.com/redirect?nav=next&id=46">&rarr;</a>
+      <div class="webrings-row">
+        <span class="made-with">Made with &lt;3</span>
+        <div class="webrings">
+          <div class="webring">
+            <a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=prev">&larr;</a>
+            <a href="https://WebRing.skule.ca/#https://ethanyang.dev" target="_blank">
+              <img src="https://webring.skule.ca/img/icon.svg" alt="SKULE WebRing">
+            </a>
+            <a href="https://WebRing.skule.ca/#https://ethanyang.dev?nav=next">&rarr;</a>
+          </div>
+          <div class="webring">
+            <a href="https://uoftwebring.com/redirect?nav=prev&id=46">&larr;</a>
+            <a href="https://uoftwebring.com" target="_blank">
+              <img src="https://uoftwebring.com/ring_logo.svg" alt="UofT Webring">
+            </a>
+            <a href="https://uoftwebring.com/redirect?nav=next&id=46">&rarr;</a>
+          </div>
         </div>
       </div>
-      <span class="made-with">Made with &lt;3</span>
     </div>
   </div>
 
