@@ -294,15 +294,123 @@
       border-bottom: 1px solid #1e1e1e;
       border-radius: 0;
       flex-shrink: 0;
-      cursor: zoom-in;
       transition: opacity 0.15s;
       background: #111;
       display: block;
     }
 
-    .project-thumb:hover {
-      opacity: 0.85;
+    .projects-grid .project { cursor: pointer; }
+
+    /* --- Project Modal --- */
+    .project-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
+
+    .project-modal.active { display: flex; }
+
+    .project-modal-card {
+      background: #111;
+      border: 1px solid #262626;
+      border-radius: 8px;
+      max-width: 480px;
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .project-modal-card img {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      display: block;
+      border-bottom: 1px solid #1e1e1e;
+    }
+
+    .project-modal-body {
+      padding: 24px;
+    }
+
+    .project-modal-body h3 {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #eee;
+      margin-bottom: 4px;
+    }
+
+    .project-modal-body .project-date {
+      font-size: 0.75rem;
+      color: #888;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .project-modal-body .project-award {
+      font-size: 0.75rem;
+      color: #c9952a;
+      margin-bottom: 8px;
+    }
+
+    .project-modal-body p {
+      font-size: 0.9rem;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    .project-modal-body .stack {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: #777;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .project-modal-gh {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      background: #fff;
+      color: #000;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+
+    .project-modal-gh:hover { opacity: 0.85; }
+
+    .project-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      color: #aaa;
+      font-size: 1.2rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s;
+      z-index: 1;
+    }
+
+    .project-modal-close:hover { color: #fff; }
 
     /* --- Lightbox --- */
     .lightbox {
@@ -529,7 +637,7 @@
       <h2>Projects</h2>
       <div class="projects-grid">
 
-        <a class="project" href="https://github.com/e-yang6/finance-digitisation-esp" target="_blank" rel="noreferrer">
+        <div class="project" data-gh="https://github.com/e-yang6/finance-digitisation-esp">
           <div class="project-body">
             <div class="project-header">
               <h3>Finance Digitization</h3>
@@ -538,10 +646,10 @@
             <p>Full-stack app to digitize UofT EngSoc cheque requisitions with OCR receipt parsing and e-signature approval.</p>
             <div class="stack">TypeScript / Next.js / PostgreSQL / AWS</div>
           </div>
-        </a>
+        </div>
 
-        <a class="project" href="https://github.com/e-yang6/beavertrail" target="_blank" rel="noreferrer">
-          <img class="project-thumb" src="assets/beavertrails.jpg" alt="BeaverTrails preview" loading="lazy" data-lightbox>
+        <div class="project" data-gh="https://github.com/e-yang6/beavertrail" data-img="assets/beavertrails.jpg">
+          <img class="project-thumb" src="assets/beavertrails.jpg" alt="BeaverTrails preview" loading="lazy">
           <div class="project-body">
             <div class="project-header">
               <h3>BeaverTrails</h3>
@@ -550,10 +658,10 @@
             <p>AI travel planner generating personalized itineraries with 3D maps and immersive 360/VR previews.</p>
             <div class="stack">TypeScript / Next.js / Three.js / React</div>
           </div>
-        </a>
+        </div>
 
-        <a class="project" href="https://github.com/e-yang6/Polymolt" target="_blank" rel="noreferrer">
-          <img class="project-thumb" src="assets/polymolt.jpg" alt="Polymolt preview" loading="lazy" data-lightbox>
+        <div class="project" data-gh="https://github.com/e-yang6/Polymolt" data-img="assets/polymolt.jpg">
+          <img class="project-thumb" src="assets/polymolt.jpg" alt="Polymolt preview" loading="lazy">
           <div class="project-body">
             <div class="project-header">
               <h3>Polymolt</h3>
@@ -562,10 +670,10 @@
             <p>Multi-agent AI prediction market using RAG and LMSR to evaluate real-world claims in real time.</p>
             <div class="stack">Python / FastAPI / RAG / TypeScript / GCP</div>
           </div>
-        </a>
+        </div>
 
-        <a class="project" href="https://github.com/e-yang6/sinatra" target="_blank" rel="noreferrer">
-          <img class="project-thumb" src="assets/sinatra.jpg" alt="Sinatra preview" loading="lazy" data-lightbox>
+        <div class="project" data-gh="https://github.com/e-yang6/sinatra" data-img="assets/sinatra.jpg">
+          <img class="project-thumb" src="assets/sinatra.jpg" alt="Sinatra preview" loading="lazy">
           <div class="project-body">
             <div class="project-header">
               <h3>Sinatra</h3>
@@ -574,10 +682,10 @@
             <p>Browser-based digital audio workstation that lets you create music by turning your voice into instruments.</p>
             <div class="stack">Python / TypeScript / React / FastAPI</div>
           </div>
-        </a>
+        </div>
 
-        <a class="project" href="https://github.com/e-yang6/hatseye" target="_blank" rel="noreferrer">
-          <img class="project-thumb" src="assets/hatseye.jpg" alt="HATSEYE preview" loading="lazy" data-lightbox>
+        <div class="project" data-gh="https://github.com/e-yang6/hatseye" data-img="assets/hatseye.jpg">
+          <img class="project-thumb" src="assets/hatseye.jpg" alt="HATSEYE preview" loading="lazy">
           <div class="project-body">
             <div class="project-header">
               <h3>HATSEYE</h3>
@@ -587,10 +695,10 @@
             <p>Voice-activated AI vision assistant with haptic feedback for real-time environmental awareness for visually impaired users.</p>
             <div class="stack">Arduino / Python / OpenCV / Flask / JavaScript</div>
           </div>
-        </a>
+        </div>
 
-        <a class="project" href="https://github.com/e-yang6/lockblock" target="_blank" rel="noreferrer">
-          <img class="project-thumb" src="assets/lockblock.png" alt="Lock Block preview" loading="lazy" data-lightbox>
+        <div class="project" data-gh="https://github.com/e-yang6/lockblock" data-img="assets/lockblock.png">
+          <img class="project-thumb" src="assets/lockblock.png" alt="Lock Block preview" loading="lazy">
           <div class="project-body">
             <div class="project-header">
               <h3>Lock Block</h3>
@@ -600,10 +708,10 @@
             <p>Smart home security system using facial recognition and blockchain authentication to auto-lock doors when a stranger is detected.</p>
             <div class="stack">Blockchain / Arduino / Python / OpenCV / Flask</div>
           </div>
-        </a>
+        </div>
 
-        <a class="project" href="https://github.com/e-yang6/quantifi" target="_blank" rel="noreferrer">
-          <img class="project-thumb" src="assets/quantifi.jpg" alt="QuantiFi preview" loading="lazy" data-lightbox>
+        <div class="project" data-gh="https://github.com/e-yang6/quantifi" data-img="assets/quantifi.jpg">
+          <img class="project-thumb" src="assets/quantifi.jpg" alt="QuantiFi preview" loading="lazy">
           <div class="project-body">
             <div class="project-header">
               <h3>QuantiFi</h3>
@@ -613,7 +721,7 @@
             <p>Quantitative trading strategy with MA crossovers and momentum selection, delivering 24.3% return and 1.78 Sharpe ratio.</p>
             <div class="stack">Python / Quantitative Finance</div>
           </div>
-        </a>
+        </div>
 
       </div>
     </div>
@@ -642,6 +750,24 @@
     </footer>
   </div>
 
+  <div class="project-modal" id="project-modal">
+    <div class="project-modal-card">
+      <button class="project-modal-close">&times;</button>
+      <img id="pm-img" src="" alt="" style="display:none;">
+      <div class="project-modal-body">
+        <h3 id="pm-title"></h3>
+        <span class="project-date" id="pm-date"></span>
+        <div class="project-award" id="pm-award" style="display:none;"></div>
+        <p id="pm-desc"></p>
+        <div class="stack" id="pm-stack"></div>
+        <a class="project-modal-gh" id="pm-gh" href="" target="_blank" rel="noreferrer">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
   <div class="lightbox" id="lightbox">
     <img src="" alt="">
   </div>
@@ -667,8 +793,60 @@
       lightbox.classList.remove('active');
     });
 
+    // Project modal
+    var modal = document.getElementById('project-modal');
+    var pmImg = document.getElementById('pm-img');
+    var pmTitle = document.getElementById('pm-title');
+    var pmDate = document.getElementById('pm-date');
+    var pmAward = document.getElementById('pm-award');
+    var pmDesc = document.getElementById('pm-desc');
+    var pmStack = document.getElementById('pm-stack');
+    var pmGh = document.getElementById('pm-gh');
+
+    document.querySelectorAll('.projects-grid .project').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var body = card.querySelector('.project-body');
+        var img = card.getAttribute('data-img');
+        var gh = card.getAttribute('data-gh');
+
+        pmTitle.textContent = body.querySelector('h3').textContent;
+        pmDate.textContent = body.querySelector('.project-date').textContent;
+        pmDesc.textContent = body.querySelector('p').textContent;
+        pmStack.textContent = body.querySelector('.stack').textContent;
+        pmGh.href = gh;
+
+        var award = body.querySelector('.project-award');
+        if (award) {
+          pmAward.textContent = award.textContent;
+          pmAward.style.display = '';
+        } else {
+          pmAward.style.display = 'none';
+        }
+
+        if (img) {
+          pmImg.src = img;
+          pmImg.style.display = '';
+        } else {
+          pmImg.style.display = 'none';
+        }
+
+        modal.classList.add('active');
+      });
+    });
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+
+    modal.querySelector('.project-modal-close').addEventListener('click', function () {
+      modal.classList.remove('active');
+    });
+
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') lightbox.classList.remove('active');
+      if (e.key === 'Escape') {
+        lightbox.classList.remove('active');
+        modal.classList.remove('active');
+      }
     });
   })();
   </script>
