@@ -36,9 +36,11 @@
 
   // --- Splash logo sequence ---
   var splashScreen = document.getElementById('splash-screen');
+  var splashLogo = document.getElementById('splash-logo');
 
-  // Logo fades out and site fades in simultaneously
+  // Fade out logo and fade in site simultaneously
   setTimeout(function () {
+    splashLogo.classList.add('hidden');
     splashScreen.classList.add('fade-out');
 
     document.getElementById('panorama-container').classList.add('visible');
@@ -73,5 +75,5 @@
     document.addEventListener('click', tryStartMusic);
     document.addEventListener('keydown', tryStartMusic);
     document.addEventListener('touchstart', tryStartMusic);
-  }, 800);
+  }, 2000);
 })();
