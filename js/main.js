@@ -37,15 +37,14 @@
   // --- Splash logo sequence ---
   var splashScreen = document.getElementById('splash-screen');
   var splashLogo = document.getElementById('splash-logo');
-  var splashProceed = document.getElementById('splash-proceed');
-  var proceeded = false;
 
-  function revealSite() {
-    if (proceeded) return;
-    proceeded = true;
-    splashScreen.removeEventListener('click', revealSite);
-    splashScreen.removeEventListener('touchstart', revealSite);
+  // Fade out logo after a hold
+  setTimeout(function () {
+    splashLogo.classList.add('hidden');
+  }, 1500);
 
+  // Reveal the site after logo fades
+  setTimeout(function () {
     splashScreen.classList.add('fade-out');
 
     document.getElementById('panorama-container').classList.add('visible');
@@ -80,8 +79,5 @@
     document.addEventListener('click', tryStartMusic);
     document.addEventListener('keydown', tryStartMusic);
     document.addEventListener('touchstart', tryStartMusic);
-  }
-
-  splashScreen.addEventListener('click', revealSite);
-  splashScreen.addEventListener('touchstart', revealSite);
+  }, 2000);
 })();
