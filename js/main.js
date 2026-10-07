@@ -62,18 +62,17 @@
     setTimeout(function () {
       splashScreen.style.display = 'none';
     }, 900);
-
-    // Start music
-    function tryStartMusic() {
-      AudioManager.startMusic(function () {
-        document.removeEventListener('click', tryStartMusic);
-        document.removeEventListener('keydown', tryStartMusic);
-        document.removeEventListener('touchstart', tryStartMusic);
-      });
-    }
-    tryStartMusic();
-    document.addEventListener('click', tryStartMusic);
-    document.addEventListener('keydown', tryStartMusic);
-    document.addEventListener('touchstart', tryStartMusic);
   }, 2000);
+
+  // Start music on first user interaction (registered immediately)
+  function tryStartMusic() {
+    AudioManager.startMusic(function () {
+      document.removeEventListener('click', tryStartMusic);
+      document.removeEventListener('keydown', tryStartMusic);
+      document.removeEventListener('touchstart', tryStartMusic);
+    });
+  }
+  document.addEventListener('click', tryStartMusic);
+  document.addEventListener('keydown', tryStartMusic);
+  document.addEventListener('touchstart', tryStartMusic);
 })();
