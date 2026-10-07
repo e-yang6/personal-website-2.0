@@ -1202,9 +1202,6 @@ const UI = (function () {
     if (overviewBtn) {
       overviewBtn.addEventListener('click', function () {
         AudioManager.playClick();
-        if (typeof window.returnToSplash === 'function') {
-          window.returnToSplash();
-        }
       });
     }
 

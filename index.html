@@ -8,28 +8,8 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <!-- Splash screen -->
-  <div id="splash-screen">
-    <img id="splash-logo" src="assets/logo.png" alt="Logo">
-    <div id="splash-proceed">click anywhere to continue</div>
-    <div id="splash-choices">
-      <img id="splash-title" src="assets/title.png" alt="Ethan Yang">
-      <div id="splash-choices-row">
-        <button class="splash-choice" id="choice-normal">Portfolio</button>
-        <div class="splash-choice-group">
-          <button class="splash-choice" id="choice-minecraft">Minecraft Version</button>
-          <div id="splash-hint">please view on desktop!!!</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div id="splash-credit">Video by drift away ambience</div>
-
   <!-- Three.js panorama canvas inserted here by panorama.js -->
   <div id="panorama-container"></div>
-
-  <!-- Background video for main menu (fades in after splash logo) -->
-  <video id="menu-bg-video" src="assets/no more thinking tonight... (minecraft music w⧸ so-1080p.mp4" loop muted playsinline></video>
 
   <!-- Secret theme video background (hidden by default) -->
   <video id="secret-video" src="assets/secret.mp4" loop muted playsinline></video>
@@ -94,10 +74,10 @@
         <button class="mc-button full" id="btn-contactme" data-popup="contactme"><span class="title">Contact Me</span></button>
         <button class="mc-button full" id="btn-blog" data-popup="blog"><span class="title">Blog</span></button>
       </div>
-      <button class="mc-button full lang" id="btn-overview" type="button" title="Back to menu">
+      <a class="mc-button full lang" id="btn-overview" href="https://www.ethanyang.dev/portfolio.html" title="Back to menu">
         <span class="title"><img src="https://i.ibb.co/99187Lk/lang.png" alt="Back to menu"></span>
         <span class="lang-hint">Back to Menu</span>
-      </button>
+      </a>
     </div>
   </div>
 
